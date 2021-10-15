@@ -109,6 +109,7 @@ jobs:
   Changelog:
     needs: Release
     runs-on: ubuntu-latest
+    if: always() && needs.Release.result == 'success'
     steps:
       - uses: actions/checkout@v2
         with:
