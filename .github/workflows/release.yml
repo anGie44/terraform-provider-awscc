@@ -119,7 +119,7 @@ jobs:
 
           # Add Release Date
           RELEASE_DATE=`date +%B' '%e', '%Y`
-          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/hashicorp\/terraform-provider-awscc\/releases\/tag\/$PREVIOUS_RELEASE_TAG) $CHANGELOG_FILE_NAME
+          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/hashicorp\/terraform-provider-awscc\/releases\/tag\/$PREVIOUS_RELEASE_TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
 
           # Prepend next release line
 
