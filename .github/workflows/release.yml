@@ -82,7 +82,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-      - run: |
+      - name: Update Changelog Header
+        id: update
+        run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
           # Add Release Date
           RELEASE_DATE=`date +%B' '%e', '%Y`
@@ -98,6 +100,7 @@ jobs:
               printf("%s.%01d.%s\n\n", $1, $2, $3);
           }')
 
+          echo ::set-output name=new_release_tag_name::v$NEW_RELEASE_LINE
           echo New minor version is: v$NEW_RELEASE_LINE
 
           echo -e "## $NEW_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
@@ -105,5 +108,5 @@ jobs:
           git config --local user.email angelinepinilla@gmail.com
           git config --local user.name anGie44
           git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md after ${{ github.event.release.tag_name }}"
+          git commit -m "Update CHANGELOG.md after ${{steps.update.outputs.new_release_tag_name}}"
           git push
