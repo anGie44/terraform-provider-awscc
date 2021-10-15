@@ -95,7 +95,7 @@ jobs:
       - name: goreleaser release
         uses: goreleaser/goreleaser-action@v2
         with:
-          #version: v0.180.0
+          version: v0.180.0
           args: release --release-notes /tmp/RELEASE-NOTES.md --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
