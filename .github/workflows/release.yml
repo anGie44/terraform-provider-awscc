@@ -74,3 +74,36 @@ jobs:
 #         env:
 #           FASTLY_API_TOKEN: ${{ secrets.FASTLY_STATIC_PURGE_TOKEN }}
 #           TERRAFORM_REGISTRY_SYNC_TOKEN: ${{ secrets.TF_PROVIDER_RELEASE_TERRAFORM_REGISTRY_SYNC_TOKEN }}
+  Changelog:
+    needs: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: main
+      - run: |
+          CHANGELOG_FILE_NAME="CHANGELOG.md"
+          # Add Release Date
+          RELEASE_DATE=`date +%B' '%e', '%Y`
+          sed -i -e "1 s/Unreleased/$RELEASE_DATE/" $CHANGELOG_FILE_NAME
+
+          # Prepend next release line
+          PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+          echo Previous release is: $PREVIOUS_RELEASE_TAG
+
+          NEW_RELEASE_LINE=$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
+              $1 = substr($1,2)
+              $2 += 1
+              printf("%s.%01d.%s\n\n", $1, $2, $3);
+          }')
+
+          echo New minor version is: v$NEW_RELEASE_LINE
+
+          echo -e "## $NEW_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
+      - run: |
+          git config --local user.email angelinepinilla@gmail.com
+          git config --local user.name anGie44
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG.md after ${{ github.event.release.tag_name }}"
+          git push
