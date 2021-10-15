@@ -1,6 +1,9 @@
 name: Release
 
 on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+*'
   workflow_dispatch:
 
 env:
@@ -12,6 +15,7 @@ env:
 jobs:
   Tag:
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,8 +30,6 @@ jobs:
                         $2 += 1
                         printf("%s.%01d.%s\n\n", $1, $2, $3);
                     }')
-          echo $PREVIOUS_RELEASE_TAG >> tags.txt
-          echo $NEW_RELEASE_TAG >> tags.txt
           echo ::set-output name=curr_release_tag::$NEW_RELEASE_TAG
       - name: Create tag
         uses: actions/github-script@v5
@@ -40,14 +42,10 @@ jobs:
               ref: "refs/tags/${{ steps.tag.outputs.curr_release_tag }}",
               sha: context.sha
             })
-      - name: Upload Tag results for Tag job
-        uses: actions/upload-artifact@v2
-        with:
-          name: tags
-          path: tags.txt
   Release:
     needs: Tag
     runs-on: ubuntu-latest
+    if: always() && (needs.Tag.result == 'success' || needs.Tag.result == 'skipped')
     steps:
       - uses: actions/checkout@v2
         with:
@@ -124,7 +122,7 @@ jobs:
         id: update
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
-          PREVIOUS_RELEASE_TAG=`tail -1 tags.txt`
+          PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
           TAG=${PREVIOUS_RELEASE_TAG:1}
 
           # Add Release Date
