@@ -114,10 +114,6 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-      - name: Download Tag results for Tag job
-        uses: actions/download-artifact@v2
-        with:
-          name: tags
       - name: Update Changelog Header
         id: update
         run: |
