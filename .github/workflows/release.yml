@@ -26,8 +26,8 @@ jobs:
                         $2 += 1
                         printf("%s.%01d.%s\n\n", $1, $2, $3);
                     }')
-          echo "PREV_RELEASE_TAG=${PREVIOUS_RELEASE_TAG}" >> $GITHUB_ENV
-          echo "CURR_RELEASE_TAG=${NEW_RELEASE_TAG}" >> $GITHUB_ENV
+          echo $PREVIOUS_RELEASE_TAG >> tags.txt
+          echo $NEW_RELEASE_TAG >> tags.txt
           echo ::set-output name=curr_release_tag::$NEW_RELEASE_TAG
       - name: Create tag
         uses: actions/github-script@v5
@@ -40,6 +40,11 @@ jobs:
               ref: "refs/tags/${{ steps.tag.outputs.curr_release_tag }}",
               sha: context.sha
             })
+      - name: Upload Tag results for Tag job
+        uses: actions/upload-artifact@v2
+        with:
+          name: tags
+          path: tags.txt
   Release:
     needs: Tag
     runs-on: ubuntu-latest
@@ -111,11 +116,15 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+      - name: Download Tag results for Tag job
+        uses: actions/download-artifact@v2
+        with:
+          name: tags
       - name: Update Changelog Header
         id: update
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
-          PREVIOUS_RELEASE_TAG=${{ env.CURR_RELEASE_TAG }}
+          PREVIOUS_RELEASE_TAG=`tail -1 tags.txt`
           TAG=${PREVIOUS_RELEASE_TAG:1}
 
           # Add Release Date
@@ -135,9 +144,11 @@ jobs:
           echo New minor version is: v$NEW_RELEASE_LINE
 
           echo -e "## $NEW_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
+
+          echo ::set-output name=curr_release_tag::$PREVIOUS_RELEASE_TAG
       - run: |
           git config --local user.email angelinepinilla@gmail.com
           git config --local user.name anGie44
           git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md after $PREVIOUS_RELEASE_TAG"
+          git commit -m "Update CHANGELOG.md after ${{ steps.update.outputs.curr_release_tag }}"
           git push
