@@ -21,12 +21,13 @@ jobs:
         id: tag
         run: |
           PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
-          NEW_RELEASE_TAG=$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
+          NEW_RELEASE_TAG=v$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
                         $1 = substr($1,2)
                         $2 += 1
                         printf("%s.%01d.%s\n\n", $1, $2, $3);
                     }')
-          echo ::set-output name=release_tag::v$NEW_RELEASE_TAG
+          echo ::set-output name=prev_release_tag::$PREVIOUS_RELEASE_TAG
+          echo ::set-output name=curr_release_tag::$NEW_RELEASE_TAG
       - name: Create tag
         uses: actions/github-script@v5
         with:
@@ -35,7 +36,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/${{steps.tag.outputs.release_tag}}",
+              ref: "refs/tags/${{steps.tag.outputs.curr_release_tag}}",
               sha: context.sha
             })
   Release:
@@ -68,7 +69,6 @@ jobs:
           sed -n -e "1{/# /d;}" -e "2{/^$/d;}" -e "/# \[$(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags | tr -d v)/q;p" CHANGELOG.md > /tmp/RELEASE-NOTES.md
       - name: Release Protocol Versions
         run: |
-          cat /tmp/RELEASE-NOTES.md
           manifestFile=${{ github.event.repository.name }}_manifest.json
           if [[ -f  $manifestFile ]] && [[ $(jq '.metadata.protocol_versions' $manifestFile | jq length) -gt 0 ]]; then
             versions=`jq '.metadata.protocol_versions' $manifestFile | jq 'sort'`
@@ -114,7 +114,7 @@ jobs:
         id: update
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
-          PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+          PREVIOUS_RELEASE_TAG=${{needs.Tag.steps.tag.outputs.curr_release_tag}}
           TAG=${PREVIOUS_RELEASE_TAG:1}
 
           # Add Release Date
@@ -131,7 +131,6 @@ jobs:
               printf("%s.%01d.%s\n\n", $1, $2, $3);
           }')
 
-          echo ::set-output name=release_tag::$PREVIOUS_RELEASE_TAG
           echo New minor version is: v$NEW_RELEASE_LINE
 
           echo -e "## $NEW_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
@@ -139,5 +138,5 @@ jobs:
           git config --local user.email angelinepinilla@gmail.com
           git config --local user.name anGie44
           git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md after ${{steps.update.outputs.release_tag}}"
+          git commit -m "Update CHANGELOG.md after ${{needs.Tag.steps.tag.outputs.curr_release_tag}}"
           git push
