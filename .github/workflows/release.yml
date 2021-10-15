@@ -1,4 +1,3 @@
-
 name: Release
 
 on:
@@ -67,9 +66,9 @@ jobs:
       - name: Release Notes
         run: |
           sed -n -e "1{/# /d;}" -e "2{/^$/d;}" -e "/# \[$(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags | tr -d v)/q;p" CHANGELOG.md > /tmp/RELEASE-NOTES.md
-          cat /tmp/RELEASE-NOTES.md
       - name: Release Protocol Versions
         run: |
+          cat /tmp/RELEASE-NOTES.md
           manifestFile=${{ github.event.repository.name }}_manifest.json
           if [[ -f  $manifestFile ]] && [[ $(jq '.metadata.protocol_versions' $manifestFile | jq length) -gt 0 ]]; then
             versions=`jq '.metadata.protocol_versions' $manifestFile | jq 'sort'`
@@ -102,6 +101,7 @@ jobs:
 #         env:
 #           FASTLY_API_TOKEN: ${{ secrets.FASTLY_STATIC_PURGE_TOKEN }}
 #           TERRAFORM_REGISTRY_SYNC_TOKEN: ${{ secrets.TF_PROVIDER_RELEASE_TERRAFORM_REGISTRY_SYNC_TOKEN }}
+
   Changelog:
     needs: Release
     runs-on: ubuntu-latest
@@ -114,12 +114,15 @@ jobs:
         id: update
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
+          PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+          TAG=${PREVIOUS_RELEASE_TAG:1}
+
           # Add Release Date
           RELEASE_DATE=`date +%B' '%e', '%Y`
-          sed -i -e "1 s/Unreleased/$RELEASE_DATE/" $CHANGELOG_FILE_NAME
+          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/hashicorp\/terraform-provider-awscc\/releases\/tag\/$PREVIOUS_RELEASE_TAG) $CHANGELOG_FILE_NAME
 
           # Prepend next release line
-          PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+
           echo Previous release is: $PREVIOUS_RELEASE_TAG
 
           NEW_RELEASE_LINE=$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
