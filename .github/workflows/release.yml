@@ -26,7 +26,8 @@ jobs:
                         $2 += 1
                         printf("%s.%01d.%s\n\n", $1, $2, $3);
                     }')
-          echo ::set-output name=prev_release_tag::$PREVIOUS_RELEASE_TAG
+          echo "PREV_RELEASE_TAG=$PREVIOUS_RELEASE_TAG" >> $GITHUB_ENV
+          echo "CURR_RELEASE_TAG=$NEW_RELEASE_TAG" >> $GITHUB_ENV
           echo ::set-output name=curr_release_tag::$NEW_RELEASE_TAG
       - name: Create tag
         uses: actions/github-script@v5
@@ -114,7 +115,7 @@ jobs:
         id: update
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
-          PREVIOUS_RELEASE_TAG=${{needs.Tag.steps.tag.outputs.curr_release_tag}}
+          PREVIOUS_RELEASE_TAG=${{env.CURR_RELEASE_TAG}}
           TAG=${PREVIOUS_RELEASE_TAG:1}
 
           # Add Release Date
@@ -138,5 +139,5 @@ jobs:
           git config --local user.email angelinepinilla@gmail.com
           git config --local user.name anGie44
           git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md after ${{needs.Tag.steps.tag.outputs.curr_release_tag}}"
+          git commit -m "Update CHANGELOG.md after $PREVIOUS_RELEASE_TAG"
           git push
