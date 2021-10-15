@@ -1,7 +1,7 @@
-name: Post Publish
+name: Post Release
 on:
   release:
-    types: [published]
+    types: [released]
 jobs:
   changelog-newversion:
     runs-on: ubuntu-latest
