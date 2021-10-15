@@ -1,5 +1,4 @@
-## 0.5.0 (Unreleased)
-## 0.4.0 (October 15, 2021)
+## 0.4.0 (Unreleased)
 
 FEATURES:
 
