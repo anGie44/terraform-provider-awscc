@@ -1,9 +1,11 @@
 name: Post Release
 
 on:
-  release:
+  workflow_run:
+    workflows:["Release"]
+    branches: [ main ]
     types:
-      - released
+      - completed
 
 jobs:
   Changelog:
