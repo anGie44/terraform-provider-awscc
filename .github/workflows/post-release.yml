@@ -25,7 +25,7 @@ jobs:
 
           # Add Release Date
           RELEASE_DATE=`date +%B' '%e', '%Y`
-          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/${{ github.event.owner.login }}\/${{ github.event.repository.name }}\/releases\/tag\/$PREVIOUS_RELEASE_TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
+          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/anGie44\/${{ github.event.repository.name }}\/releases\/tag\/$PREVIOUS_RELEASE_TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
 
           # Prepend next release line
 
