@@ -1,9 +1,9 @@
-name: Post Release
+name: Post-Release
 
 on:
   workflow_run:
-    workflows:["Release"]
-    branches: [ main ]
+    workflows: ["Release"]
+    branches: [main]
     types:
       - completed
 

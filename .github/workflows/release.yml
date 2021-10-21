@@ -2,7 +2,7 @@ name: Release
 
 on:
   workflow_run:
-    workflows:["Pre-Release"]
+    workflows: ["Pre-Release"]
     branches: [main]
     types:
       - completed
