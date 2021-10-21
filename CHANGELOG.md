@@ -2,7 +2,7 @@
 
 FEATURES:
 
-* This is THE LAST test
+* This is THE LAST LAST test
 
 ## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (October 15, 2021)
 
