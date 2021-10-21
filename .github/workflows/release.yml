@@ -1,7 +1,7 @@
 name: Release
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   workflow_run:
     workflows: ["Pre-Release"]
     branches: [main]
@@ -20,11 +20,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
       - name: Read go version
         id: go-version
         run: |
           content=`cat ./.go-version`
           echo "::set-output name=content::$content"
+
       - uses: actions/setup-go@v2
         with:
           # TODO: Replace with go-version-from-file when it is supported
@@ -38,9 +40,11 @@ jobs:
 #         with:
 #           github-token: ${{ secrets.SETUP_SIGNORE_GITHUB_TOKEN }}
 #           signer: interim_signing_subkey_768B676
+
       - name: Release Notes
         run: |
           sed -n -e "1{/# /d;}" -e "2{/^$/d;}" -e "/# \[$(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags | tr -d v)/q;p" CHANGELOG.md > /tmp/RELEASE-NOTES.md
+
       - name: Release Protocol Versions
         run: |
           manifestFile=${{ github.event.repository.name }}_manifest.json
@@ -62,6 +66,7 @@ jobs:
 #           # TODO: allow session tagging once IAM permission changes addressed
 #           # Reference: https://github.com/hashicorp/hc-releases/issues/124
 #           role-skip-session-tagging: true
+
       - name: goreleaser release
         uses: goreleaser/goreleaser-action@v2
         with:
