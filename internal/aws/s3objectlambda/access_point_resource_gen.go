@@ -53,7 +53,8 @@ func accessPointResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// }
 			Description: "The name you want to assign to this Object lambda Access Point.",
 			Type:        types.StringType,
-			Required:    true,
+			Optional:    true,
+			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(3, 45),
 			},
@@ -99,16 +100,32 @@ func accessPointResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "uniqueItems": true
 			//           },
 			//           "ContentTransformation": {
-			//             "oneOf": [
-			//               {
+			//             "properties": {
+			//               "AwsLambda": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "FunctionArn": {
+			//                     "maxLength": 2048,
+			//                     "minLength": 1,
+			//                     "type": "string"
+			//                   },
+			//                   "FunctionPayload": {
+			//                     "type": "string"
+			//                   }
+			//                 },
 			//                 "required": [
-			//                   "AwsLambda"
-			//                 ]
+			//                   "FunctionArn"
+			//                 ],
+			//                 "type": "object"
 			//               }
-			//             ],
+			//             },
 			//             "type": "object"
 			//           }
 			//         },
+			//         "required": [
+			//           "Actions",
+			//           "ContentTransformation"
+			//         ],
 			//         "type": "object"
 			//       },
 			//       "type": "array",
@@ -149,12 +166,36 @@ func accessPointResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								"actions": {
 									// Property: Actions
 									Type:     types.SetType{ElemType: types.StringType},
-									Optional: true,
+									Required: true,
 								},
 								"content_transformation": {
 									// Property: ContentTransformation
-									Type:     types.MapType{ElemType: types.StringType},
-									Optional: true,
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"aws_lambda": {
+												// Property: AwsLambda
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"function_arn": {
+															// Property: FunctionArn
+															Type:     types.StringType,
+															Required: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(1, 2048),
+															},
+														},
+														"function_payload": {
+															// Property: FunctionPayload
+															Type:     types.StringType,
+															Optional: true,
+														},
+													},
+												),
+												Optional: true,
+											},
+										},
+									),
+									Required: true,
 								},
 							},
 							tfsdk.SetNestedAttributesOptions{},
@@ -163,7 +204,7 @@ func accessPointResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 				},
 			),
-			Optional: true,
+			Required: true,
 		},
 		"policy_status": {
 			// Property: PolicyStatus
@@ -270,11 +311,14 @@ func accessPointResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"actions":                           "Actions",
 		"allowed_features":                  "AllowedFeatures",
 		"arn":                               "Arn",
+		"aws_lambda":                        "AwsLambda",
 		"block_public_acls":                 "BlockPublicAcls",
 		"block_public_policy":               "BlockPublicPolicy",
 		"cloudwatch_metrics_enabled":        "CloudWatchMetricsEnabled",
 		"content_transformation":            "ContentTransformation",
 		"creation_date":                     "CreationDate",
+		"function_arn":                      "FunctionArn",
+		"function_payload":                  "FunctionPayload",
 		"ignore_public_acls":                "IgnorePublicAcls",
 		"is_public":                         "IsPublic",
 		"name":                              "Name",

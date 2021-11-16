@@ -89,7 +89,8 @@
                         }
                     ]
                 }
-            }
+            },
+            "required": ["Actions", "ContentTransformation"]
         },
         "AwsLambda": {
             "type": "object",
@@ -147,10 +148,8 @@
             "$ref": "#/definitions/ObjectLambdaConfiguration"
         }
     },
+    "required": ["ObjectLambdaConfiguration"],
     "additionalProperties": false,
-    "required": [
-        "Name"
-    ],
     "createOnlyProperties": [
         "/properties/Name"
     ],

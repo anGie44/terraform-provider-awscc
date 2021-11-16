@@ -7,7 +7,7 @@ meta_schema {
   path = "../service/cloudformation/meta-schemas/provider.definition.schema.v1.json"
 }
 
-# 396 CloudFormation resource types schemas are available for use with the Cloud Control API.
+# 428 CloudFormation resource types schemas are available for use with the Cloud Control API.
 
 resource_schema "aws_acmpca_certificate" {
   cloudformation_type_name               = "AWS::ACMPCA::Certificate"
@@ -173,6 +173,11 @@ resource_schema "aws_autoscaling_launch_configuration" {
   cloudformation_type_name = "AWS::AutoScaling::LaunchConfiguration"
 }
 
+resource_schema "aws_autoscaling_lifecycle_hook" {
+  cloudformation_type_name               = "AWS::AutoScaling::LifecycleHook"
+  suppress_plural_data_source_generation = true
+}
+
 resource_schema "aws_autoscaling_warm_pool" {
   cloudformation_type_name               = "AWS::AutoScaling::WarmPool"
   suppress_plural_data_source_generation = true
@@ -199,6 +204,10 @@ resource_schema "aws_backup_framework" {
 
 resource_schema "aws_backup_report_plan" {
   cloudformation_type_name = "AWS::Backup::ReportPlan"
+}
+
+resource_schema "aws_batch_scheduling_policy" {
+  cloudformation_type_name = "AWS::Batch::SchedulingPolicy"
 }
 
 resource_schema "aws_budgets_budgets_action" {
@@ -303,6 +312,10 @@ resource_schema "aws_cloudfront_realtime_log_config" {
   cloudformation_type_name = "AWS::CloudFront::RealtimeLogConfig"
 }
 
+resource_schema "aws_cloudfront_response_headers_policy" {
+  cloudformation_type_name = "AWS::CloudFront::ResponseHeadersPolicy"
+}
+
 resource_schema "aws_cloudtrail_trail" {
   cloudformation_type_name = "AWS::CloudTrail::Trail"
 }
@@ -360,8 +373,23 @@ resource_schema "aws_config_stored_query" {
   cloudformation_type_name = "AWS::Config::StoredQuery"
 }
 
+resource_schema "aws_connect_hours_of_operation" {
+  cloudformation_type_name               = "AWS::Connect::HoursOfOperation"
+  suppress_plural_data_source_generation = true
+}
+
 resource_schema "aws_connect_quick_connect" {
   cloudformation_type_name               = "AWS::Connect::QuickConnect"
+  suppress_plural_data_source_generation = true
+}
+
+resource_schema "aws_connect_user" {
+  cloudformation_type_name               = "AWS::Connect::User"
+  suppress_plural_data_source_generation = true
+}
+
+resource_schema "aws_connect_user_hierarchy_group" {
+  cloudformation_type_name               = "AWS::Connect::UserHierarchyGroup"
   suppress_plural_data_source_generation = true
 }
 
@@ -419,6 +447,10 @@ resource_schema "aws_datasync_location_fsx_windows" {
   cloudformation_type_name = "AWS::DataSync::LocationFSxWindows"
 }
 
+resource_schema "aws_datasync_location_hdfs" {
+  cloudformation_type_name = "AWS::DataSync::LocationHDFS"
+}
+
 resource_schema "aws_datasync_location_nfs" {
   cloudformation_type_name = "AWS::DataSync::LocationNFS"
 }
@@ -460,6 +492,10 @@ resource_schema "aws_dynamodb_global_table" {
   cloudformation_type_name = "AWS::DynamoDB::GlobalTable"
 }
 
+resource_schema "aws_ec2_capacity_reservation_fleet" {
+  cloudformation_type_name = "AWS::EC2::CapacityReservationFleet"
+}
+
 resource_schema "aws_ec2_carrier_gateway" {
   cloudformation_type_name = "AWS::EC2::CarrierGateway"
 }
@@ -490,6 +526,10 @@ resource_schema "aws_ec2_gateway_route_table_association" {
   suppress_plural_data_source_generation = true
 }
 
+resource_schema "aws_ec2_internet_gateway" {
+  cloudformation_type_name = "AWS::EC2::InternetGateway"
+}
+
 resource_schema "aws_ec2_local_gateway_route" {
   cloudformation_type_name = "AWS::EC2::LocalGatewayRoute"
 }
@@ -508,6 +548,10 @@ resource_schema "aws_ec2_network_insights_analysis" {
 
 resource_schema "aws_ec2_network_insights_path" {
   cloudformation_type_name = "AWS::EC2::NetworkInsightsPath"
+}
+
+resource_schema "aws_ec2_network_interface" {
+  cloudformation_type_name = "AWS::EC2::NetworkInterface"
 }
 
 resource_schema "aws_ec2_prefix_list" {
@@ -636,6 +680,10 @@ resource_schema "aws_efs_mount_target" {
 resource_schema "aws_eks_addon" {
   cloudformation_type_name               = "AWS::EKS::Addon"
   suppress_plural_data_source_generation = true
+}
+
+resource_schema "aws_eks_cluster" {
+  cloudformation_type_name = "AWS::EKS::Cluster"
 }
 
 resource_schema "aws_eks_fargate_profile" {
@@ -915,12 +963,20 @@ resource_schema "aws_iot_job_template" {
   cloudformation_type_name = "AWS::IoT::JobTemplate"
 }
 
+resource_schema "aws_iot_logging" {
+  cloudformation_type_name = "AWS::IoT::Logging"
+}
+
 resource_schema "aws_iot_mitigation_action" {
   cloudformation_type_name = "AWS::IoT::MitigationAction"
 }
 
 resource_schema "aws_iot_provisioning_template" {
   cloudformation_type_name = "AWS::IoT::ProvisioningTemplate"
+}
+
+resource_schema "aws_iot_resource_specific_logging" {
+  cloudformation_type_name = "AWS::IoT::ResourceSpecificLogging"
 }
 
 resource_schema "aws_iot_scheduled_audit" {
@@ -937,6 +993,42 @@ resource_schema "aws_iot_topic_rule" {
 
 resource_schema "aws_iot_topic_rule_destination" {
   cloudformation_type_name = "AWS::IoT::TopicRuleDestination"
+}
+
+resource_schema "aws_iotanalytics_channel" {
+  cloudformation_type_name = "AWS::IoTAnalytics::Channel"
+
+  # Top-level "Id" property is not a primary identifier.
+  suppress_resource_generation             = true
+  suppress_singular_data_source_generation = true
+  suppress_plural_data_source_generation   = true
+}
+
+resource_schema "aws_iotanalytics_dataset" {
+  cloudformation_type_name = "AWS::IoTAnalytics::Dataset"
+
+  # Top-level "Id" property is not a primary identifier.
+  suppress_resource_generation             = true
+  suppress_singular_data_source_generation = true
+  suppress_plural_data_source_generation   = true
+}
+
+resource_schema "aws_iotanalytics_datastore" {
+  cloudformation_type_name = "AWS::IoTAnalytics::Datastore"
+
+  # Top-level "Id" property is not a primary identifier.
+  suppress_resource_generation             = true
+  suppress_singular_data_source_generation = true
+  suppress_plural_data_source_generation   = true
+}
+
+resource_schema "aws_iotanalytics_pipeline" {
+  cloudformation_type_name = "AWS::IoTAnalytics::Pipeline"
+
+  # Top-level "Id" property is not a primary identifier.
+  suppress_resource_generation             = true
+  suppress_singular_data_source_generation = true
+  suppress_plural_data_source_generation   = true
 }
 
 resource_schema "aws_iotcoredeviceadvisor_suite_definition" {
@@ -993,6 +1085,14 @@ resource_schema "aws_iotwireless_destination" {
 
 resource_schema "aws_iotwireless_device_profile" {
   cloudformation_type_name = "AWS::IoTWireless::DeviceProfile"
+}
+
+resource_schema "aws_iotwireless_fuota_task" {
+  cloudformation_type_name = "AWS::IoTWireless::FuotaTask"
+}
+
+resource_schema "aws_iotwireless_multicast_group" {
+  cloudformation_type_name = "AWS::IoTWireless::MulticastGroup"
 }
 
 resource_schema "aws_iotwireless_partner_account" {
@@ -1070,12 +1170,20 @@ resource_schema "aws_licensemanager_license" {
   cloudformation_type_name = "AWS::LicenseManager::License"
 }
 
+resource_schema "aws_lightsail_database" {
+  cloudformation_type_name = "AWS::Lightsail::Database"
+}
+
 resource_schema "aws_lightsail_disk" {
   cloudformation_type_name = "AWS::Lightsail::Disk"
 }
 
 resource_schema "aws_lightsail_instance" {
   cloudformation_type_name = "AWS::Lightsail::Instance"
+}
+
+resource_schema "aws_lightsail_static_ip" {
+  cloudformation_type_name = "AWS::Lightsail::StaticIp"
 }
 
 resource_schema "aws_location_geofence_collection" {
@@ -1308,6 +1416,23 @@ resource_schema "aws_opsworkscm_server" {
   suppress_plural_data_source_generation   = true
 }
 
+resource_schema "aws_panorama_application_instance" {
+  cloudformation_type_name = "AWS::Panorama::ApplicationInstance"
+}
+
+resource_schema "aws_panorama_package" {
+  cloudformation_type_name = "AWS::Panorama::Package"
+}
+
+resource_schema "aws_panorama_package_version" {
+  cloudformation_type_name               = "AWS::Panorama::PackageVersion"
+  suppress_plural_data_source_generation = true
+}
+
+resource_schema "aws_pinpoint_in_app_template" {
+  cloudformation_type_name = "AWS::Pinpoint::InAppTemplate"
+}
+
 resource_schema "aws_qldb_stream" {
   cloudformation_type_name               = "AWS::QLDB::Stream"
   suppress_plural_data_source_generation = true
@@ -1367,6 +1492,26 @@ resource_schema "aws_redshift_cluster" {
   suppress_resource_generation             = true
   suppress_singular_data_source_generation = true
   suppress_plural_data_source_generation   = true
+}
+
+resource_schema "aws_redshift_endpoint_access" {
+  cloudformation_type_name = "AWS::Redshift::EndpointAccess"
+}
+
+resource_schema "aws_redshift_endpoint_authorization" {
+  cloudformation_type_name = "AWS::Redshift::EndpointAuthorization"
+}
+
+resource_schema "aws_redshift_event_subscription" {
+  cloudformation_type_name = "AWS::Redshift::EventSubscription"
+}
+
+resource_schema "aws_redshift_scheduled_action" {
+  cloudformation_type_name = "AWS::Redshift::ScheduledAction"
+}
+
+resource_schema "aws_rekognition_project" {
+  cloudformation_type_name = "AWS::Rekognition::Project"
 }
 
 resource_schema "aws_resourcegroups_group" {
@@ -1463,6 +1608,10 @@ resource_schema "aws_route53resolver_firewall_rule_group_association" {
   suppress_plural_data_source_generation = true
 }
 
+resource_schema "aws_route53resolver_resolver_config" {
+  cloudformation_type_name = "AWS::Route53Resolver::ResolverConfig"
+}
+
 resource_schema "aws_route53resolver_resolver_dnssec_config" {
   cloudformation_type_name = "AWS::Route53Resolver::ResolverDNSSECConfig"
 }
@@ -1473,6 +1622,10 @@ resource_schema "aws_route53resolver_resolver_query_logging_config" {
 
 resource_schema "aws_route53resolver_resolver_query_logging_config_association" {
   cloudformation_type_name = "AWS::Route53Resolver::ResolverQueryLoggingConfigAssociation"
+}
+
+resource_schema "aws_route53resolver_resolver_rule" {
+  cloudformation_type_name = "AWS::Route53Resolver::ResolverRule"
 }
 
 resource_schema "aws_s3_access_point" {
@@ -1513,10 +1666,6 @@ resource_schema "aws_s3outposts_access_point" {
 resource_schema "aws_s3outposts_bucket" {
   cloudformation_type_name               = "AWS::S3Outposts::Bucket"
   suppress_plural_data_source_generation = true
-
-  # AndOperator property is 'oneOf', which we cannot yet handle.
-  suppress_resource_generation             = true
-  suppress_singular_data_source_generation = true
 }
 
 resource_schema "aws_s3outposts_bucket_policy" {

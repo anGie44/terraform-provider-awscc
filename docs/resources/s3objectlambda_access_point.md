@@ -17,11 +17,11 @@ The AWS::S3ObjectLambda::AccessPoint resource is an Amazon S3ObjectLambda resour
 
 ### Required
 
-- **name** (String) The name you want to assign to this Object lambda Access Point.
+- **object_lambda_configuration** (Attributes) The Object lambda Access Point Configuration that configures transformations to be applied on the objects on specified S3 Actions (see [below for nested schema](#nestedatt--object_lambda_configuration))
 
 ### Optional
 
-- **object_lambda_configuration** (Attributes) The Object lambda Access Point Configuration that configures transformations to be applied on the objects on specified S3 Actions (see [below for nested schema](#nestedatt--object_lambda_configuration))
+- **name** (String) The name you want to assign to this Object lambda Access Point.
 
 ### Read-Only
 
@@ -34,7 +34,7 @@ The AWS::S3ObjectLambda::AccessPoint resource is an Amazon S3ObjectLambda resour
 <a id="nestedatt--object_lambda_configuration"></a>
 ### Nested Schema for `object_lambda_configuration`
 
-Optional:
+Required:
 
 - **allowed_features** (Set of String)
 - **cloudwatch_metrics_enabled** (Boolean)
@@ -44,10 +44,27 @@ Optional:
 <a id="nestedatt--object_lambda_configuration--transformation_configurations"></a>
 ### Nested Schema for `object_lambda_configuration.transformation_configurations`
 
-Optional:
+Required:
 
 - **actions** (Set of String)
-- **content_transformation** (Map of String)
+- **content_transformation** (Attributes) (see [below for nested schema](#nestedatt--object_lambda_configuration--transformation_configurations--content_transformation))
+
+<a id="nestedatt--object_lambda_configuration--transformation_configurations--content_transformation"></a>
+### Nested Schema for `object_lambda_configuration.transformation_configurations.content_transformation`
+
+Required:
+
+- **aws_lambda** (Attributes) (see [below for nested schema](#nestedatt--object_lambda_configuration--transformation_configurations--content_transformation--aws_lambda))
+
+<a id="nestedatt--object_lambda_configuration--transformation_configurations--content_transformation--aws_lambda"></a>
+### Nested Schema for `object_lambda_configuration.transformation_configurations.content_transformation.aws_lambda`
+
+Required:
+
+- **function_arn** (String)
+- **function_payload** (String)
+
+
 
 
 

@@ -1,39 +1,117 @@
-## 0.10.0 (Unreleased)
-## [0.9.0](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v0.9.0) (October 21, 2021)
+## 0.7.0 (Unreleased)
+
+## [0.6.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.6.0) (November 11, 2021)
 
 FEATURES:
 
-* This is THE LAST LAST test
+* **New Data Source:** `awscc_batch_scheduling_policies`
+* **New Data Source:** `awscc_batch_scheduling_policy`
+* **New Data Source:** `awscc_datasync_location_hdfs`
+* **New Data Source:** `awscc_datasync_location_hdfs_plural`
+* **New Data Source:** `awscc_iotwireless_fuota_task`
+* **New Data Source:** `awscc_iotwireless_fuota_tasks`
+* **New Data Source:** `awscc_iotwireless_multicast_group`
+* **New Data Source:** `awscc_iotwireless_multicast_groups`
+* **New Resource:** `awscc_batch_scheduling_policy`
+* **New Resource:** `awscc_datasync_location_hdfs`
+* **New Resource:** `awscc_iotwireless_fuota_task`
+* **New Resource:** `awscc_iotwireless_multicast_group`
 
-## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (October 15, 2021)
-
-FEATURES:
-
-* This is THE LAST test
-
-## [0.7.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.7.0) (October 15, 2021)
-
-FEATURES:
-
-* This is a test
-
-## [0.6.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.6.0) (October 15, 2021)
-
-FEATURES:
-
-* This is a test
-
-## [0.5.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.5.0) (October 15, 2021)
+## [0.5.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.5.0) (November 4, 2021)
 
 FEATURES:
 
-* This is a test
+* **New Data Source:** `awscc_cloudfront_response_headers_policies`
+* **New Data Source:** `awscc_cloudfront_response_headers_policy`
+* **New Data Source:** `awscc_ec2_capacity_reservation_fleet`
+* **New Data Source:** `awscc_ec2_capacity_reservation_fleets`
+* **New Data Source:** `awscc_ec2_internet_gateway`
+* **New Data Source:** `awscc_ec2_internet_gateways`
+* **New Data Source:** `awscc_ec2_network_interface`
+* **New Data Source:** `awscc_ec2_network_interfaces`
+* **New Data Source:** `awscc_ec2_subnet`
+* **New Data Source:** `awscc_eks_cluster`
+* **New Data Source:** `awscc_eks_clusters`
+* **New Data Source:** `awscc_iot_logging`
+* **New Data Source:** `awscc_iot_loggings`
+* **New Data Source:** `awscc_iot_resource_specific_logging`
+* **New Data Source:** `awscc_iot_resource_specific_loggings`
+* **New Data Source:** `awscc_lightsail_database`
+* **New Data Source:** `awscc_lightsail_databases`
+* **New Data Source:** `awscc_lightsail_static_ip`
+* **New Data Source:** `awscc_lightsail_static_ips`
+* **New Data Source:** `awscc_pinpoint_in_app_template`
+* **New Data Source:** `awscc_pinpoint_in_app_templates`
+* **New Data Source:** `awscc_redshift_endpoint_access`
+* **New Data Source:** `awscc_redshift_endpoint_accesses`
+* **New Data Source:** `awscc_redshift_endpoint_authorization`
+* **New Data Source:** `awscc_redshift_endpoint_authorizations`
+* **New Data Source:** `awscc_redshift_event_subscription`
+* **New Data Source:** `awscc_redshift_event_subscriptions`
+* **New Data Source:** `awscc_redshift_scheduled_action`
+* **New Data Source:** `awscc_redshift_scheduled_actions`
+* **New Data Source:** `awscc_route53resolver_resolver_config`
+* **New Data Source:** `awscc_route53resolver_resolver_configs`
+* **New Data Source:** `awscc_route53resolver_resolver_rule`
+* **New Data Source:** `awscc_route53resolver_resolver_rules`
+* **New Resource:** `awscc_cloudfront_response_headers_policy`
+* **New Resource:** `awscc_ec2_capacity_reservation_fleet`
+* **New Resource:** `awscc_ec2_internet_gateway`
+* **New Resource:** `awscc_ec2_network_interface`
+* **New Resource:** `awscc_ec2_subnet`
+* **New Resource:** `awscc_eks_cluster`
+* **New Resource:** `awscc_iot_logging`
+* **New Resource:** `awscc_iot_resource_specific_logging`
+* **New Resource:** `awscc_lightsail_database`
+* **New Resource:** `awscc_lightsail_static_ip`
+* **New Resource:** `awscc_pinpoint_in_app_template`
+* **New Resource:** `awscc_redshift_endpoint_access`
+* **New Resource:** `awscc_redshift_endpoint_authorization`
+* **New Resource:** `awscc_redshift_event_subscription`
+* **New Resource:** `awscc_redshift_scheduled_action`
+* **New Resource:** `awscc_route53resolver_resolver_config`
+* **New Resource:** `awscc_route53resolver_resolver_rule`
+* provider: Adds `user_agent` argument ([#247](https://github.com/hashicorp/terraform-provider-awscc/issues/247))
 
-## [0.4.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.4.0) (October 15, 2021)
+## [0.4.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.4.0) (October 21, 2021)
+
+BREAKING CHANGES:
+
+* data-source/awscc_ec2_subnet: Temporarily removed
+* resource/awscc_ec2_subnet: Temporarily removed
 
 FEATURES:
 
-* This is a test
+* **New Data Source:** `awscc_autoscaling_lifecycle_hook`
+* **New Data Source:** `awscc_connect_hours_of_operation`
+* **New Data Source:** `awscc_connect_user`
+* **New Data Source:** `awscc_connect_user_hierarchy_group`
+* **New Data Source:** `awscc_panorama_application_instance`
+* **New Data Source:** `awscc_panorama_application_instances`
+* **New Data Source:** `awscc_panorama_package`
+* **New Data Source:** `awscc_panorama_packages`
+* **New Data Source:** `awscc_panorama_package_version`
+* **New Data Source:** `awscc_rekognition_project`
+* **New Data Source:** `awscc_rekognition_projects`
+* **New Data Source:** `awscc_s3outposts_bucket`
+* **New Resource:** `awscc_autoscaling_lifecycle_hook`
+* **New Resource:** `awscc_connect_hours_of_operation`
+* **New Resource:** `awscc_connect_user`
+* **New Resource:** `awscc_connect_user_hierarchy_group`
+* **New Resource:** `awscc_panorama_application_instance`
+* **New Resource:** `awscc_panorama_package`
+* **New Resource:** `awscc_panorama_package_version`
+* **New Resource:** `awscc_rekognition_project`
+* **New Resource:** `awscc_s3outposts_bucket`
+
+BUG FIXES:
+* Persist any resource `id` to state if Create fails while waiting for async operation completion ([#252](https://github.com/hashicorp/terraform-provider-awscc/issues/252))
+* data-source/awscc_s3_storagelens: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
+* data-source/awscc_s3objectlambda_access_point: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
+* data-source/awscc_sagemaker_pipeline: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
+* resource/awscc_s3_storagelens: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
+* resource/awscc_s3objectlambda_access_point: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
+* resource/awscc_sagemaker_pipeline: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
 
 ## [0.3.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.3.0) (October 14, 2021)
 
