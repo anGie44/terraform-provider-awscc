@@ -8,9 +8,9 @@ builds:
       - -trimpath
     goos:
       - darwin
-      - freebsd
-      - linux
-      - windows
+#       - freebsd
+#       - linux
+#       - windows
     goarch:
       - '386'
       - amd64
