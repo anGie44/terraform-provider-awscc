@@ -24,13 +24,13 @@ func loggingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, 
 			// Property: LogDestinationConfigs
 			// CloudFormation resource type schema:
 			// {
-			//   "description": "The Amazon Kinesis Data Firehose Amazon Resource Name (ARNs) that you want to associate with the web ACL.",
+			//   "description": "The Amazon Resource Names (ARNs) of the logging destinations that you want to associate with the web ACL.",
 			//   "items": {
 			//     "type": "string"
 			//   },
 			//   "type": "array"
 			// }
-			Description: "The Amazon Kinesis Data Firehose Amazon Resource Name (ARNs) that you want to associate with the web ACL.",
+			Description: "The Amazon Resource Names (ARNs) of the logging destinations that you want to associate with the web ACL.",
 			Type:        types.ListType{ElemType: types.StringType},
 			Required:    true,
 		},
@@ -248,6 +248,9 @@ func loggingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, 
 			Description: "Indicates whether the logging configuration was created by AWS Firewall Manager, as part of an AWS WAF policy configuration. If true, only Firewall Manager can modify or delete the configuration.",
 			Type:        types.BoolType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"redacted_fields": {
 			// Property: RedactedFields
@@ -462,6 +465,9 @@ func loggingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, 
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{

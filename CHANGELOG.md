@@ -1,4 +1,80 @@
-## 0.7.0 (Unreleased)
+## 0.9.0 (Unreleased)
+
+BUG FIXES:
+
+* provider: Ensure `darwin/arm64` platform is included in releases
+* Prevent `terraform plan` showing that a resource must be replaced immediately after creation ([#306](https://github.com/hashicorp/terraform-provider-awscc/issues/306))
+* Prevent errors like `An unexpected error was encountered trying to read an attribute from the state.` during resource read ([#306](https://github.com/hashicorp/terraform-provider-awscc/issues/306))
+
+## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (December  3, 2021)
+
+FEATURES:
+
+* **New Data Source:** `awscc_chatbot_slack_channel_configuration`
+* **New Data Source:** `awscc_chatbot_slack_channel_configurations`
+* **New Data Source:** `awscc_connect_contact_flow`
+* **New Data Source:** `awscc_connect_contact_flow_module`
+* **New Data Source:** `awscc_ec2_ipam`
+* **New Data Source:** `awscc_ec2_ipam_allocation`
+* **New Data Source:** `awscc_ec2_ipam_pool`
+* **New Data Source:** `awscc_ec2_ipam_pools`
+* **New Data Source:** `awscc_ec2_ipam_scope`
+* **New Data Source:** `awscc_ec2_ipam_scopes`
+* **New Data Source:** `awscc_ec2_ipams`
+* **New Data Source:** `awscc_ec2_vpc_endpoint`
+* **New Data Source:** `awscc_ec2_vpc_endpoints`
+* **New Data Source:** `awscc_evidently_experiment`
+* **New Data Source:** `awscc_evidently_feature`
+* **New Data Source:** `awscc_evidently_launch`
+* **New Data Source:** `awscc_evidently_project`
+* **New Data Source:** `awscc_refactorspaces_environment`
+* **New Data Source:** `awscc_refactorspaces_environments`
+* **New Data Source:** `awscc_refactorspaces_route`
+* **New Data Source:** `awscc_refactorspaces_service`
+* **New Data Source:** `awscc_resiliencehub_app`
+* **New Data Source:** `awscc_resiliencehub_apps`
+* **New Data Source:** `awscc_resiliencehub_resiliency_policies`
+* **New Data Source:** `awscc_resiliencehub_resiliency_policy`
+* **New Data Source:** `awscc_rum_app_monitor`
+* **New Data Source:** `awscc_rum_app_monitors`
+* **New Data Source:** `awscc_timestream_scheduled_queries`
+* **New Data Source:** `awscc_timestream_scheduled_query`
+* **New Data Source:** `awscc_transfer_workflow`
+* **New Data Source:** `awscc_transfer_workflows`
+* **New Resource:** `awscc_chatbot_slack_channel_configuration`
+* **New Resource:** `awscc_connect_contact_flow`
+* **New Resource:** `awscc_connect_contact_flow_module`
+* **New Resource:** `awscc_ec2_ipam`
+* **New Resource:** `awscc_ec2_ipam_allocation`
+* **New Resource:** `awscc_ec2_ipam_pool`
+* **New Resource:** `awscc_ec2_ipam_scope`
+* **New Resource:** `awscc_ec2_vpc_endpoint`
+* **New Resource:** `awscc_evidently_experiment`
+* **New Resource:** `awscc_evidently_feature`
+* **New Resource:** `awscc_evidently_launch`
+* **New Resource:** `awscc_evidently_project`
+* **New Resource:** `awscc_refactorspaces_environment`
+* **New Resource:** `awscc_refactorspaces_route`
+* **New Resource:** `awscc_refactorspaces_service`
+* **New Resource:** `awscc_resiliencehub_app`
+* **New Resource:** `awscc_resiliencehub_resiliency_policy`
+* **New Resource:** `awscc_rum_app_monitor`
+* **New Resource:** `awscc_timestream_scheduled_query`
+* **New Resource:** `awscc_transfer_workflow`
+
+## [0.7.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.7.0) (November 18, 2021)
+
+FEATURES:
+
+* **New Data Source:** `awscc_appstream_app_block`
+* **New Data Source:** `awscc_appstream_application`
+* **New Data Source:** `awscc_appstream_application_fleet_association`
+* **New Data Source:** `awscc_databrew_ruleset`
+* **New Data Source:** `awscc_databrew_rulesets`
+* **New Resource:** `awscc_appstream_app_block`
+* **New Resource:** `awscc_appstream_application`
+* **New Resource:** `awscc_appstream_application_fleet_association`
+* **New Resource:** `awscc_databrew_ruleset`
 
 FEATURES:
 
@@ -109,6 +185,7 @@ FEATURES:
 * **New Resource:** `awscc_s3outposts_bucket`
 
 BUG FIXES:
+
 * Persist any resource `id` to state if Create fails while waiting for async operation completion ([#252](https://github.com/hashicorp/terraform-provider-awscc/issues/252))
 * data-source/awscc_s3_storagelens: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))
 * data-source/awscc_s3objectlambda_access_point: Fix incorrectly generated schema ([#255](https://github.com/hashicorp/terraform-provider-awscc/issues/255))

@@ -46,6 +46,19 @@
             "description": "Amazon Resource Name (ARN) of the configuration",
             "type": "string",
             "pattern": ""
+        },
+        "GuardrailPolicies": {
+            "description": "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": ""
+            }
+        },
+        "UserRoleRequired": {
+            "description": "Enables use of a user role requirement in your chat configuration",
+            "type": "boolean",
+            "default": false
         }
     },
     "required": [

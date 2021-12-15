@@ -30,6 +30,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The ARN of the cluster, such as arn:aws:eks:us-west-2:666666666666:cluster/prod.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"certificate_authority_data": {
 			// Property: CertificateAuthorityData
@@ -41,6 +44,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The certificate-authority-data for your cluster.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"cluster_security_group_id": {
 			// Property: ClusterSecurityGroupId
@@ -52,6 +58,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control plane to data plane communication.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"encryption_config": {
 			// Property: EncryptionConfig
@@ -119,6 +128,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed: true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
+				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
 		},
@@ -132,6 +142,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "Amazon Resource Name (ARN) or alias of the customer master key (CMK).",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"endpoint": {
 			// Property: Endpoint
@@ -143,6 +156,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The endpoint for your Kubernetes API server, such as https://5E1D0CEXAMPLEA591B746AFC5AB30262.yl4.us-west-2.eks.amazonaws.com.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"kubernetes_network_config": {
 			// Property: KubernetesNetworkConfig
@@ -151,8 +167,20 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "additionalProperties": false,
 			//   "description": "The Kubernetes network configuration for the cluster.",
 			//   "properties": {
+			//     "IpFamily": {
+			//       "description": "Ipv4 or Ipv6, Ipv6 is only supported on cluster with k8s version 1.21",
+			//       "enum": [
+			//         "ipv4",
+			//         "ipv6"
+			//       ],
+			//       "type": "string"
+			//     },
 			//     "ServiceIpv4Cidr": {
 			//       "description": "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. ",
+			//       "type": "string"
+			//     },
+			//     "ServiceIpv6Cidr": {
+			//       "description": "The CIDR block to assign Kubernetes service IP addresses from.",
 			//       "type": "string"
 			//     }
 			//   },
@@ -161,17 +189,39 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The Kubernetes network configuration for the cluster.",
 			Attributes: tfsdk.SingleNestedAttributes(
 				map[string]tfsdk.Attribute{
+					"ip_family": {
+						// Property: IpFamily
+						Description: "Ipv4 or Ipv6, Ipv6 is only supported on cluster with k8s version 1.21",
+						Type:        types.StringType,
+						Optional:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringInSlice([]string{
+								"ipv4",
+								"ipv6",
+							}),
+						},
+					},
 					"service_ipv_4_cidr": {
 						// Property: ServiceIpv4Cidr
 						Description: "The CIDR block to assign Kubernetes service IP addresses from. If you don't specify a block, Kubernetes assigns addresses from either the 10.100.0.0/16 or 172.20.0.0/16 CIDR blocks. We recommend that you specify a block that does not overlap with resources in other networks that are peered or connected to your VPC. ",
 						Type:        types.StringType,
 						Optional:    true,
 					},
+					"service_ipv_6_cidr": {
+						// Property: ServiceIpv6Cidr
+						Description: "The CIDR block to assign Kubernetes service IP addresses from.",
+						Type:        types.StringType,
+						Computed:    true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							tfsdk.UseStateForUnknown(),
+						},
+					},
 				},
 			),
 			Optional: true,
 			Computed: true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
 		},
@@ -266,7 +316,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The unique name to give to your cluster.",
 			//   "maxLength": 100,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[0-9A-Za-z][A-Za-z0-9\\-_]*",
 			//   "type": "string"
 			// }
 			Description: "The unique name to give to your cluster.",
@@ -277,6 +327,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				validate.StringLenBetween(1, 100),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
 		},
@@ -290,6 +341,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The issuer URL for the cluster's OIDC identity provider, such as https://oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED539D4633E53DE1B716D3041E. If you need to remove https:// from this output value, you can include the following code in your template.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"resources_vpc_config": {
 			// Property: ResourcesVpcConfig
@@ -371,6 +425,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Computed:    true,
 						PlanModifiers: []tfsdk.AttributePlanModifier{
 							Multiset(),
+							tfsdk.UseStateForUnknown(),
 							tfsdk.RequiresReplace(),
 						},
 					},
@@ -465,7 +520,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.",
-			//   "pattern": "",
+			//   "pattern": "1\\.\\d\\d",
 			//   "type": "string"
 			// }
 			Description: "The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.",
@@ -478,6 +533,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{
@@ -502,6 +560,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"endpoint":                   "Endpoint",
 		"endpoint_private_access":    "EndpointPrivateAccess",
 		"endpoint_public_access":     "EndpointPublicAccess",
+		"ip_family":                  "IpFamily",
 		"key":                        "Key",
 		"key_arn":                    "KeyArn",
 		"kubernetes_network_config":  "KubernetesNetworkConfig",
@@ -515,6 +574,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"role_arn":                   "RoleArn",
 		"security_group_ids":         "SecurityGroupIds",
 		"service_ipv_4_cidr":         "ServiceIpv4Cidr",
+		"service_ipv_6_cidr":         "ServiceIpv6Cidr",
 		"subnet_ids":                 "SubnetIds",
 		"tags":                       "Tags",
 		"type":                       "Type",

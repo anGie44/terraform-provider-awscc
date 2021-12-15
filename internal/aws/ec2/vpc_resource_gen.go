@@ -50,6 +50,7 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
+				tfsdk.UseStateForUnknown(),
 			},
 		},
 		"default_network_acl": {
@@ -63,6 +64,9 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The default network ACL ID that is associated with the VPC.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"default_security_group": {
 			// Property: DefaultSecurityGroup
@@ -75,6 +79,9 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The default security group ID that is associated with the VPC.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"enable_dns_hostnames": {
 			// Property: EnableDnsHostnames
@@ -97,17 +104,6 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "Indicates whether the DNS resolution is supported for the VPC. If enabled, queries to the Amazon provided DNS server at the 169.254.169.253 IP address, or the reserved IP address at the base of the VPC network range \"plus two\" succeed. If disabled, the Amazon provided DNS service in the VPC that resolves public DNS hostnames to IP addresses is not enabled. Enabled by default.",
 			Type:        types.BoolType,
 			Optional:    true,
-		},
-		"id": {
-			// Property: Id
-			// CloudFormation resource type schema:
-			// {
-			//   "description": "The Id for the model.",
-			//   "type": "string"
-			// }
-			Description: "The Id for the model.",
-			Type:        types.StringType,
-			Computed:    true,
 		},
 		"instance_tenancy": {
 			// Property: InstanceTenancy
@@ -137,6 +133,7 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
+				tfsdk.UseStateForUnknown(),
 			},
 		},
 		"tags": {
@@ -185,6 +182,29 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				Multiset(),
 			},
 		},
+		"vpc_id": {
+			// Property: VpcId
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "The Id for the model.",
+			//   "type": "string"
+			// }
+			Description: "The Id for the model.",
+			Type:        types.StringType,
+			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
+		},
+	}
+
+	attributes["id"] = tfsdk.Attribute{
+		Description: "Uniquely identifies the resource.",
+		Type:        types.StringType,
+		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{
@@ -197,7 +217,7 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 
 	opts = opts.WithCloudFormationTypeName("AWS::EC2::VPC").WithTerraformTypeName("awscc_ec2_vpc")
 	opts = opts.WithTerraformSchema(schema)
-	opts = opts.WithSyntheticIDAttribute(false)
+	opts = opts.WithSyntheticIDAttribute(true)
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"cidr_block":              "CidrBlock",
 		"cidr_block_associations": "CidrBlockAssociations",
@@ -205,12 +225,12 @@ func vPCResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"default_security_group":  "DefaultSecurityGroup",
 		"enable_dns_hostnames":    "EnableDnsHostnames",
 		"enable_dns_support":      "EnableDnsSupport",
-		"id":                      "Id",
 		"instance_tenancy":        "InstanceTenancy",
 		"ipv_6_cidr_blocks":       "Ipv6CidrBlocks",
 		"key":                     "Key",
 		"tags":                    "Tags",
 		"value":                   "Value",
+		"vpc_id":                  "VpcId",
 	})
 
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)

@@ -45,6 +45,21 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			Type:        types.StringType,
 			Computed:    true,
 		},
+		"guardrail_policies": {
+			// Property: GuardrailPolicies
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+			//   "items": {
+			//     "pattern": "",
+			//     "type": "string"
+			//   },
+			//   "type": "array"
+			// }
+			Description: "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+			Type:        types.ListType{ElemType: types.StringType},
+			Computed:    true,
+		},
 		"iam_role_arn": {
 			// Property: IamRoleArn
 			// CloudFormation resource type schema:
@@ -112,6 +127,18 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			Type:        types.ListType{ElemType: types.StringType},
 			Computed:    true,
 		},
+		"user_role_required": {
+			// Property: UserRoleRequired
+			// CloudFormation resource type schema:
+			// {
+			//   "default": false,
+			//   "description": "Enables use of a user role requirement in your chat configuration",
+			//   "type": "boolean"
+			// }
+			Description: "Enables use of a user role requirement in your chat configuration",
+			Type:        types.BoolType,
+			Computed:    true,
+		},
 	}
 
 	attributes["id"] = tfsdk.Attribute{
@@ -133,11 +160,13 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"arn":                "Arn",
 		"configuration_name": "ConfigurationName",
+		"guardrail_policies": "GuardrailPolicies",
 		"iam_role_arn":       "IamRoleArn",
 		"logging_level":      "LoggingLevel",
 		"slack_channel_id":   "SlackChannelId",
 		"slack_workspace_id": "SlackWorkspaceId",
 		"sns_topic_arns":     "SnsTopicArns",
+		"user_role_required": "UserRoleRequired",
 	})
 
 	singularDataSourceType, err := NewSingularDataSourceType(ctx, opts...)

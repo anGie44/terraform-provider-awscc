@@ -155,6 +155,33 @@ func stackSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				validate.StringLenBetween(1, 64),
 			},
 		},
+		"managed_execution": {
+			// Property: ManagedExecution
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.",
+			//   "properties": {
+			//     "Active": {
+			//       "description": "When true, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.",
+			//       "type": "boolean"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Description: "Describes whether StackSets performs non-conflicting operations concurrently and queues conflicting operations.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"active": {
+						// Property: Active
+						Description: "When true, StackSets performs non-conflicting operations concurrently and queues conflicting operations. After conflicting operations finish, StackSets starts queued operations in request order.",
+						Type:        types.BoolType,
+						Optional:    true,
+					},
+				},
+			),
+			Optional: true,
+		},
 		"operation_preferences": {
 			// Property: OperationPreferences
 			// CloudFormation resource type schema:
@@ -487,6 +514,9 @@ func stackSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The ID of the stack set that you're creating.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"stack_set_name": {
 			// Property: StackSetName
@@ -609,6 +639,9 @@ func stackSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{
@@ -624,6 +657,7 @@ func stackSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithSyntheticIDAttribute(true)
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"accounts":                         "Accounts",
+		"active":                           "Active",
 		"administration_role_arn":          "AdministrationRoleARN",
 		"auto_deployment":                  "AutoDeployment",
 		"call_as":                          "CallAs",
@@ -635,6 +669,7 @@ func stackSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"failure_tolerance_count":          "FailureToleranceCount",
 		"failure_tolerance_percentage":     "FailureTolerancePercentage",
 		"key":                              "Key",
+		"managed_execution":                "ManagedExecution",
 		"max_concurrent_count":             "MaxConcurrentCount",
 		"max_concurrent_percentage":        "MaxConcurrentPercentage",
 		"operation_preferences":            "OperationPreferences",

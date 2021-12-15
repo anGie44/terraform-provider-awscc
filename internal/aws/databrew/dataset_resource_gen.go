@@ -255,6 +255,10 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "description": "Glue connection name",
 			//           "type": "string"
 			//         },
+			//         "QueryString": {
+			//           "description": "Custom SQL to run against the provided AWS Glue connection. This SQL will be used as the input for DataBrew projects and jobs.",
+			//           "type": "string"
+			//         },
 			//         "TempDirectory": {
 			//           "additionalProperties": false,
 			//           "description": "Input location",
@@ -270,6 +274,19 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "Bucket"
 			//           ],
 			//           "type": "object"
+			//         }
+			//       },
+			//       "required": [
+			//         "GlueConnectionName"
+			//       ],
+			//       "type": "object"
+			//     },
+			//     "Metadata": {
+			//       "additionalProperties": false,
+			//       "properties": {
+			//         "SourceArn": {
+			//           "description": "Arn of the source of the dataset. For e.g.: AppFlow Flow ARN.",
+			//           "type": "string"
 			//         }
 			//       },
 			//       "type": "object"
@@ -355,6 +372,12 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									// Property: GlueConnectionName
 									Description: "Glue connection name",
 									Type:        types.StringType,
+									Required:    true,
+								},
+								"query_string": {
+									// Property: QueryString
+									Description: "Custom SQL to run against the provided AWS Glue connection. This SQL will be used as the input for DataBrew projects and jobs.",
+									Type:        types.StringType,
 									Optional:    true,
 								},
 								"temp_directory": {
@@ -375,6 +398,20 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 										},
 									),
 									Optional: true,
+								},
+							},
+						),
+						Optional: true,
+					},
+					"metadata": {
+						// Property: Metadata
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"source_arn": {
+									// Property: SourceArn
+									Description: "Arn of the source of the dataset. For e.g.: AppFlow Flow ARN.",
+									Type:        types.StringType,
+									Optional:    true,
 								},
 							},
 						),
@@ -900,6 +937,7 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed: true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
+				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
 		},
@@ -909,6 +947,9 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{
@@ -948,6 +989,7 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"last_modified_date_condition":  "LastModifiedDateCondition",
 		"locale_code":                   "LocaleCode",
 		"max_files":                     "MaxFiles",
+		"metadata":                      "Metadata",
 		"multi_line":                    "MultiLine",
 		"name":                          "Name",
 		"order":                         "Order",
@@ -955,9 +997,11 @@ func datasetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"parameters":                    "Parameters",
 		"path_options":                  "PathOptions",
 		"path_parameter_name":           "PathParameterName",
+		"query_string":                  "QueryString",
 		"s3_input_definition":           "S3InputDefinition",
 		"sheet_indexes":                 "SheetIndexes",
 		"sheet_names":                   "SheetNames",
+		"source_arn":                    "SourceArn",
 		"table_name":                    "TableName",
 		"tags":                          "Tags",
 		"temp_directory":                "TempDirectory",

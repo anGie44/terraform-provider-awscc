@@ -31,6 +31,9 @@ func ruleGroupsNamespaceResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			Description: "The RuleGroupsNamespace ARN.",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"data": {
 			// Property: Data
@@ -54,8 +57,7 @@ func ruleGroupsNamespaceResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			// }
 			Description: "The RuleGroupsNamespace name.",
 			Type:        types.StringType,
-			Optional:    true,
-			Computed:    true,
+			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 64),
 			},
@@ -139,6 +141,9 @@ func ruleGroupsNamespaceResourceType(ctx context.Context) (tfsdk.ResourceType, e
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{

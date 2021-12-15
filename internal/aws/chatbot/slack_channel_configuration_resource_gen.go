@@ -31,6 +31,9 @@ func slackChannelConfigurationResourceType(ctx context.Context) (tfsdk.ResourceT
 			Description: "Amazon Resource Name (ARN) of the configuration",
 			Type:        types.StringType,
 			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+			},
 		},
 		"configuration_name": {
 			// Property: ConfigurationName
@@ -51,6 +54,21 @@ func slackChannelConfigurationResourceType(ctx context.Context) (tfsdk.ResourceT
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
 			},
+		},
+		"guardrail_policies": {
+			// Property: GuardrailPolicies
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+			//   "items": {
+			//     "pattern": "",
+			//     "type": "string"
+			//   },
+			//   "type": "array"
+			// }
+			Description: "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+			Type:        types.ListType{ElemType: types.StringType},
+			Optional:    true,
 		},
 		"iam_role_arn": {
 			// Property: IamRoleArn
@@ -79,6 +97,7 @@ func slackChannelConfigurationResourceType(ctx context.Context) (tfsdk.ResourceT
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				DefaultValue(types.String{Value: "NONE"}),
+				tfsdk.UseStateForUnknown(),
 			},
 		},
 		"slack_channel_id": {
@@ -132,12 +151,32 @@ func slackChannelConfigurationResourceType(ctx context.Context) (tfsdk.ResourceT
 			Type:        types.ListType{ElemType: types.StringType},
 			Optional:    true,
 		},
+		"user_role_required": {
+			// Property: UserRoleRequired
+			// CloudFormation resource type schema:
+			// {
+			//   "default": false,
+			//   "description": "Enables use of a user role requirement in your chat configuration",
+			//   "type": "boolean"
+			// }
+			Description: "Enables use of a user role requirement in your chat configuration",
+			Type:        types.BoolType,
+			Optional:    true,
+			Computed:    true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				DefaultValue(types.Bool{Value: false}),
+				tfsdk.UseStateForUnknown(),
+			},
+		},
 	}
 
 	attributes["id"] = tfsdk.Attribute{
 		Description: "Uniquely identifies the resource.",
 		Type:        types.StringType,
 		Computed:    true,
+		PlanModifiers: []tfsdk.AttributePlanModifier{
+			tfsdk.UseStateForUnknown(),
+		},
 	}
 
 	schema := tfsdk.Schema{
@@ -154,11 +193,13 @@ func slackChannelConfigurationResourceType(ctx context.Context) (tfsdk.ResourceT
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"arn":                "Arn",
 		"configuration_name": "ConfigurationName",
+		"guardrail_policies": "GuardrailPolicies",
 		"iam_role_arn":       "IamRoleArn",
 		"logging_level":      "LoggingLevel",
 		"slack_channel_id":   "SlackChannelId",
 		"slack_workspace_id": "SlackWorkspaceId",
 		"sns_topic_arns":     "SnsTopicArns",
+		"user_role_required": "UserRoleRequired",
 	})
 
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)
