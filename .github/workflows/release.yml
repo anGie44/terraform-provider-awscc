@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-      - if: ${{ !github.events.inputs.release-version }}
+      - if: ${{ !github.event.inputs.release-version }}
         name: Get next tag
         id: tag
         run: |
@@ -27,7 +27,7 @@ jobs:
                         printf("%s.%01d.%s\n\n", $1, $2, $3);
                     }')
           echo ::set-output name=new_release_tag::$NEW_RELEASE_TAG
-      - if: github.events.inputs.release-version
+      - if: github.event.inputs.release-version
         name: Create tag from input
         uses: actions/github-script@v5
         with:
