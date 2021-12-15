@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
-      - if: ${{ inputs.release-version == "" }}
+      - if: ${{ inputs.release-version == '' }}
         name: Get next tag
         id: tag
         run: |
