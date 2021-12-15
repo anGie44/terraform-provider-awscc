@@ -1,4 +1,9 @@
 ## 0.9.0 (Unreleased)
+
+BUG FIXES: 
+
+* THis is a test
+
 ## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (December 15, 2021)
 
 BUG FIXES:
