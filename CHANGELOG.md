@@ -1,4 +1,5 @@
-## 0.11.1 (Unreleased)
+## 0.12.0 (Unreleased)
+## [0.11.1](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.11.1) (December 15, 2021)
 
 * Point release test
 
