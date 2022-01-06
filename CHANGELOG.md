@@ -1,29 +1,90 @@
-## .1.0 (Unreleased)
-## 0.12.0[](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/) (December 15, 2021)
+## 0.10.0 (Unreleased)
 
-* Test
+BUG FIXES:
 
-## [0.11.1](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.11.1) (December 15, 2021)
+* Prevent errors like `Unable to set Terraform State Unknown values from Cloud Control API Properties.` during `terraform apply` ([#331](https://github.com/hashicorp/terraform-provider-awscc/issues/331))
 
-* Point release test
+## [0.9.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.9.0) (December 16, 2021)
 
-## [0.11.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.11.0) (December 15, 2021)
+FEATURES:
 
-* Test
-
-## [0.10.1](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.9.0) (December 15, 2021)
-
-BUG FIXES: 
-
-* THis is a test
-
-## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (December 15, 2021)
+* **New Data Source:** `awscc_apigateway_deployment`
+* **New Data Source:** `awscc_appsync_domain_name`
+* **New Data Source:** `awscc_appsync_domain_name_api_association`
+* **New Data Source:** `awscc_lex_bot`
+* **New Data Source:** `awscc_lex_bot_alias`
+* **New Data Source:** `awscc_lex_bot_version`
+* **New Data Source:** `awscc_lex_bots`
+* **New Data Source:** `awscc_lex_resource_policy`
+* **New Resource:** `awscc_apigateway_deployment`
+* **New Resource:** `awscc_appsync_domain_name`
+* **New Resource:** `awscc_appsync_domain_name_api_association`
+* **New Resource:** `awscc_lex_bot`
+* **New Resource:** `awscc_lex_bot_alias`
+* **New Resource:** `awscc_lex_bot_version`
+* **New Resource:** `awscc_lex_resource_policy`
 
 BUG FIXES:
 
 * provider: Ensure `darwin/arm64` platform is included in releases
 * Prevent `terraform plan` showing that a resource must be replaced immediately after creation ([#306](https://github.com/hashicorp/terraform-provider-awscc/issues/306))
 * Prevent errors like `An unexpected error was encountered trying to read an attribute from the state.` during resource read ([#306](https://github.com/hashicorp/terraform-provider-awscc/issues/306))
+
+## [0.8.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.8.0) (December  3, 2021)
+
+FEATURES:
+
+* **New Data Source:** `awscc_chatbot_slack_channel_configuration`
+* **New Data Source:** `awscc_chatbot_slack_channel_configurations`
+* **New Data Source:** `awscc_connect_contact_flow`
+* **New Data Source:** `awscc_connect_contact_flow_module`
+* **New Data Source:** `awscc_ec2_ipam`
+* **New Data Source:** `awscc_ec2_ipam_allocation`
+* **New Data Source:** `awscc_ec2_ipam_pool`
+* **New Data Source:** `awscc_ec2_ipam_pools`
+* **New Data Source:** `awscc_ec2_ipam_scope`
+* **New Data Source:** `awscc_ec2_ipam_scopes`
+* **New Data Source:** `awscc_ec2_ipams`
+* **New Data Source:** `awscc_ec2_vpc_endpoint`
+* **New Data Source:** `awscc_ec2_vpc_endpoints`
+* **New Data Source:** `awscc_evidently_experiment`
+* **New Data Source:** `awscc_evidently_feature`
+* **New Data Source:** `awscc_evidently_launch`
+* **New Data Source:** `awscc_evidently_project`
+* **New Data Source:** `awscc_refactorspaces_environment`
+* **New Data Source:** `awscc_refactorspaces_environments`
+* **New Data Source:** `awscc_refactorspaces_route`
+* **New Data Source:** `awscc_refactorspaces_service`
+* **New Data Source:** `awscc_resiliencehub_app`
+* **New Data Source:** `awscc_resiliencehub_apps`
+* **New Data Source:** `awscc_resiliencehub_resiliency_policies`
+* **New Data Source:** `awscc_resiliencehub_resiliency_policy`
+* **New Data Source:** `awscc_rum_app_monitor`
+* **New Data Source:** `awscc_rum_app_monitors`
+* **New Data Source:** `awscc_timestream_scheduled_queries`
+* **New Data Source:** `awscc_timestream_scheduled_query`
+* **New Data Source:** `awscc_transfer_workflow`
+* **New Data Source:** `awscc_transfer_workflows`
+* **New Resource:** `awscc_chatbot_slack_channel_configuration`
+* **New Resource:** `awscc_connect_contact_flow`
+* **New Resource:** `awscc_connect_contact_flow_module`
+* **New Resource:** `awscc_ec2_ipam`
+* **New Resource:** `awscc_ec2_ipam_allocation`
+* **New Resource:** `awscc_ec2_ipam_pool`
+* **New Resource:** `awscc_ec2_ipam_scope`
+* **New Resource:** `awscc_ec2_vpc_endpoint`
+* **New Resource:** `awscc_evidently_experiment`
+* **New Resource:** `awscc_evidently_feature`
+* **New Resource:** `awscc_evidently_launch`
+* **New Resource:** `awscc_evidently_project`
+* **New Resource:** `awscc_refactorspaces_environment`
+* **New Resource:** `awscc_refactorspaces_route`
+* **New Resource:** `awscc_refactorspaces_service`
+* **New Resource:** `awscc_resiliencehub_app`
+* **New Resource:** `awscc_resiliencehub_resiliency_policy`
+* **New Resource:** `awscc_rum_app_monitor`
+* **New Resource:** `awscc_timestream_scheduled_query`
+* **New Resource:** `awscc_transfer_workflow`
 
 ## [0.7.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.7.0) (November 18, 2021)
 
@@ -38,10 +99,6 @@ FEATURES:
 * **New Resource:** `awscc_appstream_application`
 * **New Resource:** `awscc_appstream_application_fleet_association`
 * **New Resource:** `awscc_databrew_ruleset`
-
-FEATURES:
-
-* This is a test
 
 ## [0.6.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.6.0) (November 11, 2021)
 
