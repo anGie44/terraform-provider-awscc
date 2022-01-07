@@ -1,0 +1,47 @@
+changesDir: .changelog
+unreleasedDir: unreleased
+headerPath: ""
+versionHeaderPath: ""
+changelogPath: CHANGELOG.md
+versionExt: md
+versionFormat: '## [{{.Version}}](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v{{.Version}}) ({{.Time.Format "January 2, 2006"}})'
+kindFormat: >-
+  
+  {{.Kind}}:
+changeFormat: >- 
+  * {{.Custom.Type}}{{.Custom.Name}}: {{.Body}} ([#{{.Custom.Issue}}](https://github.com/anGie44/terraform-provider-awscc/issues/{{.Custom.Issue}}))
+custom:
+- key: Issue
+  type: int
+  minInt: 1
+- key: Name
+  label: (Optional) Name of AWS resource or data-source
+  type: string
+kinds:
+- label: NOTES
+  additionalChoices:
+  - key: Type
+    label: Type affected by change
+    type: enum
+    enumOptions: [ 'data-source/', 'provider', 'resource/' ]
+- label: FEATURES
+  changeFormat: >-
+    * **New {{.Custom.FeatureType}}:** `{{.Custom.Name}}` (#{{.Custom.PullRequest}})(https://github.com/hashicorp/terraform-provider-aws/pull/{{.Custom.PullRequest}})
+  additionalChoices:
+  - key: FeatureType
+    label: Feature Type
+    type: enum
+    enumOptions: [ 'Data Source', 'Resource' ]
+- label: ENHANCEMENTS
+  additionalChoices:
+  - key: Type
+    label: Type affected by change
+    type: enum
+    enumOptions: ['data-source/', 'provider', 'resource/']
+- label: BUG FIXES
+  additionalChoices:
+  - key: Type
+    label: Type affected by change
+    type: enum
+    enumOptions: ['data-source/', 'provider', 'resource/']
+
