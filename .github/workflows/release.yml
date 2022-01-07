@@ -41,7 +41,7 @@ jobs:
         run: changie batch minor && changie merge
       - if: github.event.inputs.release-version
         name: generate with input
-        run: changie batch ${{ github.events.inputs.release-version }} && changie merge
+        run: changie batch ${{ github.event.inputs.release-version }} && changie merge
       - name: commit changelogs
         id: commit
         run: |
