@@ -1,8 +1,0 @@
-kind: BUG FIXES
-body: Prevent errors like `Unable to set Terraform State Unknown values from Cloud
-  Control API Properties.` during `terraform apply`
-time: 2022-01-06T21:54:29.423077-05:00
-custom:
-  Issue: "331"
-  Name: ""
-  Type: provider
