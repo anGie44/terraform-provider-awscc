@@ -1,0 +1,7 @@
+kind: FEATURES
+body: ""
+time: 2022-01-07T13:40:13.083713-05:00
+custom:
+  FeatureType: Resource
+  Issue: "101"
+  Name: awscc_example_resource

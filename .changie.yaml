@@ -26,7 +26,7 @@ kinds:
     enumOptions: [ 'data-source/', 'provider', 'resource/' ]
 - label: FEATURES
   changeFormat: >-
-    * **New {{.Custom.FeatureType}}:** `{{.Custom.Name}}` (#{{.Custom.PullRequest}})(https://github.com/hashicorp/terraform-provider-aws/pull/{{.Custom.PullRequest}})
+    * **New {{.Custom.FeatureType}}:** `{{.Custom.Name}}` ([#{{.Custom.Issue}}](https://github.com/anGie44/terraform-provider-awscc/issues/{{.Custom.Issue}}))
   additionalChoices:
   - key: FeatureType
     label: Feature Type
