@@ -52,8 +52,20 @@ jobs:
           git add CHANGELOG.md .changelog
           git commit -m "Update CHANGELOG.md before v$release release"
           git push
+  release-notes:
+    needs: [changelog-gen]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Generate Release Notes
+        run: sed 1,2d .changelog/${{ needs.changelog-gen.outputs.release-tag }}.md > release-notes.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: release-notes
+          path: release-notes.txt
+          retention-days: 1
   release:
-    needs: [go-version, changelog-gen]
+    needs: [go-version, changelog-gen, release-notes]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -62,10 +74,15 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ needs.go-version.outputs.version }}
+      - name: release notes download
+        uses: actions/download-artifact@v2
+        with:
+          name: release-notes
+          path: /tmp
       - name: goreleaser release
         uses: goreleaser/goreleaser-action@v2
         with:
-          args: --rm-dist --release-notes=.changelog/${{ needs.changelog-gen.outputs.release-tag }}.md --skip-validate
+          args: --rm-dist --release-notes=${{ steps.release-notes-download.outputs.download-path }}/release-notes.txt --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}

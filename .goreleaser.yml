@@ -43,39 +43,10 @@ checksum:
 #       - AWS_SECRET_ACCESS_KEY={{ .Env.AWS_SECRET_ACCESS_KEY }}
 #       - AWS_SESSION_TOKEN={{ .Env.AWS_SESSION_TOKEN }}
 release:
-  github:
-  prerelease: auto
   extra_files:
     - glob: '{{ .ProjectName }}_manifest.json'
       name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
   ids:
     - none
-# signs:
-#   # Default Signature file (i.e. terraform-provider-awscc_VERSION_SHA256SUMS.sig)
-#   - cmd: sh
-#     args:
-#     - -c
-#     - >-
-#       signore
-#       sign
-#       --dearmor
-#       --file ${artifact}
-#       --signer {{ .Env.SIGNER }}
-#       --out ${signature}
-#     artifacts: checksum
-#   # Signature file with GPG Public Key ID in filename (i.e. terraform-provider-awscc_VERSION_SHA256SUMS.7685B676.sig)
-#   - id: sig-with-gpg-public-key-id
-#     signature: ${artifact}.72D7468F.sig
-#     cmd: sh
-#     args:
-#     - -c
-#     - >-
-#       signore
-#       sign
-#       --dearmor
-#       --file ${artifact}
-#       --signer {{ .Env.SIGNER }}
-#       --out ${signature}
-#     artifacts: checksum
 snapshot:
   name_template: "{{ .Tag }}-next"
