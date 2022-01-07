@@ -43,6 +43,8 @@ checksum:
 #       - AWS_SECRET_ACCESS_KEY={{ .Env.AWS_SECRET_ACCESS_KEY }}
 #       - AWS_SESSION_TOKEN={{ .Env.AWS_SESSION_TOKEN }}
 release:
+  github:
+  prerelease: auto
   extra_files:
     - glob: '{{ .ProjectName }}_manifest.json'
       name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
