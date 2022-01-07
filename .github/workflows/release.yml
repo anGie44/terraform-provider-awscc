@@ -25,8 +25,8 @@ jobs:
     needs: [go-version]
     runs-on: ubuntu-latest
     outputs:
-      release-tag: ${{ steps.commit.outputs.release-tag }}
-      next-release-tag: ${{ steps.commit.outputs.next-release-tag }}
+      release-tag: ${{ steps.tags.outputs.release-tag }}
+      next-release-tag: ${{ steps.tags.outputs.next-release-tag }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -44,11 +44,11 @@ jobs:
         name: generate with input
         run: changie batch ${{ github.event.inputs.release-version }} && changie merge
       - name: Set release tag output
+        id: tags
         run: |
           echo "::set-output name=release-tag::$(changie latest)"
           echo "::set-output name=next-release-tag::$(changie next minor)"
       - name: commit changelogs
-        id: commit
         run: |
           if [[ `git status --porcelain` ]]; then
             git config --local user.email changelogbot@hashicorp.com
