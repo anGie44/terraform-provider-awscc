@@ -50,7 +50,7 @@ jobs:
           git config --local user.email changelogbot@hashicorp.com
           git config --local user.name changelogbot
           git add CHANGELOG.md .changelog
-          git commit -m "Update CHANGELOG.md for v$release"
+          git commit -m "Update CHANGELOG.md before v$release release"
           git push
   release:
     needs: [go-version, changelog-gen]
@@ -63,7 +63,7 @@ jobs:
       - name: goreleaser release
         uses: goreleaser/goreleaser-action@v2
         with:
-          args: --rm-dist --release-notes=changes/${{ needs.changelog-gen.outputs.release-tag }}.md --skip-validate --debug
+          args: --rm-dist --release-notes=.changelog/${{ needs.changelog-gen.outputs.release-tag }}.md --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}
