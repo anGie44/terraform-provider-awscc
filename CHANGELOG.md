@@ -2,8 +2,8 @@
 
 ## 0.11.0 (Unreleased)
 
-ENHANCEMENTS:
-* provider: Able to test PR changelog gen ([#5](https://github.com/anGie44/terraform-provider-awscc/issues/5))
+BUG FIXES:
+* provider: commit changelog only if changes exist ([#10](https://github.com/anGie44/terraform-provider-awscc/issues/10))
 
 ## [0.10.0](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v0.10.0) (January  7, 2022)
 
