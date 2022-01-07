@@ -1,0 +1,42 @@
+name: Generate CHANGELOG
+on:
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+jobs:
+  go-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.go-version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: go-version
+        run: echo "::set-output name=version::$(cat ./.go-version)"
+  GenerateChangelog:
+    needs: [go-version]
+    if: github.event.pull_request.merged || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ needs.go-version.outputs.version }}
+      - run: go get github.com/miniscruff/changie
+      - run: |
+          changie batch $(changie latest)
+          changie merge
+          
+          if [[ `git status --porcelain` ]]; then
+            if ${{github.event_name == 'workflow_dispatch'}}; then
+              MSG="Update CHANGELOG.md (Manual Trigger)"
+            else
+              MSG="Update CHANGELOG.md for #${{ github.event.pull_request.number }}"
+            fi
+            git config --local user.email changelogbot@hashicorp.com
+            git config --local user.name changelogbot
+            git add CHANGELOG.md .changelog
+            git commit -m "$MSG" 
+            git push
+          fi
