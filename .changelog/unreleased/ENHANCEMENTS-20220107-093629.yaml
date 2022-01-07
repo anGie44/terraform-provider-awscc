@@ -1,0 +1,7 @@
+kind: ENHANCEMENTS
+body: Able to test PR changelog gen
+time: 2022-01-07T09:36:29.50663-05:00
+custom:
+  Issue: "5"
+  Name: ""
+  Type: provider
