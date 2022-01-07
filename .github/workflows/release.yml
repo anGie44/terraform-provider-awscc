@@ -66,7 +66,7 @@ jobs:
           args: release --release-notes=changes/${{ needs.changelog-gen.outputs.release-tag }}.md --rm-dist --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_CURRENT_TAG: ${{ needs.changelog-gen.outputs.release-tag }}
+          GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}
   changelog:
     needs: [changelog-gen, release]
     runs-on: ubuntu-latest
