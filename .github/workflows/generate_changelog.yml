@@ -36,7 +36,8 @@ jobs:
             fi
             git config --local user.email changelogbot@hashicorp.com
             git config --local user.name changelogbot
-            git add CHANGELOG.md .changelog
+            # ignore files deleted after `changie batch`
+            git add CHANGELOG.md .changelog/$(changie latest).md
             git commit -m "$MSG" 
             git push
           fi
