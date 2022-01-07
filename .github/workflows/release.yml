@@ -10,7 +10,7 @@ on:
 
 permissions:
   contents: write
-
+  
 jobs:
   go-version:
     runs-on: ubuntu-latest
@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v2
       - id: go-version
         run: echo "::set-output name=version::$(cat ./.go-version)"
+  
   changelog-gen:
     needs: [go-version]
     runs-on: ubuntu-latest
@@ -41,18 +42,18 @@ jobs:
       - if: github.events.inputs.release-version
         name: generate with input
         run: changie batch ${{ github.events.inputs.release-version }} && changie merge
-     - name: commit changelogs
-       id: commit
-       run: |
-        release=$(changie latest)
-        echo "::set-output name=release-tag::$(changie latest)"
-        echo "::set-output name=next-release-tag::$(changie next minor)"
-         
-        git config --local user.email changelogbot@hashicorp.com
-        git config --local user.name changelogbot
-        git add CHANGELOG.md .changelog
-        git commit -m "Update CHANGELOG.md for $release"
-        git push
+      - name: commit changelogs
+        id: commit
+        run: |
+          release=$(changie latest)
+          echo "::set-output name=release-tag::$(changie latest)"
+          echo "::set-output name=next-release-tag::$(changie next minor)"
+
+          git config --local user.email changelogbot@hashicorp.com
+          git config --local user.name changelogbot
+          git add CHANGELOG.md .changelog
+          git commit -m "Update CHANGELOG.md for $release"
+          git push
   release:
     needs: [go-version, changelog-gen]
     runs-on: ubuntu-latest
