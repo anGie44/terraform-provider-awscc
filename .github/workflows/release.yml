@@ -43,18 +43,20 @@ jobs:
       - if: github.event.inputs.release-version
         name: generate with input
         run: changie batch ${{ github.event.inputs.release-version }} && changie merge
+      - name: Set release tag output
+        run: |
+          echo "::set-output name=release-tag::$(changie latest)"
+          echo "::set-output name=next-release-tag::$(changie next minor)"
       - name: commit changelogs
         id: commit
         run: |
-          release=$(changie latest)
-          echo "::set-output name=release-tag::$(changie latest)"
-          echo "::set-output name=next-release-tag::$(changie next minor)"
-
-          git config --local user.email changelogbot@hashicorp.com
-          git config --local user.name changelogbot
-          git add CHANGELOG.md .changelog
-          git commit -m "Update CHANGELOG.md before v$release release"
-          git push
+          if [[ `git status --porcelain` ]]; then
+            git config --local user.email changelogbot@hashicorp.com
+            git config --local user.name changelogbot
+            git add CHANGELOG.md .changelog
+            git commit -m "Update CHANGELOG.md before v$(changie latest) release"
+            git push
+          fi
   release-notes:
     needs: [changelog-gen]
     runs-on: ubuntu-latest
