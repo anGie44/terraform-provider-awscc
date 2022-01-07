@@ -7,6 +7,7 @@ on:
         description: '(Optional) Release Version e.g. 1.x.x'
         required: false
         type: string
+        
 permissions:
   contents: write
 
