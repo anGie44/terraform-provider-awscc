@@ -1,6 +1,5 @@
-
-
-## 0.11.0 (Unreleased)
+## 0.12.0 (Unreleased)
+## [0.11.0](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v0.11.0) (January  7, 2022)
 
 NOTES:
 * provider: This is a test ([#100](https://github.com/anGie44/terraform-provider-awscc/issues/100))
