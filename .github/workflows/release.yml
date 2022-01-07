@@ -35,11 +35,11 @@ jobs:
         with:
           go-version: ${{ needs.go-version.outputs.version }}
       - name: install changie
-        run: go get -u github.com/miniscruff/changie
+        run: go get github.com/miniscruff/changie
       - if: ${{ !github.event.inputs.release-version }}
         name: generate with changie
         run: changie batch minor && changie merge
-      - if: github.events.inputs.release-version
+      - if: github.event.inputs.release-version
         name: generate with input
         run: changie batch ${{ github.events.inputs.release-version }} && changie merge
       - name: commit changelogs
