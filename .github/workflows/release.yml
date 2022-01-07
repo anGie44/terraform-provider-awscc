@@ -29,8 +29,6 @@ jobs:
       next-release-tag: ${{ steps.commit.outputs.next-release-tag }}
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ needs.go-version.outputs.version }}
@@ -52,15 +50,13 @@ jobs:
           git config --local user.email changelogbot@hashicorp.com
           git config --local user.name changelogbot
           git add CHANGELOG.md .changelog
-          git commit -m "Update CHANGELOG.md for $release"
+          git commit -m "Update CHANGELOG.md for v$release"
           git push
   release:
     needs: [go-version, changelog-gen]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ needs.go-version.outputs.version }}
@@ -70,6 +66,7 @@ jobs:
           args: release --release-notes=changes/${{ needs.changelog-gen.outputs.release-tag }}.md --rm-dist --skip-validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_CURRENT_TAG: ${{ needs.changelog-gen.outputs.release-tag }}
   changelog:
     needs: [changelog-gen, release]
     runs-on: ubuntu-latest
