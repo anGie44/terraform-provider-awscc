@@ -95,13 +95,16 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}
   prep-next-release:
-    needs: [changelog-gen, release]
+    needs: [go-version, changelog-gen, release]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
           ref: main
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ needs.go-version.outputs.version }}
       - name: install changie
         run: go get github.com/miniscruff/changie
       - name: Update Changelog Header
