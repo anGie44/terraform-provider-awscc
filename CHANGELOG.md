@@ -5,6 +5,9 @@
 NOTES:
 * provider: This is a test ([#100](https://github.com/anGie44/terraform-provider-awscc/issues/100))
 
+FEATURES:
+* **New Resource:** `awscc_example_resource` ([#101](https://github.com/anGie44/terraform-provider-awscc/issues/101))
+
 BUG FIXES:
 * provider: commit changelog only if changes exist ([#10](https://github.com/anGie44/terraform-provider-awscc/issues/10))
 
