@@ -7,7 +7,7 @@ on:
         description: '(Optional) Release Version e.g. 1.x.x'
         required: false
         type: string
-        
+
 permissions:
   contents: write
 
@@ -23,10 +23,10 @@ jobs:
 
   changelog-gen:
     needs: [go-version]
+    runs-on: ubuntu-latest
     outputs:
       release-tag: ${{ steps.commit.outputs.release-tag }}
       next-release-tag: ${{ steps.commit.outputs.next-release-tag }}
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
