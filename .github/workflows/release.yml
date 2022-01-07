@@ -109,7 +109,7 @@ jobs:
           RELEASE_DATE=`date +%B' '%e', '%Y`
           TAG=${{ needs.changelog-gen.outputs.release-tag }}
           NEXT_TAG=${{ needs.changelog-gen.outputs.next-release-tag }}
-          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/anGie44\/${{ github.event.repository.name }}\/releases\/tag\/v$TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
+          sed -i -e "1,2d; s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/anGie44\/${{ github.event.repository.name }}\/releases\/tag\/v$TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
           echo -e "## $NEXT_TAG (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
       - run: |
           git config --local user.email changelogbot@hashicorp.com
