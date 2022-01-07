@@ -63,7 +63,7 @@ jobs:
       - name: goreleaser release
         uses: goreleaser/goreleaser-action@v2
         with:
-          args: release --release-notes=changes/${{ needs.changelog-gen.outputs.release-tag }}.md --rm-dist --skip-validate
+          args: --rm-dist --release-notes=changes/${{ needs.changelog-gen.outputs.release-tag }}.md --skip-validate --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}
