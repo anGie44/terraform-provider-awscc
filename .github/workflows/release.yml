@@ -81,7 +81,8 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ needs.go-version.outputs.version }}
-      - name: release notes download
+      - name: Release Notes Download
+        id: release-notes-download
         uses: actions/download-artifact@v2
         with:
           name: release-notes
@@ -105,8 +106,11 @@ jobs:
         id: changelog
         run: |
           CHANGELOG_FILE_NAME="CHANGELOG.md"
-          
-          echo -e "## ${{ needs.changelog-gen.outputs.next-release-tag }} (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
+          RELEASE_DATE=`date +%B' '%e', '%Y`
+          TAG=${{ needs.changelog-gen.outputs.release-tag }}
+          NEXT_TAG=${{ needs.changelog-gen.outputs.next-release-tag }}
+          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/anGie44\/${{ github.event.repository.name }}\/releases\/tag\/v$TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
+          echo -e "## $NEXT_TAG (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
       - run: |
           git config --local user.email changelogbot@hashicorp.com
           git config --local user.name changelogbot
