@@ -39,7 +39,7 @@ jobs:
         run: go get github.com/miniscruff/changie
       - if: ${{ !github.event.inputs.release-version }}
         name: generate with changie
-        run: changie batch minor && changie merge
+        run: changie batch $(changie latest) && changie merge
       - if: github.event.inputs.release-version
         name: generate with input
         run: changie batch ${{ github.event.inputs.release-version }} && changie merge
@@ -94,7 +94,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ needs.changelog-gen.outputs.release-tag }}
-  changelog:
+  prep-next-release:
     needs: [changelog-gen, release]
     runs-on: ubuntu-latest
     steps:
@@ -102,6 +102,8 @@ jobs:
         with:
           fetch-depth: 0
           ref: main
+      - name: install changie
+        run: go get github.com/miniscruff/changie
       - name: Update Changelog Header
         id: changelog
         run: |
@@ -115,6 +117,8 @@ jobs:
           echo -e "## $NEXT_TAG (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
           
           sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/anGie44\/${{ github.event.repository.name }}\/releases\/tag\/v$TAG) ($RELEASE_DATE)/" $RELEASE_SPECIFIC_CHANGELOG_FILE_NAME
+        
+          changie batch $NEXT_TAG
       - run: |
           git config --local user.email changelogbot@hashicorp.com
           git config --local user.name changelogbot
