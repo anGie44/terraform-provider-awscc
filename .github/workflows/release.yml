@@ -34,11 +34,13 @@ jobs:
         id: computed-tag
         run: |
           PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+          echo "PREVIOUS: ${PREVIOUS_RELEASE_TAG}"
           NEW_RELEASE_TAG=v$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
                         $1 = substr($1,2)
                         $2 += 1
                         printf("%s.%01d.0\n\n", $1, $2);
                     }')
+          echo "NEXT: ${NEW_RELEASE_TAG}"
           echo ::set-output name=tag::$NEW_RELEASE_TAG
       - if: ${{ !steps.input-tag.outputs.tag && !steps.computed-tag.outputs.tag }}
         run: |
