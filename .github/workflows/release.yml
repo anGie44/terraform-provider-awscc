@@ -40,7 +40,7 @@ jobs:
                         printf("%s.%01d.0\n\n", $1, $2);
                     }')
           echo ::set-output name=tag::$NEW_RELEASE_TAG
-      - if: ${{ !steps.input-tag.outputs.tag || !steps.computed-tag.outputs.tag }}
+      - if: ${{ !steps.input-tag.outputs.tag && !steps.computed-tag.outputs.tag }}
         run: |
           echo 'Unable to create new release tag from output of previous steps'
           exit 1
