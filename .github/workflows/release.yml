@@ -43,7 +43,7 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: "refs/tags/v${tag}",
+              ref: `refs/tags/v${tag}`,
               sha: context.sha
             })
       - if: steps.tag.outputs.new_release_tag
