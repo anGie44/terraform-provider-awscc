@@ -15,15 +15,23 @@ jobs:
   release-tag:
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ github.event.inputs.release-version || steps.tag.outputs.new_release_tag }}
+      tag: ${{ steps.input-tag.outputs.tag || steps.computed-tag.outputs.tag }}
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: main
+      - if: ${{ github.event.inputs.release-version }}
+        name: Get tag from input
+        id: input-tag
+        run: |
+          # Guard against extra leading 'v'
+          RELEASE_TAG=${{ github.event.inputs.release-version }}
+          RELEASE_TAG=v${RELEASE_TAG//v}
+          echo ::set-output name=tag::$RELEASE_TAG
       - if: ${{ !github.event.inputs.release-version }}
         name: Get next tag
-        id: tag
+        id: computed-tag
         run: |
           PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
           NEW_RELEASE_TAG=v$(echo $PREVIOUS_RELEASE_TAG | awk -F. '{
@@ -31,31 +39,21 @@ jobs:
                         $2 += 1
                         printf("%s.%01d.0\n\n", $1, $2);
                     }')
-          echo ::set-output name=new_release_tag::$NEW_RELEASE_TAG
-      - if: github.event.inputs.release-version
-        name: Create tag from input
+          echo ::set-output name=tag::$NEW_RELEASE_TAG
+      - if: ${{ !steps.input-tag.outputs.tag || !steps.computed-tag.outputs.tag }}
+        run: |
+          echo 'Unable to create new release tag from output of previous steps'
+          exit 1
+      - name: Create tag
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            // Strip any extra 'v' prefix
-            const tag = '${{ github.event.inputs.release-version }}'.replace(/^v+/,'')
+            const tag = '${{ steps.input-tag.outputs.tag || steps.computed-tag.outputs.tag }}'
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: `refs/tags/v${tag}`,
-              sha: context.sha
-            })
-      - if: steps.tag.outputs.new_release_tag
-        name: Create computed tag
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/${{ steps.tag.outputs.new_release_tag }}",
+              ref: `refs/tags/${tag}`,
               sha: context.sha
             })
   test-release:
