@@ -4,6 +4,7 @@ package ce
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -67,7 +68,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//   "insertionOrder": false,
 			//   "items": {
 			//     "description": "Subscription ARN",
-			//     "pattern": "",
+			//     "pattern": "^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$",
 			//     "type": "string"
 			//   },
 			//   "type": "array"
@@ -75,8 +76,80 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			Description: "A list of cost anomaly monitors.",
 			Type:        types.ListType{ElemType: types.StringType},
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$"), "")),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
+			},
+		},
+		"resource_tags": {
+			// Property: ResourceTags
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "Tags to assign to subscription.",
+			//   "insertionOrder": false,
+			//   "items": {
+			//     "additionalProperties": false,
+			//     "description": "A key-value pair to associate with a resource.",
+			//     "properties": {
+			//       "Key": {
+			//         "description": "The key name for the tag.",
+			//         "maxLength": 128,
+			//         "minLength": 1,
+			//         "pattern": "",
+			//         "type": "string"
+			//       },
+			//       "Value": {
+			//         "description": "The value for the tag.",
+			//         "maxLength": 256,
+			//         "minLength": 0,
+			//         "type": "string"
+			//       }
+			//     },
+			//     "required": [
+			//       "Key",
+			//       "Value"
+			//     ],
+			//     "type": "object"
+			//   },
+			//   "maxItems": 200,
+			//   "minItems": 0,
+			//   "type": "array"
+			// }
+			Description: "Tags to assign to subscription.",
+			Attributes: tfsdk.ListNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"key": {
+						// Property: Key
+						Description: "The key name for the tag.",
+						Type:        types.StringType,
+						Required:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringLenBetween(1, 128),
+						},
+					},
+					"value": {
+						// Property: Value
+						Description: "The value for the tag.",
+						Type:        types.StringType,
+						Required:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringLenBetween(0, 256),
+						},
+					},
+				},
+				tfsdk.ListNestedAttributesOptions{},
+			),
+			Optional: true,
+			Computed: true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.ArrayLenBetween(0, 200),
+			},
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				Multiset(),
+				tfsdk.UseStateForUnknown(),
+				tfsdk.RequiresReplace(),
 			},
 		},
 		"subscribers": {
@@ -89,7 +162,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "Address": {
-			//         "pattern": "",
+			//         "pattern": "(^[a-zA-Z0-9.!#$%\u0026'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)",
 			//         "type": "string"
 			//       },
 			//       "Status": {
@@ -122,6 +195,9 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 						// Property: Address
 						Type:     types.StringType,
 						Required: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("(^[a-zA-Z0-9.!#$%&'*+=?^_‘{|}~-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$)|(^arn:(aws[a-zA-Z-]*):sns:[a-zA-Z0-9-]+:[0-9]{12}:[a-zA-Z0-9_-]+(\\.fifo)?$)"), ""),
+						},
 					},
 					"status": {
 						// Property: Status
@@ -158,7 +234,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Subscription ARN",
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[-a-z0-9]*:[a-z0-9]+:[-a-z0-9]*:[0-9]{12}:[-a-zA-Z0-9/:_]+$",
 			//   "type": "string"
 			// }
 			Description: "Subscription ARN",
@@ -175,7 +251,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//   "description": "The name of the subscription.",
 			//   "maxLength": 1024,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "[\\S\\s]*",
 			//   "type": "string"
 			// }
 			Description: "The name of the subscription.",
@@ -183,6 +259,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 1024),
+				validate.StringMatch(regexp.MustCompile("[\\S\\s]*"), ""),
 			},
 		},
 		"threshold": {
@@ -194,7 +271,7 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//   "type": "number"
 			// }
 			Description: "The dollar value that triggers a notification if the threshold is exceeded. ",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.FloatAtLeast(0.000000),
@@ -226,13 +303,16 @@ func anomalySubscriptionResourceType(ctx context.Context) (tfsdk.ResourceType, e
 		"account_id":        "AccountId",
 		"address":           "Address",
 		"frequency":         "Frequency",
+		"key":               "Key",
 		"monitor_arn_list":  "MonitorArnList",
+		"resource_tags":     "ResourceTags",
 		"status":            "Status",
 		"subscribers":       "Subscribers",
 		"subscription_arn":  "SubscriptionArn",
 		"subscription_name": "SubscriptionName",
 		"threshold":         "Threshold",
 		"type":              "Type",
+		"value":             "Value",
 	})
 
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)

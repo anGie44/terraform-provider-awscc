@@ -37,7 +37,7 @@
             "description": "A name for the bucket. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
             "maxLength": 63,
             "minLength": 3,
-            "pattern": "",
+            "pattern": "^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$",
             "type": "string"
         },
         "CorsConfiguration": {
@@ -600,6 +600,9 @@
                 "NoncurrentVersionExpirationInDays": {
                     "type": "integer"
                 },
+                "NoncurrentVersionExpiration": {
+                    "$ref": "#/definitions/NoncurrentVersionExpiration"
+                },
                 "NoncurrentVersionTransition": {
                     "$ref": "#/definitions/NoncurrentVersionTransition"
                 },
@@ -628,6 +631,16 @@
                     "items": {
                         "$ref": "#/definitions/TagFilter"
                     }
+                },
+                "ObjectSizeGreaterThan": {
+                    "type":"string",
+                    "maxLength": 20,
+                    "pattern": "[0-9]+"
+                },
+                "ObjectSizeLessThan": {
+                    "type":"string",
+                    "maxLength": 20,
+                    "pattern": "[0-9]+"
                 },
                 "Transition": {
                     "$ref": "#/definitions/Transition"
@@ -663,7 +676,25 @@
         "iso8601UTC": {
             "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
             "type": "string",
-            "pattern": ""
+            "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"
+        },
+        "NoncurrentVersionExpiration": {
+            "type": "object",
+            "description": "Container for the expiration rule that describes when noncurrent objects are expired. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 expire noncurrent object versions at a specific period in the object's lifetime",
+            "additionalProperties": false,
+            "properties": {
+                "NoncurrentDays": {
+                    "description": "Specified the number of days an object is noncurrent before Amazon S3 can perform the associated action",
+                    "type": "integer"
+                },
+                "NewerNoncurrentVersions": {
+                    "description": "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+                    "type": "integer"
+                }
+            },
+            "required": [
+                "NoncurrentDays"
+            ]
         },
         "NoncurrentVersionTransition": {
             "type": "object",
@@ -685,6 +716,10 @@
                 },
                 "TransitionInDays": {
                     "description": "Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action.",
+                    "type": "integer"
+                },
+                "NewerNoncurrentVersions": {
+                    "description": "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
                     "type": "integer"
                 }
             },
@@ -768,6 +803,9 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "EventBridgeConfiguration": {
+                    "$ref": "#/definitions/EventBridgeConfiguration"
+                },
                 "LambdaConfigurations": {
                     "type": "array",
                     "uniqueItems": true,
@@ -793,6 +831,21 @@
                     }
                 }
             }
+        },
+        "EventBridgeConfiguration": {
+            "type": "object",
+            "description": "Describes the Amazon EventBridge notification configuration for an Amazon S3 bucket.",
+            "additionalProperties": false,
+            "properties": {
+                "EventBridgeEnabled": {
+                    "description": "Specifies whether to send notifications to Amazon EventBridge when events occur in an Amazon S3 bucket.",
+                    "type": "boolean",
+                    "default": "true"
+                }
+            },
+            "required": [
+                "EventBridgeEnabled"
+            ]
         },
         "LambdaConfiguration": {
             "type": "object",
@@ -983,7 +1036,8 @@
                     "type": "string",
                     "enum": [
                         "ObjectWriter",
-                        "BucketOwnerPreferred"
+                        "BucketOwnerPreferred",
+                        "BucketOwnerEnforced"
                     ]
                 }
             }
@@ -1307,14 +1361,12 @@
                 "Key": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 127,
-                    "pattern": ""
+                    "maxLength": 128
                 },
                 "Value": {
                     "type": "string",
                     "minLength": 1,
-                    "maxLength": 255,
-                    "pattern": ""
+                    "maxLength": 256
                 }
             },
             "required": [

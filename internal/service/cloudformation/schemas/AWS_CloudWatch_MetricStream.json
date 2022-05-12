@@ -68,6 +68,15 @@
             "minLength": 1,
             "maxLength": 255
         },
+        "StatisticsConfigurations": {
+            "description": "By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT statistics for each metric that is streamed. You can use this parameter to have the metric stream also send additional statistics in the stream. This array can have up to 100 members.",
+            "type": "array",
+            "maxItems": 100,
+            "uniqueItems": true,
+            "items": {
+                "$ref": "#/definitions/MetricStreamStatisticsConfiguration"
+            }
+        },
         "Tags": {
             "description": "A set of tags to assign to the delivery stream.",
             "type": "array",
@@ -92,6 +101,58 @@
                 }
             },
             "required": ["Namespace"]
+        },
+        "MetricStreamStatisticsConfiguration": {
+            "description": "This structure specifies a list of additional statistics to stream, and the metrics to stream those additional statistics for. All metrics that match the combination of metric name and namespace will be streamed with the extended statistics, no matter their dimensions.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "AdditionalStatistics": {
+                    "description": "The additional statistics to stream for the metrics listed in IncludeMetrics.",
+                    "type": "array",
+                    "maxItems": 20,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "IncludeMetrics": {
+                    "description": "An array that defines the metrics that are to have additional statistics streamed.",
+                    "type": "array",
+                    "maxItems": 100,
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/definitions/MetricStreamStatisticsMetric"
+                    }
+                }
+            },
+            "required": [
+                "AdditionalStatistics",
+                "IncludeMetrics"
+            ]
+        },
+        "MetricStreamStatisticsMetric": {
+            "description": "A structure that specifies the metric name and namespace for one metric that is going to have additional statistics included in the stream.",
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "MetricName": {
+                    "description": "The name of the metric.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                },
+                "Namespace": {
+                    "description": "The namespace of the metric.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                }
+            },
+            "required": [
+                "MetricName",
+                "Namespace"
+            ]
         },
         "Tag": {
             "description": "Metadata that you can assign to a Metric Stream, consisting of a key-value pair.",

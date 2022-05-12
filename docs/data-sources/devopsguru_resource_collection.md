@@ -17,25 +17,35 @@ Data Source schema for AWS::DevOpsGuru::ResourceCollection
 
 ### Required
 
-- **id** (String) Uniquely identifies the resource.
+- `id` (String) Uniquely identifies the resource.
 
 ### Read-Only
 
-- **resource_collection_filter** (Attributes) Information about a filter used to specify which AWS resources are analyzed for anomalous behavior by DevOps Guru. (see [below for nested schema](#nestedatt--resource_collection_filter))
-- **resource_collection_type** (String) The type of ResourceCollection
+- `resource_collection_filter` (Attributes) Information about a filter used to specify which AWS resources are analyzed for anomalous behavior by DevOps Guru. (see [below for nested schema](#nestedatt--resource_collection_filter))
+- `resource_collection_type` (String) The type of ResourceCollection
 
 <a id="nestedatt--resource_collection_filter"></a>
 ### Nested Schema for `resource_collection_filter`
 
 Read-Only:
 
-- **cloudformation** (Attributes) CloudFormation resource for DevOps Guru to monitor (see [below for nested schema](#nestedatt--resource_collection_filter--cloudformation))
+- `cloudformation` (Attributes) CloudFormation resource for DevOps Guru to monitor (see [below for nested schema](#nestedatt--resource_collection_filter--cloudformation))
+- `tags` (Attributes List) Tagged resources for DevOps Guru to monitor (see [below for nested schema](#nestedatt--resource_collection_filter--tags))
 
 <a id="nestedatt--resource_collection_filter--cloudformation"></a>
 ### Nested Schema for `resource_collection_filter.cloudformation`
 
 Read-Only:
 
-- **stack_names** (List of String) An array of CloudFormation stack names.
+- `stack_names` (List of String) An array of CloudFormation stack names.
+
+
+<a id="nestedatt--resource_collection_filter--tags"></a>
+### Nested Schema for `resource_collection_filter.tags`
+
+Read-Only:
+
+- `app_boundary_key` (String) A Tag key for DevOps Guru app boundary.
+- `tag_values` (List of String) Tag values of DevOps Guru app boundary.
 
 

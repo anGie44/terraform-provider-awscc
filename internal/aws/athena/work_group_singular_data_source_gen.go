@@ -48,7 +48,7 @@ func workGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) 
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The workGroup name.",
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9._-]{1,128}",
 			//   "type": "string"
 			// }
 			Description: "The workGroup name.",
@@ -210,7 +210,7 @@ func workGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) 
 					"bytes_scanned_cutoff_per_query": {
 						// Property: BytesScannedCutoffPerQuery
 						Description: "The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"enforce_work_group_configuration": {
@@ -385,7 +385,7 @@ func workGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) 
 					"bytes_scanned_cutoff_per_query": {
 						// Property: BytesScannedCutoffPerQuery
 						Description: "The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"enforce_work_group_configuration": {

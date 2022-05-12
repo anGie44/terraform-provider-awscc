@@ -4,6 +4,7 @@ package kendra
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -32,6 +33,628 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 			},
+		},
+		"custom_document_enrichment_configuration": {
+			// Property: CustomDocumentEnrichmentConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "properties": {
+			//     "InlineConfigurations": {
+			//       "description": "List of InlineCustomDocumentEnrichmentConfigurations",
+			//       "items": {
+			//         "additionalProperties": false,
+			//         "properties": {
+			//           "Condition": {
+			//             "additionalProperties": false,
+			//             "properties": {
+			//               "ConditionDocumentAttributeKey": {
+			//                 "maxLength": 200,
+			//                 "minLength": 1,
+			//                 "pattern": "[a-zA-Z0-9_][a-zA-Z0-9_-]*",
+			//                 "type": "string"
+			//               },
+			//               "ConditionOnValue": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "DateValue": {
+			//                     "type": "string"
+			//                   },
+			//                   "LongValue": {
+			//                     "format": "int64",
+			//                     "type": "integer"
+			//                   },
+			//                   "StringListValue": {
+			//                     "items": {
+			//                       "type": "string"
+			//                     },
+			//                     "type": "array"
+			//                   },
+			//                   "StringValue": {
+			//                     "maxLength": 2048,
+			//                     "minLength": 1,
+			//                     "type": "string"
+			//                   }
+			//                 },
+			//                 "type": "object"
+			//               },
+			//               "Operator": {
+			//                 "enum": [
+			//                   "GreaterThan",
+			//                   "GreaterThanOrEquals",
+			//                   "LessThan",
+			//                   "LessThanOrEquals",
+			//                   "Equals",
+			//                   "NotEquals",
+			//                   "Contains",
+			//                   "NotContains",
+			//                   "Exists",
+			//                   "NotExists",
+			//                   "BeginsWith"
+			//                 ],
+			//                 "type": "string"
+			//               }
+			//             },
+			//             "required": [
+			//               "ConditionDocumentAttributeKey",
+			//               "Operator"
+			//             ],
+			//             "type": "object"
+			//           },
+			//           "DocumentContentDeletion": {
+			//             "type": "boolean"
+			//           },
+			//           "Target": {
+			//             "additionalProperties": false,
+			//             "properties": {
+			//               "TargetDocumentAttributeKey": {
+			//                 "maxLength": 200,
+			//                 "minLength": 1,
+			//                 "pattern": "[a-zA-Z0-9_][a-zA-Z0-9_-]*",
+			//                 "type": "string"
+			//               },
+			//               "TargetDocumentAttributeValue": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "DateValue": {
+			//                     "type": "string"
+			//                   },
+			//                   "LongValue": {
+			//                     "format": "int64",
+			//                     "type": "integer"
+			//                   },
+			//                   "StringListValue": {
+			//                     "items": {
+			//                       "type": "string"
+			//                     },
+			//                     "type": "array"
+			//                   },
+			//                   "StringValue": {
+			//                     "maxLength": 2048,
+			//                     "minLength": 1,
+			//                     "type": "string"
+			//                   }
+			//                 },
+			//                 "type": "object"
+			//               },
+			//               "TargetDocumentAttributeValueDeletion": {
+			//                 "type": "boolean"
+			//               }
+			//             },
+			//             "required": [
+			//               "TargetDocumentAttributeKey"
+			//             ],
+			//             "type": "object"
+			//           }
+			//         },
+			//         "type": "object"
+			//       },
+			//       "maxItems": 100,
+			//       "type": "array"
+			//     },
+			//     "PostExtractionHookConfiguration": {
+			//       "additionalProperties": false,
+			//       "properties": {
+			//         "InvocationCondition": {
+			//           "additionalProperties": false,
+			//           "properties": {
+			//             "ConditionDocumentAttributeKey": {
+			//               "maxLength": 200,
+			//               "minLength": 1,
+			//               "pattern": "[a-zA-Z0-9_][a-zA-Z0-9_-]*",
+			//               "type": "string"
+			//             },
+			//             "ConditionOnValue": {
+			//               "additionalProperties": false,
+			//               "properties": {
+			//                 "DateValue": {
+			//                   "type": "string"
+			//                 },
+			//                 "LongValue": {
+			//                   "format": "int64",
+			//                   "type": "integer"
+			//                 },
+			//                 "StringListValue": {
+			//                   "items": {
+			//                     "type": "string"
+			//                   },
+			//                   "type": "array"
+			//                 },
+			//                 "StringValue": {
+			//                   "maxLength": 2048,
+			//                   "minLength": 1,
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "type": "object"
+			//             },
+			//             "Operator": {
+			//               "enum": [
+			//                 "GreaterThan",
+			//                 "GreaterThanOrEquals",
+			//                 "LessThan",
+			//                 "LessThanOrEquals",
+			//                 "Equals",
+			//                 "NotEquals",
+			//                 "Contains",
+			//                 "NotContains",
+			//                 "Exists",
+			//                 "NotExists",
+			//                 "BeginsWith"
+			//               ],
+			//               "type": "string"
+			//             }
+			//           },
+			//           "required": [
+			//             "ConditionDocumentAttributeKey",
+			//             "Operator"
+			//           ],
+			//           "type": "object"
+			//         },
+			//         "LambdaArn": {
+			//           "maxLength": 2048,
+			//           "minLength": 1,
+			//           "type": "string"
+			//         },
+			//         "S3Bucket": {
+			//           "maxLength": 63,
+			//           "minLength": 3,
+			//           "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]",
+			//           "type": "string"
+			//         }
+			//       },
+			//       "required": [
+			//         "LambdaArn",
+			//         "S3Bucket"
+			//       ],
+			//       "type": "object"
+			//     },
+			//     "PreExtractionHookConfiguration": {
+			//       "additionalProperties": false,
+			//       "properties": {
+			//         "InvocationCondition": {
+			//           "additionalProperties": false,
+			//           "properties": {
+			//             "ConditionDocumentAttributeKey": {
+			//               "maxLength": 200,
+			//               "minLength": 1,
+			//               "pattern": "[a-zA-Z0-9_][a-zA-Z0-9_-]*",
+			//               "type": "string"
+			//             },
+			//             "ConditionOnValue": {
+			//               "additionalProperties": false,
+			//               "properties": {
+			//                 "DateValue": {
+			//                   "type": "string"
+			//                 },
+			//                 "LongValue": {
+			//                   "format": "int64",
+			//                   "type": "integer"
+			//                 },
+			//                 "StringListValue": {
+			//                   "items": {
+			//                     "type": "string"
+			//                   },
+			//                   "type": "array"
+			//                 },
+			//                 "StringValue": {
+			//                   "maxLength": 2048,
+			//                   "minLength": 1,
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "type": "object"
+			//             },
+			//             "Operator": {
+			//               "enum": [
+			//                 "GreaterThan",
+			//                 "GreaterThanOrEquals",
+			//                 "LessThan",
+			//                 "LessThanOrEquals",
+			//                 "Equals",
+			//                 "NotEquals",
+			//                 "Contains",
+			//                 "NotContains",
+			//                 "Exists",
+			//                 "NotExists",
+			//                 "BeginsWith"
+			//               ],
+			//               "type": "string"
+			//             }
+			//           },
+			//           "required": [
+			//             "ConditionDocumentAttributeKey",
+			//             "Operator"
+			//           ],
+			//           "type": "object"
+			//         },
+			//         "LambdaArn": {
+			//           "maxLength": 2048,
+			//           "minLength": 1,
+			//           "type": "string"
+			//         },
+			//         "S3Bucket": {
+			//           "maxLength": 63,
+			//           "minLength": 3,
+			//           "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]",
+			//           "type": "string"
+			//         }
+			//       },
+			//       "required": [
+			//         "LambdaArn",
+			//         "S3Bucket"
+			//       ],
+			//       "type": "object"
+			//     },
+			//     "RoleArn": {
+			//       "description": "Role ARN",
+			//       "maxLength": 1284,
+			//       "minLength": 1,
+			//       "pattern": "",
+			//       "type": "string"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"inline_configurations": {
+						// Property: InlineConfigurations
+						Description: "List of InlineCustomDocumentEnrichmentConfigurations",
+						Attributes: tfsdk.ListNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"condition": {
+									// Property: Condition
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"condition_document_attribute_key": {
+												// Property: ConditionDocumentAttributeKey
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 200),
+													validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9_][a-zA-Z0-9_-]*"), ""),
+												},
+											},
+											"condition_on_value": {
+												// Property: ConditionOnValue
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"date_value": {
+															// Property: DateValue
+															Type:     types.StringType,
+															Optional: true,
+														},
+														"long_value": {
+															// Property: LongValue
+															Type:     types.Int64Type,
+															Optional: true,
+														},
+														"string_list_value": {
+															// Property: StringListValue
+															Type:     types.ListType{ElemType: types.StringType},
+															Optional: true,
+														},
+														"string_value": {
+															// Property: StringValue
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(1, 2048),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
+											"operator": {
+												// Property: Operator
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringInSlice([]string{
+														"GreaterThan",
+														"GreaterThanOrEquals",
+														"LessThan",
+														"LessThanOrEquals",
+														"Equals",
+														"NotEquals",
+														"Contains",
+														"NotContains",
+														"Exists",
+														"NotExists",
+														"BeginsWith",
+													}),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
+								"document_content_deletion": {
+									// Property: DocumentContentDeletion
+									Type:     types.BoolType,
+									Optional: true,
+								},
+								"target": {
+									// Property: Target
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"target_document_attribute_key": {
+												// Property: TargetDocumentAttributeKey
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 200),
+													validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9_][a-zA-Z0-9_-]*"), ""),
+												},
+											},
+											"target_document_attribute_value": {
+												// Property: TargetDocumentAttributeValue
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"date_value": {
+															// Property: DateValue
+															Type:     types.StringType,
+															Optional: true,
+														},
+														"long_value": {
+															// Property: LongValue
+															Type:     types.Int64Type,
+															Optional: true,
+														},
+														"string_list_value": {
+															// Property: StringListValue
+															Type:     types.ListType{ElemType: types.StringType},
+															Optional: true,
+														},
+														"string_value": {
+															// Property: StringValue
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(1, 2048),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
+											"target_document_attribute_value_deletion": {
+												// Property: TargetDocumentAttributeValueDeletion
+												Type:     types.BoolType,
+												Optional: true,
+											},
+										},
+									),
+									Optional: true,
+								},
+							},
+							tfsdk.ListNestedAttributesOptions{},
+						),
+						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.ArrayLenAtMost(100),
+						},
+					},
+					"post_extraction_hook_configuration": {
+						// Property: PostExtractionHookConfiguration
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"invocation_condition": {
+									// Property: InvocationCondition
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"condition_document_attribute_key": {
+												// Property: ConditionDocumentAttributeKey
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 200),
+													validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9_][a-zA-Z0-9_-]*"), ""),
+												},
+											},
+											"condition_on_value": {
+												// Property: ConditionOnValue
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"date_value": {
+															// Property: DateValue
+															Type:     types.StringType,
+															Optional: true,
+														},
+														"long_value": {
+															// Property: LongValue
+															Type:     types.Int64Type,
+															Optional: true,
+														},
+														"string_list_value": {
+															// Property: StringListValue
+															Type:     types.ListType{ElemType: types.StringType},
+															Optional: true,
+														},
+														"string_value": {
+															// Property: StringValue
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(1, 2048),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
+											"operator": {
+												// Property: Operator
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringInSlice([]string{
+														"GreaterThan",
+														"GreaterThanOrEquals",
+														"LessThan",
+														"LessThanOrEquals",
+														"Equals",
+														"NotEquals",
+														"Contains",
+														"NotContains",
+														"Exists",
+														"NotExists",
+														"BeginsWith",
+													}),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
+								"lambda_arn": {
+									// Property: LambdaArn
+									Type:     types.StringType,
+									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(1, 2048),
+									},
+								},
+								"s3_bucket": {
+									// Property: S3Bucket
+									Type:     types.StringType,
+									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(3, 63),
+										validate.StringMatch(regexp.MustCompile("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"), ""),
+									},
+								},
+							},
+						),
+						Optional: true,
+					},
+					"pre_extraction_hook_configuration": {
+						// Property: PreExtractionHookConfiguration
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"invocation_condition": {
+									// Property: InvocationCondition
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"condition_document_attribute_key": {
+												// Property: ConditionDocumentAttributeKey
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 200),
+													validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9_][a-zA-Z0-9_-]*"), ""),
+												},
+											},
+											"condition_on_value": {
+												// Property: ConditionOnValue
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"date_value": {
+															// Property: DateValue
+															Type:     types.StringType,
+															Optional: true,
+														},
+														"long_value": {
+															// Property: LongValue
+															Type:     types.Int64Type,
+															Optional: true,
+														},
+														"string_list_value": {
+															// Property: StringListValue
+															Type:     types.ListType{ElemType: types.StringType},
+															Optional: true,
+														},
+														"string_value": {
+															// Property: StringValue
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(1, 2048),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
+											"operator": {
+												// Property: Operator
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringInSlice([]string{
+														"GreaterThan",
+														"GreaterThanOrEquals",
+														"LessThan",
+														"LessThanOrEquals",
+														"Equals",
+														"NotEquals",
+														"Contains",
+														"NotContains",
+														"Exists",
+														"NotExists",
+														"BeginsWith",
+													}),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
+								"lambda_arn": {
+									// Property: LambdaArn
+									Type:     types.StringType,
+									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(1, 2048),
+									},
+								},
+								"s3_bucket": {
+									// Property: S3Bucket
+									Type:     types.StringType,
+									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(3, 63),
+										validate.StringMatch(regexp.MustCompile("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"), ""),
+									},
+								},
+							},
+						),
+						Optional: true,
+					},
+					"role_arn": {
+						// Property: RoleArn
+						Description: "Role ARN",
+						Type:        types.StringType,
+						Optional:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringLenBetween(1, 1284),
+						},
+					},
+				},
+			),
+			Optional: true,
 		},
 		"data_source_configuration": {
 			// Property: DataSourceConfiguration
@@ -264,7 +887,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "ServerUrl": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "^(https?|ftp|file)://([^\\s]*)",
 			//           "type": "string"
 			//         },
 			//         "SpaceConfiguration": {
@@ -345,7 +968,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 10,
@@ -355,7 +978,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 6,
@@ -526,7 +1149,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 10,
@@ -536,7 +1159,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 6,
@@ -734,7 +1357,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 "Bucket": {
 			//                   "maxLength": 63,
 			//                   "minLength": 3,
-			//                   "pattern": "",
+			//                   "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]",
 			//                   "type": "string"
 			//                 },
 			//                 "Key": {
@@ -761,7 +1384,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "TenantDomain": {
 			//           "maxLength": 256,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-z]{2,}$",
 			//           "type": "string"
 			//         }
 			//       },
@@ -790,7 +1413,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "BucketName": {
 			//           "maxLength": 63,
 			//           "minLength": 3,
-			//           "pattern": "",
+			//           "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]",
 			//           "type": "string"
 			//         },
 			//         "DocumentsMetadataConfiguration": {
@@ -1059,7 +1682,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "ServerUrl": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "^(https?|ftp|file)://([^\\s]*)",
 			//           "type": "string"
 			//         },
 			//         "StandardObjectAttachmentConfiguration": {
@@ -1447,7 +2070,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "Bucket": {
 			//               "maxLength": 63,
 			//               "minLength": 3,
-			//               "pattern": "",
+			//               "pattern": "[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]",
 			//               "type": "string"
 			//             },
 			//             "Key": {
@@ -1466,7 +2089,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "items": {
 			//             "maxLength": 2048,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(https?|ftp|file)://([^\\s]*)",
 			//             "type": "string"
 			//           },
 			//           "maxItems": 100,
@@ -1482,7 +2105,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 10,
@@ -1492,7 +2115,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 200,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "[\\-0-9a-zA-Z]+",
 			//                 "type": "string"
 			//               },
 			//               "maxItems": 6,
@@ -1532,7 +2155,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "Host": {
 			//                     "maxLength": 253,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "([^\\s]*)",
 			//                     "type": "string"
 			//                   },
 			//                   "Port": {
@@ -1586,7 +2209,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "Host": {
 			//               "maxLength": 253,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "([^\\s]*)",
 			//               "type": "string"
 			//             },
 			//             "Port": {
@@ -1629,7 +2252,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "items": {
 			//                     "maxLength": 2048,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^(https?)://([^\\s]*)",
 			//                     "type": "string"
 			//                   },
 			//                   "maxItems": 100,
@@ -1657,7 +2280,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "items": {
 			//                     "maxLength": 2048,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^(https?):\\/\\/([^\\s]*)",
 			//                     "type": "string"
 			//                   },
 			//                   "maxItems": 3,
@@ -1735,7 +2358,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "OrganizationId": {
 			//           "maxLength": 12,
 			//           "minLength": 12,
-			//           "pattern": "",
+			//           "pattern": "d-[0-9a-fA-F]{10}",
 			//           "type": "string"
 			//         },
 			//         "UseChangeLog": {
@@ -1960,6 +2583,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("^(https?|ftp|file)://([^\\s]*)"), ""),
 									},
 								},
 								"space_configuration": {
@@ -2061,6 +2685,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(10),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 											"subnet_ids": {
@@ -2070,6 +2695,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(6),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 										},
@@ -2199,7 +2825,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"database_port": {
 												// Property: DatabasePort
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(1, 65535),
@@ -2268,6 +2894,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(10),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 											"subnet_ids": {
@@ -2277,6 +2904,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(6),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 										},
@@ -2470,6 +3098,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Required: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"), ""),
 															},
 														},
 														"key": {
@@ -2514,6 +3143,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 256),
+										validate.StringMatch(regexp.MustCompile("^([a-zA-Z0-9]+(-[a-zA-Z0-9]+)*\\.)+[a-z]{2,}$"), ""),
 									},
 								},
 							},
@@ -2547,6 +3177,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(3, 63),
+										validate.StringMatch(regexp.MustCompile("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"), ""),
 									},
 								},
 								"documents_metadata_configuration": {
@@ -2862,6 +3493,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("^(https?|ftp|file)://([^\\s]*)"), ""),
 									},
 								},
 								"standard_object_attachment_configuration": {
@@ -3337,6 +3969,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(3, 63),
+													validate.StringMatch(regexp.MustCompile("[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]"), ""),
 												},
 											},
 											"key": {
@@ -3358,6 +3991,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Validators: []tfsdk.AttributeValidator{
 										validate.ArrayLenAtMost(100),
 										validate.ArrayForEach(validate.StringLenBetween(1, 2048)),
+										validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^(https?|ftp|file)://([^\\s]*)"), "")),
 									},
 								},
 								"use_change_log": {
@@ -3376,6 +4010,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(10),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 											"subnet_ids": {
@@ -3385,6 +4020,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtMost(6),
 													validate.ArrayForEach(validate.StringLenBetween(1, 200)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[\\-0-9a-zA-Z]+"), "")),
 												},
 											},
 										},
@@ -3421,11 +4057,12 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Required: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(1, 253),
+																validate.StringMatch(regexp.MustCompile("([^\\s]*)"), ""),
 															},
 														},
 														"port": {
 															// Property: Port
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Required: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.IntBetween(1, 65535),
@@ -3445,7 +4082,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"crawl_depth": {
 									// Property: CrawlDepth
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 10),
@@ -3453,7 +4090,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"max_content_size_per_page_in_mega_bytes": {
 									// Property: MaxContentSizePerPageInMegaBytes
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.FloatBetween(0.000000, 50.000000),
@@ -3461,7 +4098,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"max_links_per_page": {
 									// Property: MaxLinksPerPage
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 1000),
@@ -3469,7 +4106,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"max_urls_per_minute_crawl_rate": {
 									// Property: MaxUrlsPerMinuteCrawlRate
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 300),
@@ -3493,11 +4130,12 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 253),
+													validate.StringMatch(regexp.MustCompile("([^\\s]*)"), ""),
 												},
 											},
 											"port": {
 												// Property: Port
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(1, 65535),
@@ -3540,6 +4178,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Validators: []tfsdk.AttributeValidator{
 																validate.ArrayLenBetween(0, 100),
 																validate.ArrayForEach(validate.StringLenBetween(1, 2048)),
+																validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^(https?)://([^\\s]*)"), "")),
 															},
 														},
 														"web_crawler_mode": {
@@ -3569,6 +4208,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Validators: []tfsdk.AttributeValidator{
 																validate.ArrayLenBetween(0, 3),
 																validate.ArrayForEach(validate.StringLenBetween(1, 2048)),
+																validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^(https?):\\/\\/([^\\s]*)"), "")),
 															},
 														},
 													},
@@ -3652,6 +4292,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(12, 12),
+										validate.StringMatch(regexp.MustCompile("d-[0-9a-fA-F]{10}"), ""),
 									},
 								},
 								"use_change_log": {
@@ -3931,6 +4572,9 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"change_detecting_columns":                      "ChangeDetectingColumns",
 		"chatter_feed_configuration":                    "ChatterFeedConfiguration",
 		"column_configuration":                          "ColumnConfiguration",
+		"condition":                                     "Condition",
+		"condition_document_attribute_key":              "ConditionDocumentAttributeKey",
+		"condition_on_value":                            "ConditionOnValue",
 		"confluence_configuration":                      "ConfluenceConfiguration",
 		"connection_configuration":                      "ConnectionConfiguration",
 		"crawl_archived_spaces":                         "CrawlArchivedSpaces",
@@ -3939,6 +4583,7 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"crawl_depth":                                   "CrawlDepth",
 		"crawl_personal_spaces":                         "CrawlPersonalSpaces",
 		"credentials":                                   "Credentials",
+		"custom_document_enrichment_configuration":      "CustomDocumentEnrichmentConfiguration",
 		"custom_knowledge_article_type_configurations":  "CustomKnowledgeArticleTypeConfigurations",
 		"data_source_configuration":                     "DataSourceConfiguration",
 		"data_source_field_name":                        "DataSourceFieldName",
@@ -3948,8 +4593,10 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"database_name":                                 "DatabaseName",
 		"database_port":                                 "DatabasePort",
 		"date_field_format":                             "DateFieldFormat",
+		"date_value":                                    "DateValue",
 		"description":                                   "Description",
 		"disable_local_groups":                          "DisableLocalGroups",
+		"document_content_deletion":                     "DocumentContentDeletion",
 		"document_data_column_name":                     "DocumentDataColumnName",
 		"document_data_field_name":                      "DocumentDataFieldName",
 		"document_id_column_name":                       "DocumentIdColumnName",
@@ -3976,9 +4623,13 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"inclusion_prefixes":                            "InclusionPrefixes",
 		"index_field_name":                              "IndexFieldName",
 		"index_id":                                      "IndexId",
+		"inline_configurations":                         "InlineConfigurations",
+		"invocation_condition":                          "InvocationCondition",
 		"key":                                           "Key",
 		"key_path":                                      "KeyPath",
 		"knowledge_article_configuration":               "KnowledgeArticleConfiguration",
+		"lambda_arn":                                    "LambdaArn",
+		"long_value":                                    "LongValue",
 		"max_content_size_per_page_in_mega_bytes":       "MaxContentSizePerPageInMegaBytes",
 		"max_links_per_page":                            "MaxLinksPerPage",
 		"max_urls_per_minute_crawl_rate":                "MaxUrlsPerMinuteCrawlRate",
@@ -3987,13 +4638,17 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"one_drive_user_list":                           "OneDriveUserList",
 		"one_drive_user_s3_path":                        "OneDriveUserS3Path",
 		"one_drive_users":                               "OneDriveUsers",
+		"operator":                                      "Operator",
 		"organization_id":                               "OrganizationId",
 		"page_configuration":                            "PageConfiguration",
 		"page_field_mappings":                           "PageFieldMappings",
 		"port":                                          "Port",
+		"post_extraction_hook_configuration":            "PostExtractionHookConfiguration",
+		"pre_extraction_hook_configuration":             "PreExtractionHookConfiguration",
 		"proxy_configuration":                           "ProxyConfiguration",
 		"query_identifiers_enclosing_option":            "QueryIdentifiersEnclosingOption",
 		"role_arn":                                      "RoleArn",
+		"s3_bucket":                                     "S3Bucket",
 		"s3_configuration":                              "S3Configuration",
 		"s3_prefix":                                     "S3Prefix",
 		"salesforce_configuration":                      "SalesforceConfiguration",
@@ -4017,9 +4672,15 @@ func dataSourceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"standard_knowledge_article_type_configuration": "StandardKnowledgeArticleTypeConfiguration",
 		"standard_object_attachment_configuration":      "StandardObjectAttachmentConfiguration",
 		"standard_object_configurations":                "StandardObjectConfigurations",
+		"string_list_value":                             "StringListValue",
+		"string_value":                                  "StringValue",
 		"subnet_ids":                                    "SubnetIds",
 		"table_name":                                    "TableName",
 		"tags":                                          "Tags",
+		"target":                                        "Target",
+		"target_document_attribute_key":                 "TargetDocumentAttributeKey",
+		"target_document_attribute_value":               "TargetDocumentAttributeValue",
+		"target_document_attribute_value_deletion":      "TargetDocumentAttributeValueDeletion",
 		"tenant_domain":                                 "TenantDomain",
 		"type":                                          "Type",
 		"url_exclusion_patterns":                        "UrlExclusionPatterns",

@@ -6,7 +6,7 @@
         "Id": {
             "description": "Event Source Mapping Identifier UUID.",
             "type": "string",
-            "pattern": "",
+            "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
             "minLength": 36,
             "maxLength": 36
         },
@@ -31,31 +31,18 @@
         "EventSourceArn": {
             "description": "The Amazon Resource Name (ARN) of the event source.",
             "type": "string",
-            "pattern": "",
+            "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
             "minLength": 12,
             "maxLength": 1024
         },
         "FilterCriteria": {
-            "type": "object",
             "description": "The filter criteria to control event filtering.",
-            "additionalProperties" : false,
-            "properties": {
-                "Filters": {
-                    "description": "List of filters of this FilterCriteria",
-                    "type": "array",
-                    "uniqueItems": true,
-                    "items": {
-                        "$ref": "#/definitions/Filter"
-                    },
-                    "minItems": 1,
-                    "maxItems": 20
-                }
-            }
+            "$ref": "#/definitions/FilterCriteria"
         },
         "FunctionName": {
             "description": "The name of the Lambda function.",
             "type": "string",
-            "pattern": "",
+            "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?",
             "minLength": 1,
             "maxLength": 140
         },
@@ -86,7 +73,7 @@
         "StartingPosition": {
             "description": "The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Streams sources.",
             "type": "string",
-            "pattern": "",
+            "pattern": "(LATEST|TRIM_HORIZON|AT_TIMESTAMP)+",
             "minLength": 6,
             "maxLength": 12
         },
@@ -100,7 +87,7 @@
             "uniqueItems": true,
             "items": {
                 "type": "string",
-                "pattern": "",
+                "pattern": "^[^.]([a-zA-Z0-9\\-_.]+)",
                 "minLength": 1,
                 "maxLength": 249
             },
@@ -113,7 +100,7 @@
             "uniqueItems": true,
             "items": {
                 "type": "string",
-                "pattern": "",
+                "pattern": "[\\s\\S]*",
                 "minLength": 1,
                 "maxLength": 1000
             },
@@ -166,6 +153,23 @@
                 }
             }
         },
+        "FilterCriteria": {
+            "type": "object",
+            "description": "The filter criteria to control event filtering.",
+            "additionalProperties" : false,
+            "properties": {
+                "Filters": {
+                    "description": "List of filters of this FilterCriteria",
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "$ref": "#/definitions/Filter"
+                    },
+                    "minItems": 1,
+                    "maxItems": 20
+                }
+            }
+        },
         "Filter": {
             "type": "object",
             "description": "The filter object that defines parameters for ESM filtering.",
@@ -174,7 +178,7 @@
                 "Pattern": {
                     "type": "string",
                     "description": "The filter pattern that defines which events should be passed for invocations.",
-                    "pattern": "",
+                    "pattern": ".*",
                     "minLength": 0,
                     "maxLength": 4096
                 }
@@ -188,7 +192,7 @@
                 "Destination": {
                     "description": "The Amazon Resource Name (ARN) of the destination resource.",
                     "type": "string",
-                    "pattern": "",
+                    "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
                     "minLength": 12,
                     "maxLength": 1024
                 }
@@ -216,7 +220,7 @@
                 "URI" : {
                     "description": "The URI for the source access configuration resource.",
                     "type": "string",
-                    "pattern": "",
+                    "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
                     "minLength": 1,
                     "maxLength": 200
                 }
@@ -245,7 +249,7 @@
                     "items": {
                         "type": "string",
                         "description": "The URL of a Kafka server.",
-                        "pattern": "",
+                        "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}",
                         "minLength": 1,
                         "maxLength": 300
                     },
@@ -256,7 +260,7 @@
         }
     },
     "required" : [ "FunctionName" ],
-    "createOnlyProperties" : [ "/properties/EventSourceArn", "/properties/StartingPosition", "/properties/SelfManagedEventSource" ],
+    "createOnlyProperties" : [ "/properties/EventSourceArn", "/properties/StartingPosition", "/properties/StartingPositionTimestamp", "/properties/SelfManagedEventSource" ],
     "readOnlyProperties" : [ "/properties/Id" ],
     "primaryIdentifier" : [ "/properties/Id" ],
     "handlers": {

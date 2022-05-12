@@ -19,6 +19,35 @@ func init() {
 // This Terraform data source type corresponds to the CloudFormation AWS::SageMaker::Pipeline resource type.
 func pipelineDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	attributes := map[string]tfsdk.Attribute{
+		"parallelism_configuration": {
+			// Property: ParallelismConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "properties": {
+			//     "MaxParallelExecutionSteps": {
+			//       "description": "Maximum parallel execution steps",
+			//       "minimum": 1,
+			//       "type": "integer"
+			//     }
+			//   },
+			//   "required": [
+			//     "MaxParallelExecutionSteps"
+			//   ],
+			//   "type": "object"
+			// }
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"max_parallel_execution_steps": {
+						// Property: MaxParallelExecutionSteps
+						Description: "Maximum parallel execution steps",
+						Type:        types.Int64Type,
+						Computed:    true,
+					},
+				},
+			),
+			Computed: true,
+		},
 		"pipeline_definition": {
 			// Property: PipelineDefinition
 			// CloudFormation resource type schema:
@@ -121,7 +150,7 @@ func pipelineDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The display name of the Pipeline.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*",
 			//   "type": "string"
 			// }
 			Description: "The display name of the Pipeline.",
@@ -135,7 +164,7 @@ func pipelineDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The name of the Pipeline.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*",
 			//   "type": "string"
 			// }
 			Description: "The name of the Pipeline.",
@@ -149,7 +178,7 @@ func pipelineDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "Role Arn",
 			//   "maxLength": 2048,
 			//   "minLength": 20,
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
 			//   "type": "string"
 			// }
 			Description: "Role Arn",
@@ -218,6 +247,8 @@ func pipelineDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"bucket":                          "Bucket",
 		"e_tag":                           "ETag",
 		"key":                             "Key",
+		"max_parallel_execution_steps":    "MaxParallelExecutionSteps",
+		"parallelism_configuration":       "ParallelismConfiguration",
 		"pipeline_definition":             "PipelineDefinition",
 		"pipeline_definition_body":        "PipelineDefinitionBody",
 		"pipeline_definition_s3_location": "PipelineDefinitionS3Location",

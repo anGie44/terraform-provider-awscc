@@ -24,6 +24,10 @@
             "description" : "Environment variables that are accessible from function code during execution.",
             "$ref" : "#/definitions/Environment"
         },
+        "EphemeralStorage" : {
+            "description" : "A function's ephemeral storage settings.",
+            "$ref" : "#/definitions/EphemeralStorage"
+        },
         "FileSystemConfigs" : {
             "description" : "Connection settings for an Amazon EFS file system. To connect a function to a file system, a mount target must be available in every Availability Zone that your function connects to. If your template contains an AWS::EFS::MountTarget resource, you must also specify a DependsOn attribute to ensure that the mount target is created or updated before the function.",
             "maxItems" : 1,
@@ -41,7 +45,7 @@
             "description" : "The name of the method within your code that Lambda calls to execute your function. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime",
             "type" : "string",
             "maxLength" : 128,
-            "pattern" : ""
+            "pattern" : "^[^\\s]+$"
         },
         "Architectures" : {
             "type" : "array",
@@ -59,7 +63,7 @@
         "KmsKeyArn" : {
             "description" : "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
             "type" : "string",
-            "pattern" : ""
+            "pattern" : "^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"
         },
         "Layers" : {
             "description" : "A list of function layers to add to the function's execution environment. Specify each layer by its ARN, including the version.",
@@ -81,7 +85,7 @@
         "Role" : {
             "description" : "The Amazon Resource Name (ARN) of the function's execution role.",
             "type" : "string",
-            "pattern" : ""
+            "pattern" : "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
         },
         "Runtime" : {
             "description" : "The identifier of the function's runtime.",
@@ -112,7 +116,7 @@
         "CodeSigningConfigArn": {
             "description": "A unique Arn for CodeSigningConfig resource",
             "type": "string",
-            "pattern": ""
+            "pattern": "arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:code-signing-config:csc-[a-z0-9]{17}"
         },
         "ImageConfig" : {
             "description" : "ImageConfig",
@@ -169,7 +173,7 @@
                 "TargetArn" : {
                     "type" : "string",
                     "description" : "The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.",
-                    "pattern" : ""
+                    "pattern" : "^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$"
                 }
             }
         },
@@ -190,20 +194,36 @@
                 }
             }
         },
+        "EphemeralStorage" : {
+            "type" : "object",
+            "additionalProperties" : false,
+            "description" : "A function's ephemeral storage settings.",
+            "properties" : {
+                "Size" : {
+                    "type": "integer",
+                    "description": "The amount of ephemeral storage that your function has access to.",
+                    "minimum": 512,
+                    "maximum": 10240
+                }
+            },
+            "required" : [
+                "Size"
+            ]
+        },
         "FileSystemConfig" : {
             "type" : "object",
             "additionalProperties": false,
             "properties" : {
                 "Arn" : {
                     "type" : "string",
-                    "pattern": "",
+                    "pattern": "^arn:aws[a-zA-Z-]*:elasticfilesystem:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$",
                     "description" : "The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.",
                     "maxLength" : 200
                 },
                 "LocalMountPath" : {
                     "type" : "string",
                     "description" : "The path where the function can access the file system, starting with /mnt/.",
-                    "pattern": "",
+                    "pattern": "^/mnt/[a-zA-Z0-9-_.]+$",
                     "maxLength" : 160
                 }
             },

@@ -89,6 +89,7 @@ func imageDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// Property: ImageTestsConfiguration
 			// CloudFormation resource type schema:
 			// {
+			//   "additionalProperties": false,
 			//   "description": "The image tests configuration used when creating this image.",
 			//   "properties": {
 			//     "ImageTestsEnabled": {
@@ -116,12 +117,23 @@ func imageDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 					"timeout_minutes": {
 						// Property: TimeoutMinutes
 						Description: "TimeoutMinutes",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
 			),
 			Computed: true,
+		},
+		"image_uri": {
+			// Property: ImageUri
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "URI for containers created in current Region with default ECR image tag",
+			//   "type": "string"
+			// }
+			Description: "URI for containers created in current Region with default ECR image tag",
+			Type:        types.StringType,
+			Computed:    true,
 		},
 		"infrastructure_configuration_arn": {
 			// Property: InfrastructureConfigurationArn
@@ -149,6 +161,7 @@ func imageDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// Property: Tags
 			// CloudFormation resource type schema:
 			// {
+			//   "additionalProperties": false,
 			//   "description": "The tags associated with the image.",
 			//   "patternProperties": {
 			//     "": {
@@ -189,6 +202,7 @@ func imageDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"image_recipe_arn":                 "ImageRecipeArn",
 		"image_tests_configuration":        "ImageTestsConfiguration",
 		"image_tests_enabled":              "ImageTestsEnabled",
+		"image_uri":                        "ImageUri",
 		"infrastructure_configuration_arn": "InfrastructureConfigurationArn",
 		"name":                             "Name",
 		"tags":                             "Tags",

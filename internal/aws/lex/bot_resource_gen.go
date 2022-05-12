@@ -4,6 +4,7 @@ package lex
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -26,7 +27,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 1011,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[a-zA-Z-]*:lex:[a-z]+-[a-z]+-[0-9]:[0-9]{12}:bot/[0-9a-zA-Z]+$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -58,14 +59,14 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "description": "An Amazon S3 bucket in the same AWS Region as your function. The bucket can be in a different AWS account.",
 			//       "maxLength": 63,
 			//       "minLength": 3,
-			//       "pattern": "",
+			//       "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
 			//       "type": "string"
 			//     },
 			//     "S3ObjectKey": {
 			//       "description": "The Amazon S3 key of the deployment package.",
 			//       "maxLength": 1024,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$",
 			//       "type": "string"
 			//     },
 			//     "S3ObjectVersion": {
@@ -91,6 +92,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(3, 63),
+							validate.StringMatch(regexp.MustCompile("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"), ""),
 						},
 					},
 					"s3_object_key": {
@@ -100,6 +102,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 1024),
+							validate.StringMatch(regexp.MustCompile("[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$"), ""),
 						},
 					},
 					"s3_object_version": {
@@ -126,6 +129,44 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "additionalProperties": false,
 			//     "description": "A locale in the bot, which contains the intents and slot types that the bot uses in conversations with users in the specified language and locale.",
 			//     "properties": {
+			//       "CustomVocabulary": {
+			//         "additionalProperties": false,
+			//         "description": "A custom vocabulary is a list of specific phrases that you want Amazon Lex V2 to recognize in the audio input.",
+			//         "properties": {
+			//           "CustomVocabularyItems": {
+			//             "insertionOrder": false,
+			//             "items": {
+			//               "additionalProperties": false,
+			//               "description": "A custom vocabulary item that contains the phrase to recognize and a weight to give the boost.",
+			//               "properties": {
+			//                 "Phrase": {
+			//                   "description": "Phrase that should be recognized.",
+			//                   "maxLength": 100,
+			//                   "minLength": 1,
+			//                   "type": "string"
+			//                 },
+			//                 "Weight": {
+			//                   "description": "The degree to which the phrase recognition is boosted.",
+			//                   "maximum": 3,
+			//                   "minimum": 1,
+			//                   "type": "integer"
+			//                 }
+			//               },
+			//               "required": [
+			//                 "Phrase"
+			//               ],
+			//               "type": "object"
+			//             },
+			//             "maxItems": 500,
+			//             "type": "array",
+			//             "uniqueItems": true
+			//           }
+			//         },
+			//         "required": [
+			//           "CustomVocabularyItems"
+			//         ],
+			//         "type": "object"
+			//       },
 			//       "Description": {
 			//         "description": "A description of the resource",
 			//         "maxLength": 200,
@@ -1526,7 +1567,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "The name of the context.",
 			//                     "maxLength": 100,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//                     "type": "string"
 			//                   }
 			//                 },
@@ -2363,7 +2404,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "description": "The Amazon Resource Name (ARN) of the Amazon Kendra index that you want the AMAZON.KendraSearchIntent intent to search.",
 			//                   "maxLength": 2048,
 			//                   "minLength": 32,
-			//                   "pattern": "",
+			//                   "pattern": "^arn:aws[a-zA-Z-]*:kendra:[a-z]+-[a-z]+-[0-9]:[0-9]{12}:index/[a-zA-Z0-9][a-zA-Z0-9_-]*$",
 			//                   "type": "string"
 			//                 },
 			//                 "QueryFilterString": {
@@ -2386,7 +2427,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "description": "Unique name for a resource.",
 			//               "maxLength": 100,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//               "type": "string"
 			//             },
 			//             "OutputContexts": {
@@ -2400,7 +2441,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "Unique name for a resource.",
 			//                     "maxLength": 100,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//                     "type": "string"
 			//                   },
 			//                   "TimeToLiveInSeconds": {
@@ -2466,7 +2507,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "The name of the slot.",
 			//                     "maxLength": 100,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//                     "type": "string"
 			//                   }
 			//                 },
@@ -2504,7 +2545,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "Unique name for a resource.",
 			//                     "maxLength": 100,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//                     "type": "string"
 			//                   },
 			//                   "ObfuscationSetting": {
@@ -3738,21 +3779,21 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                           "description": "The Amazon KMS key required to decrypt the contents of the grammar, if any.",
 			//                           "maxLength": 2048,
 			//                           "minLength": 20,
-			//                           "pattern": "",
+			//                           "pattern": "^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$",
 			//                           "type": "string"
 			//                         },
 			//                         "S3BucketName": {
 			//                           "description": "The name of the S3 bucket that contains the grammar source.",
 			//                           "maxLength": 63,
 			//                           "minLength": 3,
-			//                           "pattern": "",
+			//                           "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
 			//                           "type": "string"
 			//                         },
 			//                         "S3ObjectKey": {
 			//                           "description": "The path to the grammar in the S3 bucket.",
 			//                           "maxLength": 1024,
 			//                           "minLength": 1,
-			//                           "pattern": "",
+			//                           "pattern": "[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$",
 			//                           "type": "string"
 			//                         }
 			//                       },
@@ -3772,7 +3813,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "description": "Unique name for a resource.",
 			//               "maxLength": 100,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//               "type": "string"
 			//             },
 			//             "ParentSlotTypeSignature": {
@@ -3837,6 +3878,20 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "additionalProperties": false,
 			//               "description": "Contains settings used by Amazon Lex to select a slot value.",
 			//               "properties": {
+			//                 "AdvancedRecognitionSetting": {
+			//                   "additionalProperties": false,
+			//                   "description": "Provides settings that enable advanced recognition settings for slot values.",
+			//                   "properties": {
+			//                     "AudioRecognitionStrategy": {
+			//                       "description": "Enables using slot values as a custom vocabulary when recognizing user utterances.",
+			//                       "enum": [
+			//                         "UseSlotValuesAsCustomVocabulary"
+			//                       ],
+			//                       "type": "string"
+			//                     }
+			//                   },
+			//                   "type": "object"
+			//                 },
 			//                 "RegexFilter": {
 			//                   "additionalProperties": false,
 			//                   "description": "A regular expression used to validate the value of a slot.",
@@ -3903,6 +3958,45 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "List of bot locales",
 			Attributes: tfsdk.SetNestedAttributes(
 				map[string]tfsdk.Attribute{
+					"custom_vocabulary": {
+						// Property: CustomVocabulary
+						Description: "A custom vocabulary is a list of specific phrases that you want Amazon Lex V2 to recognize in the audio input.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"custom_vocabulary_items": {
+									// Property: CustomVocabularyItems
+									Attributes: tfsdk.SetNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"phrase": {
+												// Property: Phrase
+												Description: "Phrase that should be recognized.",
+												Type:        types.StringType,
+												Required:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 100),
+												},
+											},
+											"weight": {
+												// Property: Weight
+												Description: "The degree to which the phrase recognition is boosted.",
+												Type:        types.Int64Type,
+												Optional:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.IntBetween(1, 3),
+												},
+											},
+										},
+										tfsdk.SetNestedAttributesOptions{},
+									),
+									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.ArrayLenAtMost(500),
+									},
+								},
+							},
+						),
+						Optional: true,
+					},
 					"description": {
 						// Property: Description
 						Description: "A description of the resource",
@@ -3975,7 +4069,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																	"delay_in_seconds": {
 																		// Property: DelayInSeconds
 																		Description: "The delay between when the Lambda fulfillment function starts running and the start message is played. If the Lambda function returns before the delay is over, the start message isn't played.",
-																		Type:        types.NumberType,
+																		Type:        types.Int64Type,
 																		Required:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.IntBetween(1, 900),
@@ -4277,7 +4371,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 														"timeout_in_seconds": {
 															// Property: TimeoutInSeconds
 															Description: "The length of time that the fulfillment Lambda function should run before it times out.",
-															Type:        types.NumberType,
+															Type:        types.Int64Type,
 															Optional:    true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.IntBetween(1, 900),
@@ -4297,7 +4391,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																	"frequency_in_seconds": {
 																		// Property: FrequencyInSeconds
 																		Description: "The frequency that a message is sent to the user. When the period ends, Amazon Lex chooses a message from the message groups and plays it to the user. If the fulfillment Lambda returns before the first period ends, an update message is not played to the user.",
-																		Type:        types.NumberType,
+																		Type:        types.Int64Type,
 																		Required:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.IntBetween(1, 900),
@@ -5537,6 +5631,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 100),
+													validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 												},
 											},
 										},
@@ -6196,7 +6291,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 														"max_retries": {
 															// Property: MaxRetries
 															Description: "The maximum number of times the bot tries to elicit a resonse from the user using this prompt.",
-															Type:        types.NumberType,
+															Type:        types.Int64Type,
 															Required:    true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.IntBetween(0, 5),
@@ -6511,6 +6606,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(32, 2048),
+													validate.StringMatch(regexp.MustCompile("^arn:aws[a-zA-Z-]*:kendra:[a-z]+-[a-z]+-[0-9]:[0-9]{12}:index/[a-zA-Z0-9][a-zA-Z0-9_-]*$"), ""),
 												},
 											},
 											"query_filter_string": {
@@ -6539,6 +6635,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 100),
+										validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 									},
 								},
 								"output_contexts": {
@@ -6553,12 +6650,13 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 100),
+													validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 												},
 											},
 											"time_to_live_in_seconds": {
 												// Property: TimeToLiveInSeconds
 												Description: "The amount of time, in seconds, that the output context should remain active.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(5, 86400),
@@ -6567,7 +6665,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"turns_to_live": {
 												// Property: TurnsToLive
 												Description: "The number of conversation turns that the output context should remain active.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(1, 20),
@@ -6617,7 +6715,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"priority": {
 												// Property: Priority
 												Description: "The priority that a slot should be elicited.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(0, 100),
@@ -6630,6 +6728,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 100),
+													validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 												},
 											},
 										},
@@ -6675,6 +6774,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 100),
+													validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 												},
 											},
 											"obfuscation_setting": {
@@ -6757,7 +6857,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																	"max_retries": {
 																		// Property: MaxRetries
 																		Description: "The maximum number of times the bot tries to elicit a resonse from the user using this prompt.",
-																		Type:        types.NumberType,
+																		Type:        types.Int64Type,
 																		Required:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.IntBetween(0, 5),
@@ -7416,7 +7516,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																				"frequency_in_seconds": {
 																					// Property: FrequencyInSeconds
 																					Description: "How often a message should be sent to the user in seconds.",
-																					Type:        types.NumberType,
+																					Type:        types.Int64Type,
 																					Required:    true,
 																					Validators: []tfsdk.AttributeValidator{
 																						validate.IntBetween(1, 300),
@@ -7714,7 +7814,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																				"timeout_in_seconds": {
 																					// Property: TimeoutInSeconds
 																					Description: "If Amazon Lex waits longer than this length of time in seconds for a response, it will stop sending messages.",
-																					Type:        types.NumberType,
+																					Type:        types.Int64Type,
 																					Required:    true,
 																					Validators: []tfsdk.AttributeValidator{
 																						validate.IntBetween(1, 900),
@@ -8061,7 +8161,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"nlu_confidence_threshold": {
 						// Property: NluConfidenceThreshold
 						Description: "The specified confidence threshold for inserting the AMAZON.FallbackIntent and AMAZON.KendraSearchIntent intents.",
-						Type:        types.NumberType,
+						Type:        types.Float64Type,
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.FloatBetween(0.000000, 1.000000),
@@ -8103,6 +8203,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																		Optional:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.StringLenBetween(20, 2048),
+																			validate.StringMatch(regexp.MustCompile("^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$"), ""),
 																		},
 																	},
 																	"s3_bucket_name": {
@@ -8112,6 +8213,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																		Required:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.StringLenBetween(3, 63),
+																			validate.StringMatch(regexp.MustCompile("^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"), ""),
 																		},
 																	},
 																	"s3_object_key": {
@@ -8121,6 +8223,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																		Required:    true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.StringLenBetween(1, 1024),
+																			validate.StringMatch(regexp.MustCompile("[\\.\\-\\!\\*\\_\\'\\(\\)a-zA-Z0-9][\\.\\-\\!\\*\\_\\'\\(\\)\\/a-zA-Z0-9]*$"), ""),
 																		},
 																	},
 																},
@@ -8142,6 +8245,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 100),
+										validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 									},
 								},
 								"parent_slot_type_signature": {
@@ -8214,6 +8318,26 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Description: "Contains settings used by Amazon Lex to select a slot value.",
 									Attributes: tfsdk.SingleNestedAttributes(
 										map[string]tfsdk.Attribute{
+											"advanced_recognition_setting": {
+												// Property: AdvancedRecognitionSetting
+												Description: "Provides settings that enable advanced recognition settings for slot values.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"audio_recognition_strategy": {
+															// Property: AudioRecognitionStrategy
+															Description: "Enables using slot values as a custom vocabulary when recognizing user utterances.",
+															Type:        types.StringType,
+															Optional:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"UseSlotValuesAsCustomVocabulary",
+																}),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
 											"regex_filter": {
 												// Property: RegexFilter
 												Description: "A regular expression used to validate the value of a slot.",
@@ -8391,7 +8515,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Unique ID of resource",
 			//   "maxLength": 10,
 			//   "minLength": 10,
-			//   "pattern": "",
+			//   "pattern": "^[0-9a-zA-Z]+$",
 			//   "type": "string"
 			// }
 			Description: "Unique ID of resource",
@@ -8411,7 +8535,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "IdleSessionTTLInSeconds of the resource",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.IntBetween(60, 86400),
@@ -8424,7 +8548,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Unique name for a resource.",
 			//   "maxLength": 100,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//   "type": "string"
 			// }
 			Description: "Unique name for a resource.",
@@ -8432,6 +8556,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 100),
+				validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 			},
 		},
 		"role_arn": {
@@ -8441,7 +8566,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The Amazon Resource Name (ARN) of an IAM role that has permission to access the bot.",
 			//   "maxLength": 2048,
 			//   "minLength": 32,
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[a-zA-Z-]*:iam::[0-9]{12}:role/.*$",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of an IAM role that has permission to access the bot.",
@@ -8449,7 +8574,465 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(32, 2048),
+				validate.StringMatch(regexp.MustCompile("^arn:aws[a-zA-Z-]*:iam::[0-9]{12}:role/.*$"), ""),
 			},
+		},
+		"test_bot_alias_settings": {
+			// Property: TestBotAliasSettings
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Configuring the test bot alias settings for a given bot",
+			//   "properties": {
+			//     "BotAliasLocaleSettings": {
+			//       "description": "A list of bot alias locale settings to add to the bot alias.",
+			//       "insertionOrder": false,
+			//       "items": {
+			//         "additionalProperties": false,
+			//         "description": "A locale setting in alias",
+			//         "properties": {
+			//           "BotAliasLocaleSetting": {
+			//             "additionalProperties": false,
+			//             "description": "You can use this parameter to specify a specific Lambda function to run different functions in different locales.",
+			//             "properties": {
+			//               "CodeHookSpecification": {
+			//                 "additionalProperties": false,
+			//                 "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+			//                 "properties": {
+			//                   "LambdaCodeHook": {
+			//                     "additionalProperties": false,
+			//                     "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+			//                     "properties": {
+			//                       "CodeHookInterfaceVersion": {
+			//                         "description": "The version of the request-response that you want Amazon Lex to use to invoke your Lambda function.",
+			//                         "maxLength": 5,
+			//                         "minLength": 1,
+			//                         "type": "string"
+			//                       },
+			//                       "LambdaArn": {
+			//                         "description": "The Amazon Resource Name (ARN) of the Lambda function.",
+			//                         "maxLength": 2048,
+			//                         "minLength": 20,
+			//                         "type": "string"
+			//                       }
+			//                     },
+			//                     "required": [
+			//                       "CodeHookInterfaceVersion",
+			//                       "LambdaArn"
+			//                     ],
+			//                     "type": "object"
+			//                   }
+			//                 },
+			//                 "required": [
+			//                   "LambdaCodeHook"
+			//                 ],
+			//                 "type": "object"
+			//               },
+			//               "Enabled": {
+			//                 "description": "Whether the Lambda code hook is enabled",
+			//                 "type": "boolean"
+			//               }
+			//             },
+			//             "required": [
+			//               "Enabled"
+			//             ],
+			//             "type": "object"
+			//           },
+			//           "LocaleId": {
+			//             "description": "A string used to identify the locale",
+			//             "maxLength": 128,
+			//             "minLength": 1,
+			//             "type": "string"
+			//           }
+			//         },
+			//         "required": [
+			//           "LocaleId",
+			//           "BotAliasLocaleSetting"
+			//         ],
+			//         "type": "object"
+			//       },
+			//       "maxItems": 50,
+			//       "type": "array",
+			//       "uniqueItems": true
+			//     },
+			//     "ConversationLogSettings": {
+			//       "additionalProperties": false,
+			//       "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+			//       "properties": {
+			//         "AudioLogSettings": {
+			//           "description": "List of audio log settings that pertain to the conversation log settings for the bot's TestBotAlias.",
+			//           "insertionOrder": false,
+			//           "items": {
+			//             "additionalProperties": false,
+			//             "description": "Settings for logging audio of conversations between Amazon Lex and a user. You specify whether to log audio and the Amazon S3 bucket where the audio file is stored.",
+			//             "properties": {
+			//               "Destination": {
+			//                 "additionalProperties": false,
+			//                 "description": "The location of audio log files collected when conversation logging is enabled for a bot.",
+			//                 "properties": {
+			//                   "S3Bucket": {
+			//                     "additionalProperties": false,
+			//                     "description": "Specifies an Amazon S3 bucket for logging audio conversations",
+			//                     "properties": {
+			//                       "KmsKeyArn": {
+			//                         "description": "The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket.",
+			//                         "maxLength": 2048,
+			//                         "minLength": 20,
+			//                         "pattern": "^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$",
+			//                         "type": "string"
+			//                       },
+			//                       "LogPrefix": {
+			//                         "description": "The Amazon S3 key of the deployment package.",
+			//                         "maxLength": 1024,
+			//                         "minLength": 0,
+			//                         "type": "string"
+			//                       },
+			//                       "S3BucketArn": {
+			//                         "description": "The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored.",
+			//                         "maxLength": 2048,
+			//                         "minLength": 1,
+			//                         "pattern": "^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
+			//                         "type": "string"
+			//                       }
+			//                     },
+			//                     "required": [
+			//                       "LogPrefix",
+			//                       "S3BucketArn"
+			//                     ],
+			//                     "type": "object"
+			//                   }
+			//                 },
+			//                 "required": [
+			//                   "S3Bucket"
+			//                 ],
+			//                 "type": "object"
+			//               },
+			//               "Enabled": {
+			//                 "description": "",
+			//                 "type": "boolean"
+			//               }
+			//             },
+			//             "required": [
+			//               "Destination",
+			//               "Enabled"
+			//             ],
+			//             "type": "object"
+			//           },
+			//           "maxItems": 1,
+			//           "type": "array",
+			//           "uniqueItems": true
+			//         },
+			//         "TextLogSettings": {
+			//           "description": "List of text log settings that pertain to the conversation log settings for the bot's TestBotAlias",
+			//           "insertionOrder": false,
+			//           "items": {
+			//             "additionalProperties": false,
+			//             "description": "Contains information about code hooks that Amazon Lex calls during a conversation.",
+			//             "properties": {
+			//               "Destination": {
+			//                 "additionalProperties": false,
+			//                 "description": "Defines the Amazon CloudWatch Logs destination log group for conversation text logs.",
+			//                 "properties": {
+			//                   "CloudWatch": {
+			//                     "additionalProperties": false,
+			//                     "properties": {
+			//                       "CloudWatchLogGroupArn": {
+			//                         "description": "A string used to identify the groupArn for the Cloudwatch Log Group",
+			//                         "maxLength": 2048,
+			//                         "minLength": 1,
+			//                         "type": "string"
+			//                       },
+			//                       "LogPrefix": {
+			//                         "description": "A string containing the value for the Log Prefix",
+			//                         "maxLength": 1024,
+			//                         "minLength": 0,
+			//                         "type": "string"
+			//                       }
+			//                     },
+			//                     "required": [
+			//                       "CloudWatchLogGroupArn",
+			//                       "LogPrefix"
+			//                     ],
+			//                     "type": "object"
+			//                   }
+			//                 },
+			//                 "required": [
+			//                   "CloudWatch"
+			//                 ],
+			//                 "type": "object"
+			//               },
+			//               "Enabled": {
+			//                 "description": "",
+			//                 "type": "boolean"
+			//               }
+			//             },
+			//             "required": [
+			//               "Destination",
+			//               "Enabled"
+			//             ],
+			//             "type": "object"
+			//           },
+			//           "maxItems": 1,
+			//           "type": "array",
+			//           "uniqueItems": true
+			//         }
+			//       },
+			//       "type": "object"
+			//     },
+			//     "Description": {
+			//       "description": "A description of the resource",
+			//       "maxLength": 200,
+			//       "type": "string"
+			//     },
+			//     "SentimentAnalysisSettings": {
+			//       "additionalProperties": false,
+			//       "description": "Determines whether Amazon Lex will use Amazon Comprehend to detect the sentiment of user utterances.",
+			//       "properties": {
+			//         "DetectSentiment": {
+			//           "description": "Enable to call Amazon Comprehend for Sentiment natively within Lex",
+			//           "type": "boolean"
+			//         }
+			//       },
+			//       "required": [
+			//         "DetectSentiment"
+			//       ],
+			//       "type": "object"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Description: "Configuring the test bot alias settings for a given bot",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"bot_alias_locale_settings": {
+						// Property: BotAliasLocaleSettings
+						Description: "A list of bot alias locale settings to add to the bot alias.",
+						Attributes: tfsdk.SetNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"bot_alias_locale_setting": {
+									// Property: BotAliasLocaleSetting
+									Description: "You can use this parameter to specify a specific Lambda function to run different functions in different locales.",
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"code_hook_specification": {
+												// Property: CodeHookSpecification
+												Description: "Contains information about code hooks that Amazon Lex calls during a conversation.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"lambda_code_hook": {
+															// Property: LambdaCodeHook
+															Description: "Contains information about code hooks that Amazon Lex calls during a conversation.",
+															Attributes: tfsdk.SingleNestedAttributes(
+																map[string]tfsdk.Attribute{
+																	"code_hook_interface_version": {
+																		// Property: CodeHookInterfaceVersion
+																		Description: "The version of the request-response that you want Amazon Lex to use to invoke your Lambda function.",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(1, 5),
+																		},
+																	},
+																	"lambda_arn": {
+																		// Property: LambdaArn
+																		Description: "The Amazon Resource Name (ARN) of the Lambda function.",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(20, 2048),
+																		},
+																	},
+																},
+															),
+															Required: true,
+														},
+													},
+												),
+												Optional: true,
+											},
+											"enabled": {
+												// Property: Enabled
+												Description: "Whether the Lambda code hook is enabled",
+												Type:        types.BoolType,
+												Required:    true,
+											},
+										},
+									),
+									Required: true,
+								},
+								"locale_id": {
+									// Property: LocaleId
+									Description: "A string used to identify the locale",
+									Type:        types.StringType,
+									Required:    true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(1, 128),
+									},
+								},
+							},
+							tfsdk.SetNestedAttributesOptions{},
+						),
+						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.ArrayLenAtMost(50),
+						},
+					},
+					"conversation_log_settings": {
+						// Property: ConversationLogSettings
+						Description: "Contains information about code hooks that Amazon Lex calls during a conversation.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"audio_log_settings": {
+									// Property: AudioLogSettings
+									Description: "List of audio log settings that pertain to the conversation log settings for the bot's TestBotAlias.",
+									Attributes: tfsdk.SetNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"destination": {
+												// Property: Destination
+												Description: "The location of audio log files collected when conversation logging is enabled for a bot.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"s3_bucket": {
+															// Property: S3Bucket
+															Description: "Specifies an Amazon S3 bucket for logging audio conversations",
+															Attributes: tfsdk.SingleNestedAttributes(
+																map[string]tfsdk.Attribute{
+																	"kms_key_arn": {
+																		// Property: KmsKeyArn
+																		Description: "The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket.",
+																		Type:        types.StringType,
+																		Optional:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(20, 2048),
+																			validate.StringMatch(regexp.MustCompile("^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$"), ""),
+																		},
+																	},
+																	"log_prefix": {
+																		// Property: LogPrefix
+																		Description: "The Amazon S3 key of the deployment package.",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(0, 1024),
+																		},
+																	},
+																	"s3_bucket_arn": {
+																		// Property: S3BucketArn
+																		Description: "The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored.",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(1, 2048),
+																			validate.StringMatch(regexp.MustCompile("^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"), ""),
+																		},
+																	},
+																},
+															),
+															Required: true,
+														},
+													},
+												),
+												Required: true,
+											},
+											"enabled": {
+												// Property: Enabled
+												Description: "",
+												Type:        types.BoolType,
+												Required:    true,
+											},
+										},
+										tfsdk.SetNestedAttributesOptions{},
+									),
+									Optional: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.ArrayLenAtMost(1),
+									},
+								},
+								"text_log_settings": {
+									// Property: TextLogSettings
+									Description: "List of text log settings that pertain to the conversation log settings for the bot's TestBotAlias",
+									Attributes: tfsdk.SetNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"destination": {
+												// Property: Destination
+												Description: "Defines the Amazon CloudWatch Logs destination log group for conversation text logs.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"cloudwatch": {
+															// Property: CloudWatch
+															Attributes: tfsdk.SingleNestedAttributes(
+																map[string]tfsdk.Attribute{
+																	"cloudwatch_log_group_arn": {
+																		// Property: CloudWatchLogGroupArn
+																		Description: "A string used to identify the groupArn for the Cloudwatch Log Group",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(1, 2048),
+																		},
+																	},
+																	"log_prefix": {
+																		// Property: LogPrefix
+																		Description: "A string containing the value for the Log Prefix",
+																		Type:        types.StringType,
+																		Required:    true,
+																		Validators: []tfsdk.AttributeValidator{
+																			validate.StringLenBetween(0, 1024),
+																		},
+																	},
+																},
+															),
+															Required: true,
+														},
+													},
+												),
+												Required: true,
+											},
+											"enabled": {
+												// Property: Enabled
+												Description: "",
+												Type:        types.BoolType,
+												Required:    true,
+											},
+										},
+										tfsdk.SetNestedAttributesOptions{},
+									),
+									Optional: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.ArrayLenAtMost(1),
+									},
+								},
+							},
+						),
+						Optional: true,
+					},
+					"description": {
+						// Property: Description
+						Description: "A description of the resource",
+						Type:        types.StringType,
+						Optional:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringLenAtMost(200),
+						},
+					},
+					"sentiment_analysis_settings": {
+						// Property: SentimentAnalysisSettings
+						Description: "Determines whether Amazon Lex will use Amazon Comprehend to detect the sentiment of user utterances.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"detect_sentiment": {
+									// Property: DetectSentiment
+									Description: "Enable to call Amazon Comprehend for Sentiment natively within Lex",
+									Type:        types.BoolType,
+									Required:    true,
+								},
+							},
+						),
+						Optional: true,
+					},
+				},
+			),
+			Optional: true,
 		},
 		"test_bot_alias_tags": {
 			// Property: TestBotAliasTags
@@ -8529,18 +9112,30 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithSyntheticIDAttribute(false)
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"active":                                "Active",
+		"advanced_recognition_setting":          "AdvancedRecognitionSetting",
 		"allow_interrupt":                       "AllowInterrupt",
 		"allow_multiple_values":                 "AllowMultipleValues",
 		"arn":                                   "Arn",
+		"audio_log_settings":                    "AudioLogSettings",
+		"audio_recognition_strategy":            "AudioRecognitionStrategy",
 		"auto_build_bot_locales":                "AutoBuildBotLocales",
+		"bot_alias_locale_setting":              "BotAliasLocaleSetting",
+		"bot_alias_locale_settings":             "BotAliasLocaleSettings",
 		"bot_file_s3_location":                  "BotFileS3Location",
 		"bot_locales":                           "BotLocales",
 		"bot_tags":                              "BotTags",
 		"buttons":                               "Buttons",
 		"child_directed":                        "ChildDirected",
 		"closing_response":                      "ClosingResponse",
+		"cloudwatch":                            "CloudWatch",
+		"cloudwatch_log_group_arn":              "CloudWatchLogGroupArn",
+		"code_hook_interface_version":           "CodeHookInterfaceVersion",
+		"code_hook_specification":               "CodeHookSpecification",
 		"continue_response":                     "ContinueResponse",
+		"conversation_log_settings":             "ConversationLogSettings",
 		"custom_payload":                        "CustomPayload",
+		"custom_vocabulary":                     "CustomVocabulary",
+		"custom_vocabulary_items":               "CustomVocabularyItems",
 		"data_privacy":                          "DataPrivacy",
 		"declination_response":                  "DeclinationResponse",
 		"default_value":                         "DefaultValue",
@@ -8548,6 +9143,8 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"default_value_specification":           "DefaultValueSpecification",
 		"delay_in_seconds":                      "DelayInSeconds",
 		"description":                           "Description",
+		"destination":                           "Destination",
+		"detect_sentiment":                      "DetectSentiment",
 		"dialog_code_hook":                      "DialogCodeHook",
 		"enabled":                               "Enabled",
 		"external_source_setting":               "ExternalSourceSetting",
@@ -8569,7 +9166,10 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"kendra_index":                          "KendraIndex",
 		"key":                                   "Key",
 		"kms_key_arn":                           "KmsKeyArn",
+		"lambda_arn":                            "LambdaArn",
+		"lambda_code_hook":                      "LambdaCodeHook",
 		"locale_id":                             "LocaleId",
+		"log_prefix":                            "LogPrefix",
 		"max_retries":                           "MaxRetries",
 		"message":                               "Message",
 		"message_groups":                        "MessageGroups",
@@ -8583,6 +9183,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"parent_intent_signature":               "ParentIntentSignature",
 		"parent_slot_type_signature":            "ParentSlotTypeSignature",
 		"pattern":                               "Pattern",
+		"phrase":                                "Phrase",
 		"plain_text_message":                    "PlainTextMessage",
 		"post_fulfillment_status_specification": "PostFulfillmentStatusSpecification",
 		"priority":                              "Priority",
@@ -8593,11 +9194,13 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"resolution_strategy":                   "ResolutionStrategy",
 		"role_arn":                              "RoleArn",
 		"s3_bucket":                             "S3Bucket",
+		"s3_bucket_arn":                         "S3BucketArn",
 		"s3_bucket_name":                        "S3BucketName",
 		"s3_object_key":                         "S3ObjectKey",
 		"s3_object_version":                     "S3ObjectVersion",
 		"sample_utterances":                     "SampleUtterances",
 		"sample_value":                          "SampleValue",
+		"sentiment_analysis_settings":           "SentimentAnalysisSettings",
 		"slot_constraint":                       "SlotConstraint",
 		"slot_name":                             "SlotName",
 		"slot_priorities":                       "SlotPriorities",
@@ -8612,8 +9215,10 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"subtitle":                              "Subtitle",
 		"success_response":                      "SuccessResponse",
 		"synonyms":                              "Synonyms",
+		"test_bot_alias_settings":               "TestBotAliasSettings",
 		"test_bot_alias_tags":                   "TestBotAliasTags",
 		"text":                                  "Text",
+		"text_log_settings":                     "TextLogSettings",
 		"time_to_live_in_seconds":               "TimeToLiveInSeconds",
 		"timeout_in_seconds":                    "TimeoutInSeconds",
 		"timeout_response":                      "TimeoutResponse",
@@ -8629,6 +9234,7 @@ func botResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"voice_settings":                        "VoiceSettings",
 		"wait_and_continue_specification":       "WaitAndContinueSpecification",
 		"waiting_response":                      "WaitingResponse",
+		"weight":                                "Weight",
 	})
 
 	opts = opts.WithWriteOnlyPropertyPaths([]string{

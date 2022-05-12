@@ -36,7 +36,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "maxLength": 12,
 			//   "minLength": 12,
-			//   "pattern": "",
+			//   "pattern": "^[0-9]{12}$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -176,7 +176,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "number"
 			// }
 			Description: "<p>The amount of SPICE capacity used by this dataset. This is 0 if the dataset isn't\n            imported into SPICE.</p>",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Computed:    true,
 		},
 		"created_time": {
@@ -284,7 +284,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 					"ingestion_wait_time_in_hours": {
 						// Property: IngestionWaitTimeInHours
 						Description: "<p>The maximum time (in hours) to wait for Ingestion to complete. Default timeout is 36 hours.\n Applicable only when DataSetImportMode mode is set to SPICE and WaitForSpiceIngestion is set to true.</p>",
-						Type:        types.NumberType,
+						Type:        types.Float64Type,
 						Computed:    true,
 					},
 					"wait_for_spice_ingestion": {
@@ -536,7 +536,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                   "description": "\u003cp\u003eLeft operand.\u003c/p\u003e",
 			//                   "maxLength": 64,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "[0-9a-zA-Z-]*",
 			//                   "type": "string"
 			//                 },
 			//                 "OnClause": {
@@ -557,7 +557,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                   "description": "\u003cp\u003eRight operand.\u003c/p\u003e",
 			//                   "maxLength": 64,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "[0-9a-zA-Z-]*",
 			//                   "type": "string"
 			//                 },
 			//                 "Type": {
@@ -582,7 +582,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "description": "\u003cp\u003ePhysical table ID.\u003c/p\u003e",
 			//               "maxLength": 64,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "[0-9a-zA-Z-]*",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1372,7 +1372,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 											"start_from_row": {
 												// Property: StartFromRow
 												Description: "<p>A row number to start reading data from.</p>",
-												Type:        types.NumberType,
+												Type:        types.Float64Type,
 												Computed:    true,
 											},
 											"text_qualifier": {
@@ -1414,7 +1414,7 @@ func dataSetDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "description": "\u003cp\u003eThe namespace associated with the row-level permissions dataset.\u003c/p\u003e",
 			//       "maxLength": 64,
 			//       "minLength": 0,
-			//       "pattern": "",
+			//       "pattern": "^[a-zA-Z0-9._-]*$",
 			//       "type": "string"
 			//     },
 			//     "PermissionPolicy": {

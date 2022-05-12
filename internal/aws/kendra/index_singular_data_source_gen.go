@@ -56,12 +56,12 @@ func indexDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 				map[string]tfsdk.Attribute{
 					"query_capacity_units": {
 						// Property: QueryCapacityUnits
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"storage_capacity_units": {
 						// Property: StorageCapacityUnits
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 				},
@@ -99,7 +99,7 @@ func indexDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "Duration": {
 			//             "maxLength": 10,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[0-9]+[s]",
 			//             "type": "string"
 			//           },
 			//           "Freshness": {
@@ -200,7 +200,7 @@ func indexDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								},
 								"importance": {
 									// Property: Importance
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"rank_order": {
@@ -219,7 +219,7 @@ func indexDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 											},
 											"value": {
 												// Property: Value
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Computed: true,
 											},
 										},
@@ -477,7 +477,7 @@ func indexDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "URL": {
 			//             "maxLength": 2048,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(https?|ftp|file):\\/\\/([^\\s]*)",
 			//             "type": "string"
 			//           },
 			//           "UserNameAttributeField": {

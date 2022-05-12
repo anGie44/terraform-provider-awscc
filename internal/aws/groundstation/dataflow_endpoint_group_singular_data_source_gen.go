@@ -54,7 +54,7 @@ func dataflowEndpointGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//             "type": "integer"
 			//           },
 			//           "Name": {
-			//             "pattern": "",
+			//             "pattern": "^[ a-zA-Z0-9_:-]{1,256}$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -104,7 +104,7 @@ func dataflowEndpointGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 											},
 											"port": {
 												// Property: Port
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Computed: true,
 											},
 										},
@@ -113,7 +113,7 @@ func dataflowEndpointGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 								},
 								"mtu": {
 									// Property: Mtu
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"name": {
@@ -170,11 +170,11 @@ func dataflowEndpointGroupDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "Key": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$",
 			//         "type": "string"
 			//       }
 			//     },

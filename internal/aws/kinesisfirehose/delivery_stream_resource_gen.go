@@ -4,6 +4,7 @@ package kinesisfirehose
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -56,13 +57,13 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "ClusterEndpoint": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "https:.*",
 			//       "type": "string"
 			//     },
 			//     "DomainARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "IndexName": {
@@ -143,7 +144,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "S3BackupMode": {
@@ -159,7 +160,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -236,7 +237,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -257,7 +258,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "SecurityGroupIds": {
@@ -306,12 +307,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"interval_in_seconds": {
 									// Property: IntervalInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"size_in_m_bs": {
 									// Property: SizeInMBs
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -347,6 +348,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("https:.*"), ""),
 						},
 					},
 					"domain_arn": {
@@ -355,6 +357,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"index_name": {
@@ -445,7 +448,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"duration_in_seconds": {
 									// Property: DurationInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -458,6 +461,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"s3_backup_mode": {
@@ -481,6 +485,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -489,12 +494,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -591,6 +596,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -615,6 +621,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"security_group_ids": {
@@ -671,7 +678,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "KeyARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "KeyType": {
@@ -695,6 +702,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"key_type": {
@@ -718,7 +726,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// {
 			//   "maxLength": 64,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9._-]+",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -726,6 +734,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 64),
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9._-]+"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -792,13 +801,13 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "ClusterEndpoint": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "https:.*",
 			//       "type": "string"
 			//     },
 			//     "DomainARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "IndexName": {
@@ -879,7 +888,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "S3BackupMode": {
@@ -895,7 +904,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -972,7 +981,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -993,7 +1002,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "SecurityGroupIds": {
@@ -1042,12 +1051,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"interval_in_seconds": {
 									// Property: IntervalInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"size_in_m_bs": {
 									// Property: SizeInMBs
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -1083,6 +1092,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("https:.*"), ""),
 						},
 					},
 					"domain_arn": {
@@ -1091,6 +1101,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"index_name": {
@@ -1181,7 +1192,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"duration_in_seconds": {
 									// Property: DurationInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -1194,6 +1205,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"s3_backup_mode": {
@@ -1217,6 +1229,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -1225,12 +1238,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -1327,6 +1340,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -1351,6 +1365,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"security_group_ids": {
@@ -1395,7 +1410,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "BucketARN": {
 			//       "maxLength": 2048,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "BufferingHints": {
@@ -1577,7 +1592,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "RoleARN": {
 			//               "maxLength": 512,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "arn:.*",
 			//               "type": "string"
 			//             },
 			//             "TableName": {
@@ -1698,7 +1713,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "S3BackupConfiguration": {
@@ -1707,7 +1722,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -1784,7 +1799,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -1816,6 +1831,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 2048),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"buffering_hints": {
@@ -1824,12 +1840,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"interval_in_seconds": {
 									// Property: IntervalInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"size_in_m_bs": {
 									// Property: SizeInMBs
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -1952,7 +1968,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																map[string]tfsdk.Attribute{
 																	"block_size_bytes": {
 																		// Property: BlockSizeBytes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																	"bloom_filter_columns": {
@@ -1965,7 +1981,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																	},
 																	"bloom_filter_false_positive_probability": {
 																		// Property: BloomFilterFalsePositiveProbability
-																		Type:     types.NumberType,
+																		Type:     types.Float64Type,
 																		Optional: true,
 																	},
 																	"compression": {
@@ -1975,7 +1991,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																	},
 																	"dictionary_key_threshold": {
 																		// Property: DictionaryKeyThreshold
-																		Type:     types.NumberType,
+																		Type:     types.Float64Type,
 																		Optional: true,
 																	},
 																	"enable_padding": {
@@ -1990,17 +2006,17 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																	},
 																	"padding_tolerance": {
 																		// Property: PaddingTolerance
-																		Type:     types.NumberType,
+																		Type:     types.Float64Type,
 																		Optional: true,
 																	},
 																	"row_index_stride": {
 																		// Property: RowIndexStride
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																	"stripe_size_bytes": {
 																		// Property: StripeSizeBytes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																},
@@ -2013,7 +2029,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																map[string]tfsdk.Attribute{
 																	"block_size_bytes": {
 																		// Property: BlockSizeBytes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																	"compression": {
@@ -2028,12 +2044,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																	},
 																	"max_padding_bytes": {
 																		// Property: MaxPaddingBytes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																	"page_size_bytes": {
 																		// Property: PageSizeBytes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Optional: true,
 																	},
 																	"writer_version": {
@@ -2078,6 +2094,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												Optional: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 512),
+													validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 												},
 											},
 											"table_name": {
@@ -2113,7 +2130,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"duration_in_seconds": {
 												// Property: DurationInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -2237,6 +2254,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"s3_backup_configuration": {
@@ -2249,6 +2267,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -2257,12 +2276,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -2359,6 +2378,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -2539,7 +2559,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "S3BackupMode": {
@@ -2551,7 +2571,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -2628,7 +2648,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -2653,12 +2673,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"interval_in_seconds": {
 									// Property: IntervalInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"size_in_m_bs": {
 									// Property: SizeInMBs
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -2834,7 +2854,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"duration_in_seconds": {
 									// Property: DurationInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -2847,6 +2867,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"s3_backup_mode": {
@@ -2864,6 +2885,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -2872,12 +2894,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -2974,6 +2996,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -2993,13 +3016,13 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "KinesisStreamARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     }
 			//   },
@@ -3017,6 +3040,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"role_arn": {
@@ -3025,6 +3049,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 				},
@@ -3154,7 +3179,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "S3BackupConfiguration": {
@@ -3163,7 +3188,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -3240,7 +3265,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -3263,7 +3288,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -3340,7 +3365,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -3505,7 +3530,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"duration_in_seconds": {
 									// Property: DurationInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -3518,6 +3543,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"s3_backup_configuration": {
@@ -3530,6 +3556,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -3538,12 +3565,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -3640,6 +3667,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -3667,6 +3695,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -3675,12 +3704,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -3777,6 +3806,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -3804,7 +3834,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "BucketARN": {
 			//       "maxLength": 2048,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     },
 			//     "BufferingHints": {
@@ -3881,7 +3911,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "RoleARN": {
 			//       "maxLength": 512,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "arn:.*",
 			//       "type": "string"
 			//     }
 			//   },
@@ -3899,6 +3929,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 2048),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 					"buffering_hints": {
@@ -3907,12 +3938,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"interval_in_seconds": {
 									// Property: IntervalInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"size_in_m_bs": {
 									// Property: SizeInMBs
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -4009,6 +4040,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 512),
+							validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 						},
 					},
 				},
@@ -4127,7 +4159,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "BucketARN": {
 			//           "maxLength": 2048,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         },
 			//         "BufferingHints": {
@@ -4204,7 +4236,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "RoleARN": {
 			//           "maxLength": 512,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "arn:.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -4250,7 +4282,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"hec_acknowledgment_timeout_in_seconds": {
 						// Property: HECAcknowledgmentTimeoutInSeconds
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(180, 600),
@@ -4349,7 +4381,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"duration_in_seconds": {
 									// Property: DurationInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -4371,6 +4403,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 								"buffering_hints": {
@@ -4379,12 +4412,12 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										map[string]tfsdk.Attribute{
 											"interval_in_seconds": {
 												// Property: IntervalInSeconds
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"size_in_m_bs": {
 												// Property: SizeInMBs
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -4481,6 +4514,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 512),
+										validate.StringMatch(regexp.MustCompile("arn:.*"), ""),
 									},
 								},
 							},
@@ -4506,7 +4540,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       "Value": {
 			//         "maxLength": 256,
 			//         "minLength": 0,
-			//         "pattern": "",
+			//         "pattern": "^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -4535,6 +4569,7 @@ func deliveryStreamResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(0, 256),
+							validate.StringMatch(regexp.MustCompile("^[\\p{L}\\p{Z}\\p{N}_.:\\/=+\\-@%]*$"), ""),
 						},
 					},
 				},

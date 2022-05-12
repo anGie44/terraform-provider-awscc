@@ -4,6 +4,7 @@ package ec2
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -76,7 +77,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "LaunchTemplateName": {
 			//             "maxLength": 128,
 			//             "minLength": 3,
-			//             "pattern": "",
+			//             "pattern": "[a-zA-Z0-9\\(\\)\\.\\-/_]+",
 			//             "type": "string"
 			//           },
 			//           "Version": {
@@ -206,7 +207,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "items": {
 			//                     "maxLength": 30,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "[a-zA-Z0-9\\.\\*]+",
 			//                     "type": "string"
 			//                   },
 			//                   "type": "array",
@@ -389,6 +390,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(3, 128),
+										validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9\\(\\)\\.\\-/_]+"), ""),
 									},
 								},
 								"version": {
@@ -419,12 +421,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -468,12 +470,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -510,12 +512,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -552,6 +554,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Optional: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayForEach(validate.StringLenBetween(1, 30)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9\\.\\*]+"), "")),
 												},
 											},
 											"instance_generations": {
@@ -594,12 +597,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Float64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Float64Type,
 															Optional: true,
 														},
 													},
@@ -612,12 +615,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -630,12 +633,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -644,7 +647,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"on_demand_max_price_percentage_over_lowest_price": {
 												// Property: OnDemandMaxPricePercentageOverLowestPrice
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"require_hibernate_support": {
@@ -654,7 +657,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"spot_max_price_percentage_over_lowest_price": {
 												// Property: SpotMaxPricePercentageOverLowestPrice
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"total_local_storage_gb": {
@@ -663,12 +666,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Float64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Float64Type,
 															Optional: true,
 														},
 													},
@@ -681,12 +684,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"max": {
 															// Property: Max
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"min": {
 															// Property: Min
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 													},
@@ -738,7 +741,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"partition_number": {
 												// Property: PartitionNumber
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"spread_domain": {
@@ -757,7 +760,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"priority": {
 									// Property: Priority
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 								},
 								"subnet_id": {
@@ -767,7 +770,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"weighted_capacity": {
 									// Property: WeightedCapacity
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 								},
 							},
@@ -854,7 +857,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"min_target_capacity": {
 						// Property: MinTargetCapacity
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"single_availability_zone": {
@@ -982,7 +985,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"instance_pools_to_use_count": {
 						// Property: InstancePoolsToUseCount
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"maintenance_strategies": {
@@ -1006,7 +1009,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"termination_delay": {
 												// Property: TerminationDelay
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -1024,7 +1027,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"min_target_capacity": {
 						// Property: MinTargetCapacity
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"single_availability_zone": {
@@ -1269,12 +1272,12 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"on_demand_target_capacity": {
 						// Property: OnDemandTargetCapacity
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"spot_target_capacity": {
 						// Property: SpotTargetCapacity
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"target_capacity_unit_type": {
@@ -1291,7 +1294,7 @@ func eC2FleetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"total_target_capacity": {
 						// Property: TotalTargetCapacity
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Required: true,
 					},
 				},

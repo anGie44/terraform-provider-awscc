@@ -17,7 +17,7 @@ jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
@@ -30,7 +30,7 @@ jobs:
   markdown-lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: avto-dev/markdown-lint@v1
         with:
@@ -40,20 +40,20 @@ jobs:
   misspell:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - id: go-version
         uses: juliangruber/read-file-action@v1
         with:
           path: ./.go-version
 
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v3
         with:
           # TODO: Replace with go-version-from-file when it is supported
           # https://github.com/actions/setup-go/pull/62
           go-version: ${{ steps.go-version.outputs.content }}
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         continue-on-error: true
         id: cache-go-pkg-mod
         timeout-minutes: 2

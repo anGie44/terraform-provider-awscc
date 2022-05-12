@@ -4,6 +4,7 @@ package rds
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -60,7 +61,7 @@ func dBProxyTargetGroupResourceType(ctx context.Context) (tfsdk.ResourceType, er
 					"connection_borrow_timeout": {
 						// Property: ConnectionBorrowTimeout
 						Description: "The number of seconds for a proxy to wait for a connection to become available in the connection pool.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"init_query": {
@@ -72,7 +73,7 @@ func dBProxyTargetGroupResourceType(ctx context.Context) (tfsdk.ResourceType, er
 					"max_connections_percent": {
 						// Property: MaxConnectionsPercent
 						Description: "The maximum size of the connection pool for each target in a target group.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(0, 100),
@@ -81,7 +82,7 @@ func dBProxyTargetGroupResourceType(ctx context.Context) (tfsdk.ResourceType, er
 					"max_idle_connections_percent": {
 						// Property: MaxIdleConnectionsPercent
 						Description: "Controls how actively the proxy closes idle database connections in the connection pool.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(0, 100),
@@ -127,7 +128,7 @@ func dBProxyTargetGroupResourceType(ctx context.Context) (tfsdk.ResourceType, er
 			// {
 			//   "description": "The identifier for the proxy.",
 			//   "maxLength": 64,
-			//   "pattern": "",
+			//   "pattern": "[A-z][0-z]*",
 			//   "type": "string"
 			// }
 			Description: "The identifier for the proxy.",
@@ -135,6 +136,7 @@ func dBProxyTargetGroupResourceType(ctx context.Context) (tfsdk.ResourceType, er
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenAtMost(64),
+				validate.StringMatch(regexp.MustCompile("[A-z][0-z]*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),

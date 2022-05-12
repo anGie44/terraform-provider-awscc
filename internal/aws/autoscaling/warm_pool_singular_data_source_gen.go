@@ -28,13 +28,36 @@ func warmPoolDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			Type:     types.StringType,
 			Computed: true,
 		},
+		"instance_reuse_policy": {
+			// Property: InstanceReusePolicy
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "properties": {
+			//     "ReuseOnScaleIn": {
+			//       "type": "boolean"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"reuse_on_scale_in": {
+						// Property: ReuseOnScaleIn
+						Type:     types.BoolType,
+						Computed: true,
+					},
+				},
+			),
+			Computed: true,
+		},
 		"max_group_prepared_capacity": {
 			// Property: MaxGroupPreparedCapacity
 			// CloudFormation resource type schema:
 			// {
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Computed: true,
 		},
 		"min_size": {
@@ -43,7 +66,7 @@ func warmPoolDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Computed: true,
 		},
 		"pool_state": {
@@ -75,9 +98,11 @@ func warmPoolDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"auto_scaling_group_name":     "AutoScalingGroupName",
+		"instance_reuse_policy":       "InstanceReusePolicy",
 		"max_group_prepared_capacity": "MaxGroupPreparedCapacity",
 		"min_size":                    "MinSize",
 		"pool_state":                  "PoolState",
+		"reuse_on_scale_in":           "ReuseOnScaleIn",
 	})
 
 	singularDataSourceType, err := NewSingularDataSourceType(ctx, opts...)

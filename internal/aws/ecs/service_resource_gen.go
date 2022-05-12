@@ -45,7 +45,7 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				map[string]tfsdk.Attribute{
 					"base": {
 						// Property: Base
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"capacity_provider": {
@@ -55,7 +55,7 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"weight": {
 						// Property: Weight
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 				},
@@ -130,12 +130,12 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"maximum_percent": {
 						// Property: MaximumPercent
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"minimum_healthy_percent": {
 						// Property: MinimumHealthyPercent
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 				},
@@ -188,7 +188,7 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Optional: true,
 		},
 		"enable_ecs_managed_tags": {
@@ -199,11 +199,6 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// }
 			Type:     types.BoolType,
 			Optional: true,
-			Computed: true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"enable_execute_command": {
 			// Property: EnableExecuteCommand
@@ -220,7 +215,7 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Optional: true,
 		},
 		"launch_type": {
@@ -282,7 +277,7 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"container_port": {
 						// Property: ContainerPort
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"load_balancer_name": {
@@ -299,11 +294,6 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"name": {
 			// Property: Name
@@ -433,11 +423,6 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"placement_strategies": {
 			// Property: PlacementStrategies
@@ -488,11 +473,6 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"platform_version": {
 			// Property: PlatformVersion
@@ -521,16 +501,11 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// }
 			Type:     types.StringType,
 			Optional: true,
-			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringInSlice([]string{
 					"SERVICE",
 					"TASK_DEFINITION",
 				}),
-			},
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
 			},
 		},
 		"role": {
@@ -630,12 +605,12 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"container_port": {
 						// Property: ContainerPort
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"port": {
 						// Property: Port
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"registry_arn": {
@@ -647,11 +622,6 @@ func serviceResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"tags": {
 			// Property: Tags

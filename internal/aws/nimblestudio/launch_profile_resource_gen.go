@@ -4,6 +4,7 @@ package nimblestudio
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -40,16 +41,15 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			// Property: Ec2SubnetIds
 			// CloudFormation resource type schema:
 			// {
-			//   "description": "\u003cp\u003eSpecifies the IDs of the EC2 subnets where streaming sessions will be accessible from. These subnets must support the specified instance types. \u003c/p\u003e",
+			//   "description": "\u003cp\u003eSpecifies the IDs of the EC2 subnets where streaming sessions will be accessible from.\n            These subnets must support the specified instance types. \u003c/p\u003e",
 			//   "items": {
-			//     "description": "",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 6,
 			//   "minItems": 0,
 			//   "type": "array"
 			// }
-			Description: "<p>Specifies the IDs of the EC2 subnets where streaming sessions will be accessible from. These subnets must support the specified instance types. </p>",
+			Description: "<p>Specifies the IDs of the EC2 subnets where streaming sessions will be accessible from.\n            These subnets must support the specified instance types. </p>",
 			Type:        types.ListType{ElemType: types.StringType},
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
@@ -75,21 +75,22 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			// Property: LaunchProfileProtocolVersions
 			// CloudFormation resource type schema:
 			// {
-			//   "description": "\u003cp\u003eThe version number of the protocol that is used by the launch profile. The only valid version is \"2021-03-31\".\u003c/p\u003e",
+			//   "description": "\u003cp\u003eThe version number of the protocol that is used by the launch profile. The only valid\n            version is \"2021-03-31\".\u003c/p\u003e",
 			//   "items": {
-			//     "description": "\u003cp\u003eThe version number of the protocol that is used by the launch profile. The only valid version is \"2021-03-31\".\u003c/p\u003e",
+			//     "description": "\u003cp\u003eThe version number of the protocol that is used by the launch profile. The only valid\n            version is \"2021-03-31\".\u003c/p\u003e",
 			//     "maxLength": 10,
 			//     "minLength": 0,
-			//     "pattern": "",
+			//     "pattern": "^2021\\-03\\-31$",
 			//     "type": "string"
 			//   },
 			//   "type": "array"
 			// }
-			Description: "<p>The version number of the protocol that is used by the launch profile. The only valid version is \"2021-03-31\".</p>",
+			Description: "<p>The version number of the protocol that is used by the launch profile. The only valid\n            version is \"2021-03-31\".</p>",
 			Type:        types.ListType{ElemType: types.StringType},
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayForEach(validate.StringLenBetween(0, 10)),
+				validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^2021\\-03\\-31$"), "")),
 			},
 		},
 		"name": {
@@ -116,7 +117,6 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			//   "description": "\u003cp\u003eA configuration for a streaming session.\u003c/p\u003e",
 			//   "properties": {
 			//     "ClipboardMode": {
-			//       "description": "",
 			//       "enum": [
 			//         "ENABLED",
 			//         "DISABLED"
@@ -124,9 +124,8 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			//       "type": "string"
 			//     },
 			//     "Ec2InstanceTypes": {
-			//       "description": "\u003cp\u003eThe EC2 instance types that users can select from when launching a streaming session with this launch profile.\u003c/p\u003e",
+			//       "description": "\u003cp\u003eThe EC2 instance types that users can select from when launching a streaming session\n            with this launch profile.\u003c/p\u003e",
 			//       "items": {
-			//         "description": "",
 			//         "enum": [
 			//           "g4dn.xlarge",
 			//           "g4dn.2xlarge",
@@ -142,22 +141,66 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			//       "type": "array"
 			//     },
 			//     "MaxSessionLengthInMinutes": {
-			//       "description": "\u003cp\u003eThe length of time, in minutes, that a streaming session can run. After this point, Nimble Studio automatically terminates the session.\u003c/p\u003e",
-			//       "maximum": 690,
+			//       "description": "\u003cp\u003eThe length of time, in minutes, that a streaming session can be active before it is\n            stopped or terminated. After this point, Nimble Studio automatically terminates or\n            stops the session. The default length of time is 690 minutes, and the maximum length of\n            time is 30 days.\u003c/p\u003e",
+			//       "maximum": 43200,
 			//       "minimum": 1,
 			//       "type": "number"
 			//     },
+			//     "MaxStoppedSessionLengthInMinutes": {
+			//       "description": "\u003cp\u003eInteger that determines if you can start and stop your sessions and how long a session\n            can stay in the STOPPED state. The default value is 0. The maximum value is 5760.\u003c/p\u003e\n        \u003cp\u003eIf the value is missing or set to 0, your sessions can’t be stopped. If you then call\n            StopStreamingSession, the session fails. If the time that a session stays in the READY\n            state exceeds the maxSessionLengthInMinutes value, the session will automatically be\n            terminated by AWS (instead of stopped).\u003c/p\u003e\n        \u003cp\u003eIf the value is set to a positive number, the session can be stopped. You can call\n            StopStreamingSession to stop sessions in the READY state. If the time that a session\n            stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will\n            automatically be stopped by AWS (instead of terminated).\u003c/p\u003e",
+			//       "maximum": 5760,
+			//       "minimum": 0,
+			//       "type": "number"
+			//     },
+			//     "SessionStorage": {
+			//       "additionalProperties": false,
+			//       "description": "\u003cp\u003eThe configuration for a streaming session’s upload storage.\u003c/p\u003e",
+			//       "properties": {
+			//         "Mode": {
+			//           "description": "\u003cp\u003eAllows artists to upload files to their workstations. The only valid option is\n                \u003ccode\u003eUPLOAD\u003c/code\u003e.\u003c/p\u003e",
+			//           "items": {
+			//             "enum": [
+			//               "UPLOAD"
+			//             ],
+			//             "type": "string"
+			//           },
+			//           "minItems": 1,
+			//           "type": "array"
+			//         },
+			//         "Root": {
+			//           "additionalProperties": false,
+			//           "description": "\u003cp\u003eThe upload storage root location (folder) on streaming workstations where files are\n            uploaded.\u003c/p\u003e",
+			//           "properties": {
+			//             "Linux": {
+			//               "description": "\u003cp\u003eThe folder path in Linux workstations where files are uploaded.\u003c/p\u003e",
+			//               "maxLength": 128,
+			//               "minLength": 1,
+			//               "pattern": "^(/?|(\\$HOME)?(/[^\\$/\\n\\s\\\\]+)*)$",
+			//               "type": "string"
+			//             },
+			//             "Windows": {
+			//               "description": "\u003cp\u003eThe folder path in Windows workstations where files are uploaded.\u003c/p\u003e",
+			//               "maxLength": 128,
+			//               "minLength": 1,
+			//               "pattern": "^((\\%HOMEPATH\\%)|[a-zA-Z]:)[\\\\/](?:[a-zA-Z0-9_-]+[\\\\/])*[a-zA-Z0-9_-]+$",
+			//               "type": "string"
+			//             }
+			//           },
+			//           "type": "object"
+			//         }
+			//       },
+			//       "type": "object"
+			//     },
 			//     "StreamingImageIds": {
-			//       "description": "\u003cp\u003eThe streaming images that users can select from when launching a streaming session with this launch profile.\u003c/p\u003e",
+			//       "description": "\u003cp\u003eThe streaming images that users can select from when launching a streaming session\n            with this launch profile.\u003c/p\u003e",
 			//       "items": {
-			//         "description": "",
 			//         "maxLength": 22,
 			//         "minLength": 0,
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9-_]*$",
 			//         "type": "string"
 			//       },
 			//       "maxItems": 20,
-			//       "minItems": 0,
+			//       "minItems": 1,
 			//       "type": "array"
 			//     }
 			//   },
@@ -173,9 +216,8 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 				map[string]tfsdk.Attribute{
 					"clipboard_mode": {
 						// Property: ClipboardMode
-						Description: "",
-						Type:        types.StringType,
-						Required:    true,
+						Type:     types.StringType,
+						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringInSlice([]string{
 								"ENABLED",
@@ -185,7 +227,7 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 					},
 					"ec_2_instance_types": {
 						// Property: Ec2InstanceTypes
-						Description: "<p>The EC2 instance types that users can select from when launching a streaming session with this launch profile.</p>",
+						Description: "<p>The EC2 instance types that users can select from when launching a streaming session\n            with this launch profile.</p>",
 						Type:        types.ListType{ElemType: types.StringType},
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
@@ -202,21 +244,81 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 					},
 					"max_session_length_in_minutes": {
 						// Property: MaxSessionLengthInMinutes
-						Description: "<p>The length of time, in minutes, that a streaming session can run. After this point, Nimble Studio automatically terminates the session.</p>",
-						Type:        types.NumberType,
+						Description: "<p>The length of time, in minutes, that a streaming session can be active before it is\n            stopped or terminated. After this point, Nimble Studio automatically terminates or\n            stops the session. The default length of time is 690 minutes, and the maximum length of\n            time is 30 days.</p>",
+						Type:        types.Float64Type,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
-							validate.FloatBetween(1.000000, 690.000000),
+							validate.FloatBetween(1.000000, 43200.000000),
 						},
+					},
+					"max_stopped_session_length_in_minutes": {
+						// Property: MaxStoppedSessionLengthInMinutes
+						Description: "<p>Integer that determines if you can start and stop your sessions and how long a session\n            can stay in the STOPPED state. The default value is 0. The maximum value is 5760.</p>\n        <p>If the value is missing or set to 0, your sessions can’t be stopped. If you then call\n            StopStreamingSession, the session fails. If the time that a session stays in the READY\n            state exceeds the maxSessionLengthInMinutes value, the session will automatically be\n            terminated by AWS (instead of stopped).</p>\n        <p>If the value is set to a positive number, the session can be stopped. You can call\n            StopStreamingSession to stop sessions in the READY state. If the time that a session\n            stays in the READY state exceeds the maxSessionLengthInMinutes value, the session will\n            automatically be stopped by AWS (instead of terminated).</p>",
+						Type:        types.Float64Type,
+						Optional:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.FloatBetween(0.000000, 5760.000000),
+						},
+					},
+					"session_storage": {
+						// Property: SessionStorage
+						Description: "<p>The configuration for a streaming session’s upload storage.</p>",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"mode": {
+									// Property: Mode
+									Description: "<p>Allows artists to upload files to their workstations. The only valid option is\n                <code>UPLOAD</code>.</p>",
+									Type:        types.ListType{ElemType: types.StringType},
+									Optional:    true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.ArrayLenAtLeast(1),
+										validate.ArrayForEach(validate.StringInSlice([]string{
+											"UPLOAD",
+										})),
+									},
+								},
+								"root": {
+									// Property: Root
+									Description: "<p>The upload storage root location (folder) on streaming workstations where files are\n            uploaded.</p>",
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"linux": {
+												// Property: Linux
+												Description: "<p>The folder path in Linux workstations where files are uploaded.</p>",
+												Type:        types.StringType,
+												Optional:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 128),
+													validate.StringMatch(regexp.MustCompile("^(/?|(\\$HOME)?(/[^\\$/\\n\\s\\\\]+)*)$"), ""),
+												},
+											},
+											"windows": {
+												// Property: Windows
+												Description: "<p>The folder path in Windows workstations where files are uploaded.</p>",
+												Type:        types.StringType,
+												Optional:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(1, 128),
+													validate.StringMatch(regexp.MustCompile("^((\\%HOMEPATH\\%)|[a-zA-Z]:)[\\\\/](?:[a-zA-Z0-9_-]+[\\\\/])*[a-zA-Z0-9_-]+$"), ""),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
+							},
+						),
+						Optional: true,
 					},
 					"streaming_image_ids": {
 						// Property: StreamingImageIds
-						Description: "<p>The streaming images that users can select from when launching a streaming session with this launch profile.</p>",
+						Description: "<p>The streaming images that users can select from when launching a streaming session\n            with this launch profile.</p>",
 						Type:        types.ListType{ElemType: types.StringType},
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
-							validate.ArrayLenBetween(0, 20),
+							validate.ArrayLenBetween(1, 20),
 							validate.ArrayForEach(validate.StringLenBetween(0, 22)),
+							validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9-_]*$"), "")),
 						},
 					},
 				},
@@ -227,7 +329,7 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			// Property: StudioComponentIds
 			// CloudFormation resource type schema:
 			// {
-			//   "description": "\u003cp\u003eUnique identifiers for a collection of studio components that can be used with this launch profile.\u003c/p\u003e",
+			//   "description": "\u003cp\u003eUnique identifiers for a collection of studio components that can be used with this\n            launch profile.\u003c/p\u003e",
 			//   "items": {
 			//     "type": "string"
 			//   },
@@ -235,7 +337,7 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			//   "minItems": 1,
 			//   "type": "array"
 			// }
-			Description: "<p>Unique identifiers for a collection of studio components that can be used with this launch profile.</p>",
+			Description: "<p>Unique identifiers for a collection of studio components that can be used with this\n            launch profile.</p>",
 			Type:        types.ListType{ElemType: types.StringType},
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
@@ -246,10 +348,10 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			// Property: StudioId
 			// CloudFormation resource type schema:
 			// {
-			//   "description": "\u003cp\u003eThe studioId. \u003c/p\u003e",
+			//   "description": "\u003cp\u003eThe studio ID. \u003c/p\u003e",
 			//   "type": "string"
 			// }
-			Description: "<p>The studioId. </p>",
+			Description: "<p>The studio ID. </p>",
 			Type:        types.StringType,
 			Required:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
@@ -261,7 +363,6 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			// CloudFormation resource type schema:
 			// {
 			//   "additionalProperties": false,
-			//   "description": "",
 			//   "patternProperties": {
 			//     "": {
 			//       "type": "string"
@@ -269,7 +370,6 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 			//   },
 			//   "type": "object"
 			// }
-			Description: "",
 			// Pattern: ""
 			Type:     types.MapType{ElemType: types.StringType},
 			Optional: true,
@@ -302,19 +402,25 @@ func launchProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error) 
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithSyntheticIDAttribute(true)
 	opts = opts.WithAttributeNameMap(map[string]string{
-		"clipboard_mode":                   "ClipboardMode",
-		"description":                      "Description",
-		"ec_2_instance_types":              "Ec2InstanceTypes",
-		"ec_2_subnet_ids":                  "Ec2SubnetIds",
-		"launch_profile_id":                "LaunchProfileId",
-		"launch_profile_protocol_versions": "LaunchProfileProtocolVersions",
-		"max_session_length_in_minutes":    "MaxSessionLengthInMinutes",
-		"name":                             "Name",
-		"stream_configuration":             "StreamConfiguration",
-		"streaming_image_ids":              "StreamingImageIds",
-		"studio_component_ids":             "StudioComponentIds",
-		"studio_id":                        "StudioId",
-		"tags":                             "Tags",
+		"clipboard_mode":                        "ClipboardMode",
+		"description":                           "Description",
+		"ec_2_instance_types":                   "Ec2InstanceTypes",
+		"ec_2_subnet_ids":                       "Ec2SubnetIds",
+		"launch_profile_id":                     "LaunchProfileId",
+		"launch_profile_protocol_versions":      "LaunchProfileProtocolVersions",
+		"linux":                                 "Linux",
+		"max_session_length_in_minutes":         "MaxSessionLengthInMinutes",
+		"max_stopped_session_length_in_minutes": "MaxStoppedSessionLengthInMinutes",
+		"mode":                                  "Mode",
+		"name":                                  "Name",
+		"root":                                  "Root",
+		"session_storage":                       "SessionStorage",
+		"stream_configuration":                  "StreamConfiguration",
+		"streaming_image_ids":                   "StreamingImageIds",
+		"studio_component_ids":                  "StudioComponentIds",
+		"studio_id":                             "StudioId",
+		"tags":                                  "Tags",
+		"windows":                               "Windows",
 	})
 
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)

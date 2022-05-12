@@ -4,6 +4,7 @@ package ssm
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -42,7 +43,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "description": "The name of the document attachment file.",
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       },
 			//       "Values": {
@@ -87,6 +88,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"), ""),
 						},
 					},
 					"values": {
@@ -106,14 +108,11 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayLenBetween(0, 20),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
 			},
 		},
 		"content": {
@@ -126,9 +125,6 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The content for the Systems Manager document in JSON, YAML or String format.",
 			Type:        types.StringType,
 			Required:    true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.RequiresReplace(),
-			},
 		},
 		"document_format": {
 			// Property: DocumentFormat
@@ -157,7 +153,6 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				DefaultValue(types.String{Value: "JSON"}),
 				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
 			},
 		},
 		"document_type": {
@@ -213,13 +208,16 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "A name for the Systems Manager document.",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9_\\-.]{3,128}$",
 			//   "type": "string"
 			// }
 			Description: "A name for the Systems Manager document.",
 			Type:        types.StringType,
 			Optional:    true,
 			Computed:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_\\-.]{3,128}$"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
@@ -237,13 +235,13 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "Name": {
 			//         "description": "The name of the required SSM document. The name can be an Amazon Resource Name (ARN).",
 			//         "maxLength": 200,
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9_\\-.:/]{3,200}$",
 			//         "type": "string"
 			//       },
 			//       "Version": {
 			//         "description": "The document version required by the current document.",
 			//         "maxLength": 8,
-			//         "pattern": "",
+			//         "pattern": "([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)",
 			//         "type": "string"
 			//       }
 			//     },
@@ -262,6 +260,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenAtMost(200),
+							validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_\\-.:/]{3,200}$"), ""),
 						},
 					},
 					"version": {
@@ -271,20 +270,18 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenAtMost(8),
+							validate.StringMatch(regexp.MustCompile("([$]LATEST|[$]DEFAULT|^[1-9][0-9]*$)"), ""),
 						},
 					},
 				},
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
-			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayLenAtLeast(1),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
 			},
 		},
 		"tags": {
@@ -300,14 +297,14 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "description": "The name of the tag.",
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
 			//         "description": "The value of the tag.",
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -326,6 +323,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"), ""),
 						},
 					},
 					"value": {
@@ -335,6 +333,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 256),
+							validate.StringMatch(regexp.MustCompile("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"), ""),
 						},
 					},
 				},
@@ -353,16 +352,41 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Specify a target type to define the kinds of resources the document can run on.",
-			//   "pattern": "",
+			//   "pattern": "^\\/[\\w\\.\\-\\:\\/]*$",
 			//   "type": "string"
 			// }
 			Description: "Specify a target type to define the kinds of resources the document can run on.",
 			Type:        types.StringType,
 			Optional:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^\\/[\\w\\.\\-\\:\\/]*$"), ""),
+			},
+		},
+		"update_method": {
+			// Property: UpdateMethod
+			// CloudFormation resource type schema:
+			// {
+			//   "default": "Replace",
+			//   "description": "Update method - when set to 'Replace', the update will replace the existing document; when set to 'NewVersion', the update will create a new version.",
+			//   "enum": [
+			//     "Replace",
+			//     "NewVersion"
+			//   ],
+			//   "type": "string"
+			// }
+			Description: "Update method - when set to 'Replace', the update will replace the existing document; when set to 'NewVersion', the update will create a new version.",
+			Type:        types.StringType,
+			Optional:    true,
 			Computed:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringInSlice([]string{
+					"Replace",
+					"NewVersion",
+				}),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
+				DefaultValue(types.String{Value: "Replace"}),
 				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
 			},
 		},
 		"version_name": {
@@ -370,16 +394,14 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "An optional field specifying the version of the artifact you are creating with the document. This value is unique across all versions of a document, and cannot be changed.",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9_\\-.]{1,128}$",
 			//   "type": "string"
 			// }
 			Description: "An optional field specifying the version of the artifact you are creating with the document. This value is unique across all versions of a document, and cannot be changed.",
 			Type:        types.StringType,
 			Optional:    true,
-			Computed:    true,
-			PlanModifiers: []tfsdk.AttributePlanModifier{
-				tfsdk.UseStateForUnknown(),
-				tfsdk.RequiresReplace(),
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_\\-.]{1,128}$"), ""),
 			},
 		},
 	}
@@ -414,6 +436,7 @@ func documentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"requires":        "Requires",
 		"tags":            "Tags",
 		"target_type":     "TargetType",
+		"update_method":   "UpdateMethod",
 		"value":           "Value",
 		"values":          "Values",
 		"version":         "Version",

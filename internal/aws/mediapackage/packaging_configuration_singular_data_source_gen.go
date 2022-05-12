@@ -213,7 +213,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 								"program_date_time_interval_seconds": {
 									// Property: ProgramDateTimeIntervalSeconds
 									Description: "The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag inserted into manifests. Additionally, when an interval is specified ID3Timed Metadata messages will be generated every 5 seconds using the ingest time of the content. If the interval is not specified, or set to 0, then no EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no ID3Timed Metadata messages will be generated. Note that irrespective of this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input, it will be passed through to HLS output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 								"repeat_ext_x_key": {
@@ -230,13 +230,13 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 											"max_video_bits_per_second": {
 												// Property: MaxVideoBitsPerSecond
 												Description: "The maximum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"min_video_bits_per_second": {
 												// Property: MinVideoBitsPerSecond
 												Description: "The minimum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"stream_order": {
@@ -263,7 +263,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each fragment. Actual fragments will be rounded to the nearest multiple of the source fragment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -304,6 +304,14 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 			//             "enum": [
 			//               "NONE",
 			//               "HBBTV_1_5"
+			//             ],
+			//             "type": "string"
+			//           },
+			//           "ScteMarkersSource": {
+			//             "description": "The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content.",
+			//             "enum": [
+			//               "SEGMENTS",
+			//               "MANIFEST"
 			//             ],
 			//             "type": "string"
 			//           },
@@ -429,12 +437,18 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 								"min_buffer_time_seconds": {
 									// Property: MinBufferTimeSeconds
 									Description: "Minimum duration (in seconds) that a player will buffer media before starting the presentation.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 								"profile": {
 									// Property: Profile
 									Description: "The Dynamic Adaptive Streaming over HTTP (DASH) profile type. When set to \"HBBTV_1_5\", HbbTV 1.5 compliant output is enabled.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"scte_markers_source": {
+									// Property: ScteMarkersSource
+									Description: "The source of scte markers used. When set to SEGMENTS, the scte markers are sourced from the segments of the ingested content. When set to MANIFEST, the scte markers are sourced from the manifest of the ingested content.",
 									Type:        types.StringType,
 									Computed:    true,
 								},
@@ -446,13 +460,13 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 											"max_video_bits_per_second": {
 												// Property: MaxVideoBitsPerSecond
 												Description: "The maximum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"min_video_bits_per_second": {
 												// Property: MinVideoBitsPerSecond
 												Description: "The minimum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"stream_order": {
@@ -521,7 +535,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each fragment. Actual fragments will be rounded to the nearest multiple of the source fragment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"segment_template_format": {
@@ -741,7 +755,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 								"program_date_time_interval_seconds": {
 									// Property: ProgramDateTimeIntervalSeconds
 									Description: "The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag inserted into manifests. Additionally, when an interval is specified ID3Timed Metadata messages will be generated every 5 seconds using the ingest time of the content. If the interval is not specified, or set to 0, then no EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no ID3Timed Metadata messages will be generated. Note that irrespective of this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input, it will be passed through to HLS output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 								"repeat_ext_x_key": {
@@ -758,13 +772,13 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 											"max_video_bits_per_second": {
 												// Property: MaxVideoBitsPerSecond
 												Description: "The maximum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"min_video_bits_per_second": {
 												// Property: MinVideoBitsPerSecond
 												Description: "The minimum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"stream_order": {
@@ -785,7 +799,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each fragment. Actual fragments will be rounded to the nearest multiple of the source fragment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"use_audio_rendition_group": {
@@ -960,13 +974,13 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 											"max_video_bits_per_second": {
 												// Property: MaxVideoBitsPerSecond
 												Description: "The maximum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"min_video_bits_per_second": {
 												// Property: MinVideoBitsPerSecond
 												Description: "The minimum video bitrate (bps) to include in output.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 											"stream_order": {
@@ -987,7 +1001,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each fragment. Actual fragments will be rounded to the nearest multiple of the source fragment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -1093,6 +1107,7 @@ func packagingConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSource
 		"program_date_time_interval_seconds":        "ProgramDateTimeIntervalSeconds",
 		"repeat_ext_x_key":                          "RepeatExtXKey",
 		"role_arn":                                  "RoleArn",
+		"scte_markers_source":                       "ScteMarkersSource",
 		"segment_duration_seconds":                  "SegmentDurationSeconds",
 		"segment_template_format":                   "SegmentTemplateFormat",
 		"speke_key_provider":                        "SpekeKeyProvider",

@@ -131,7 +131,7 @@ func launchConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, e
 								"iops": {
 									// Property: Iops
 									Description: "The number of input/output (I/O) operations per second (IOPS) to provision for the volume. ",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"snapshot_id": {
@@ -143,13 +143,13 @@ func launchConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, e
 								"throughput": {
 									// Property: Throughput
 									Description: "The throughput (MiBps) to provision for a gp3 volume.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"volume_size": {
 									// Property: VolumeSize
 									Description: "The volume size, in GiBs.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"volume_type": {
@@ -209,14 +209,14 @@ func launchConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//   "items": {
 			//     "type": "string"
 			//   },
-			//   "type": "array",
-			//   "uniqueItems": true
+			//   "type": "array"
 			// }
 			Description: "The IDs of one or more security groups for the VPC that you specified in the ClassicLinkVPCId property.",
-			Type:        types.SetType{ElemType: types.StringType},
+			Type:        types.ListType{ElemType: types.StringType},
 			Optional:    true,
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
+				Multiset(),
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
@@ -400,7 +400,7 @@ func launchConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, e
 					"http_put_response_hop_limit": {
 						// Property: HttpPutResponseHopLimit
 						Description: "The desired HTTP PUT response hop limit for instance metadata requests.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"http_tokens": {
@@ -459,14 +459,14 @@ func launchConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType, e
 			//   "items": {
 			//     "type": "string"
 			//   },
-			//   "type": "array",
-			//   "uniqueItems": true
+			//   "type": "array"
 			// }
 			Description: "A list that contains the security groups to assign to the instances in the Auto Scaling group.",
-			Type:        types.SetType{ElemType: types.StringType},
+			Type:        types.ListType{ElemType: types.StringType},
 			Optional:    true,
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
+				Multiset(),
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},

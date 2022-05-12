@@ -99,13 +99,13 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 								"min_number_of_executed_things": {
 									// Property: MinNumberOfExecutedThings
 									Description: "The minimum number of things which must receive job execution notifications before the job can be aborted.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 								"threshold_percentage": {
 									// Property: ThresholdPercentage
 									Description: "The minimum percentage of job execution failures that must occur to initiate the job abort.",
-									Type:        types.NumberType,
+									Type:        types.Float64Type,
 									Computed:    true,
 								},
 							},
@@ -132,7 +132,7 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			// {
 			//   "description": "A description of the Job Template.",
 			//   "maxLength": 2028,
-			//   "pattern": "",
+			//   "pattern": "[^\\p{C}]+",
 			//   "type": "string"
 			// }
 			Description: "A description of the Job Template.",
@@ -174,6 +174,66 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			Description: "Optional for copying a JobTemplate from a pre-existing Job configuration.",
 			Type:        types.StringType,
 			Computed:    true,
+		},
+		"job_executions_retry_config": {
+			// Property: JobExecutionsRetryConfig
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "properties": {
+			//     "RetryCriteriaList": {
+			//       "insertionOrder": false,
+			//       "items": {
+			//         "additionalProperties": false,
+			//         "description": "Specifies how many times a failure type should be retried.",
+			//         "properties": {
+			//           "FailureType": {
+			//             "enum": [
+			//               "FAILED",
+			//               "TIMED_OUT",
+			//               "ALL"
+			//             ],
+			//             "type": "string"
+			//           },
+			//           "NumberOfRetries": {
+			//             "maximum": 10,
+			//             "minimum": 0,
+			//             "type": "integer"
+			//           }
+			//         },
+			//         "type": "object"
+			//       },
+			//       "maxItems": 2,
+			//       "minItems": 1,
+			//       "type": "array"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"retry_criteria_list": {
+						// Property: RetryCriteriaList
+						Attributes: tfsdk.ListNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"failure_type": {
+									// Property: FailureType
+									Type:     types.StringType,
+									Computed: true,
+								},
+								"number_of_retries": {
+									// Property: NumberOfRetries
+									Type:     types.Int64Type,
+									Computed: true,
+								},
+							},
+							tfsdk.ListNestedAttributesOptions{},
+						),
+						Computed: true,
+					},
+				},
+			),
+			Computed: true,
 		},
 		"job_executions_rollout_config": {
 			// Property: JobExecutionsRolloutConfig
@@ -239,13 +299,13 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 								"base_rate_per_minute": {
 									// Property: BaseRatePerMinute
 									Description: "The minimum number of things that will be notified of a pending job, per minute at the start of job rollout. This parameter allows you to define the initial rate of rollout.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 								"increment_factor": {
 									// Property: IncrementFactor
 									Description: "The exponential factor to increase the rate of rollout for a job.",
-									Type:        types.NumberType,
+									Type:        types.Float64Type,
 									Computed:    true,
 								},
 								"rate_increase_criteria": {
@@ -255,12 +315,12 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 										map[string]tfsdk.Attribute{
 											"number_of_notified_things": {
 												// Property: NumberOfNotifiedThings
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Computed: true,
 											},
 											"number_of_succeeded_things": {
 												// Property: NumberOfSucceededThings
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Computed: true,
 											},
 										},
@@ -274,7 +334,7 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					"maximum_per_minute": {
 						// Property: MaximumPerMinute
 						Description: "The maximum number of things that will be notified of a pending job, per minute. This parameter allows you to create a staged rollout.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -287,7 +347,7 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			// {
 			//   "maxLength": 64,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9_-]+",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -324,7 +384,7 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					"expires_in_sec": {
 						// Property: ExpiresInSec
 						Description: "How number (in seconds) pre-signed URLs are valid.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"role_arn": {
@@ -415,7 +475,7 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					"in_progress_timeout_in_minutes": {
 						// Property: InProgressTimeoutInMinutes
 						Description: "Specifies the amount of time, in minutes, this device has to finish execution of this job.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -455,15 +515,18 @@ func jobTemplateDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 		"in_progress_timeout_in_minutes": "InProgressTimeoutInMinutes",
 		"increment_factor":               "IncrementFactor",
 		"job_arn":                        "JobArn",
+		"job_executions_retry_config":    "JobExecutionsRetryConfig",
 		"job_executions_rollout_config":  "JobExecutionsRolloutConfig",
 		"job_template_id":                "JobTemplateId",
 		"key":                            "Key",
 		"maximum_per_minute":             "MaximumPerMinute",
 		"min_number_of_executed_things":  "MinNumberOfExecutedThings",
 		"number_of_notified_things":      "NumberOfNotifiedThings",
+		"number_of_retries":              "NumberOfRetries",
 		"number_of_succeeded_things":     "NumberOfSucceededThings",
 		"presigned_url_config":           "PresignedUrlConfig",
 		"rate_increase_criteria":         "RateIncreaseCriteria",
+		"retry_criteria_list":            "RetryCriteriaList",
 		"role_arn":                       "RoleArn",
 		"tags":                           "Tags",
 		"threshold_percentage":           "ThresholdPercentage",

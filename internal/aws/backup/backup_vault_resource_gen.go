@@ -4,11 +4,13 @@ package backup
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	. "github.com/hashicorp/terraform-provider-awscc/internal/generic"
 	"github.com/hashicorp/terraform-provider-awscc/internal/registry"
+	"github.com/hashicorp/terraform-provider-awscc/internal/validate"
 )
 
 func init() {
@@ -44,11 +46,14 @@ func backupVaultResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// Property: BackupVaultName
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9\\-\\_]{2,50}$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9\\-\\_]{2,50}$"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
 			},
@@ -108,17 +113,17 @@ func backupVaultResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				map[string]tfsdk.Attribute{
 					"changeable_for_days": {
 						// Property: ChangeableForDays
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Optional: true,
 					},
 					"max_retention_days": {
 						// Property: MaxRetentionDays
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Optional: true,
 					},
 					"min_retention_days": {
 						// Property: MinRetentionDays
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Required: true,
 					},
 				},

@@ -50,7 +50,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The ID of the new wireless gateway task definition",
-			//   "pattern": "",
+			//   "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
 			//   "type": "string"
 			// }
 			Description: "The ID of the new wireless gateway task definition",
@@ -389,7 +389,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								},
 								"sig_key_crc": {
 									// Property: SigKeyCrc
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"update_signature": {

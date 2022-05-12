@@ -4,6 +4,7 @@ package groundstation
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -40,7 +41,7 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "integer"
 			// }
 			Description: "Post-pass time needed after the contact.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"contact_pre_pass_duration_seconds": {
@@ -51,7 +52,7 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "integer"
 			// }
 			Description: "Pre-pass time needed before the contact.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"dataflow_edges": {
@@ -115,7 +116,7 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "integer"
 			// }
 			Description: "Visibilities with shorter duration than the specified minimum viable contact duration will be ignored when searching for available contacts.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Required:    true,
 		},
 		"name": {
@@ -123,12 +124,15 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "A name used to identify a mission profile.",
-			//   "pattern": "",
+			//   "pattern": "^[ a-zA-Z0-9_:-]{1,256}$",
 			//   "type": "string"
 			// }
 			Description: "A name used to identify a mission profile.",
 			Type:        types.StringType,
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[ a-zA-Z0-9_:-]{1,256}$"), ""),
+			},
 		},
 		"region": {
 			// Property: Region
@@ -150,11 +154,11 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "Key": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -168,11 +172,17 @@ func missionProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						// Property: Key
 						Type:     types.StringType,
 						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$"), ""),
+						},
 					},
 					"value": {
 						// Property: Value
 						Type:     types.StringType,
 						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$"), ""),
+						},
 					},
 				},
 				tfsdk.ListNestedAttributesOptions{},

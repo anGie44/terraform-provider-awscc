@@ -4,6 +4,7 @@ package athena
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -55,12 +56,15 @@ func workGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The workGroup name.",
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9._-]{1,128}",
 			//   "type": "string"
 			// }
 			Description: "The workGroup name.",
 			Type:        types.StringType,
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9._-]{1,128}"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
 			},
@@ -235,7 +239,7 @@ func workGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"bytes_scanned_cutoff_per_query": {
 						// Property: BytesScannedCutoffPerQuery
 						Description: "The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(10000000),
@@ -423,7 +427,7 @@ func workGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"bytes_scanned_cutoff_per_query": {
 						// Property: BytesScannedCutoffPerQuery
 						Description: "The upper data usage limit (cutoff) for the amount of bytes a single query in a workgroup is allowed to scan.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(10000000),
@@ -533,6 +537,7 @@ func workGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				},
 			),
 			Optional: true,
+			// WorkGroupConfigurationUpdates is a write-only property.
 		},
 	}
 
@@ -585,6 +590,9 @@ func workGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"work_group_configuration_updates":      "WorkGroupConfigurationUpdates",
 	})
 
+	opts = opts.WithWriteOnlyPropertyPaths([]string{
+		"/properties/WorkGroupConfigurationUpdates",
+	})
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)
 
 	opts = opts.WithUpdateTimeoutInMinutes(0)

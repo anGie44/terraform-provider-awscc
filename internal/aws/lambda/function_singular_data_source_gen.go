@@ -128,7 +128,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "A unique Arn for CodeSigningConfig resource",
-			//   "pattern": "",
+			//   "pattern": "arn:(aws[a-zA-Z-]*)?:lambda:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:code-signing-config:csc-[a-z0-9]{17}",
 			//   "type": "string"
 			// }
 			Description: "A unique Arn for CodeSigningConfig resource",
@@ -144,7 +144,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "properties": {
 			//     "TargetArn": {
 			//       "description": "The Amazon Resource Name (ARN) of an Amazon SQS queue or Amazon SNS topic.",
-			//       "pattern": "",
+			//       "pattern": "^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$",
 			//       "type": "string"
 			//     }
 			//   },
@@ -209,6 +209,38 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			),
 			Computed: true,
 		},
+		"ephemeral_storage": {
+			// Property: EphemeralStorage
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "A function's ephemeral storage settings.",
+			//   "properties": {
+			//     "Size": {
+			//       "description": "The amount of ephemeral storage that your function has access to.",
+			//       "maximum": 10240,
+			//       "minimum": 512,
+			//       "type": "integer"
+			//     }
+			//   },
+			//   "required": [
+			//     "Size"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "A function's ephemeral storage settings.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"size": {
+						// Property: Size
+						Description: "The amount of ephemeral storage that your function has access to.",
+						Type:        types.Int64Type,
+						Computed:    true,
+					},
+				},
+			),
+			Computed: true,
+		},
 		"file_system_configs": {
 			// Property: FileSystemConfigs
 			// CloudFormation resource type schema:
@@ -220,13 +252,13 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "Arn": {
 			//         "description": "The Amazon Resource Name (ARN) of the Amazon EFS access point that provides access to the file system.",
 			//         "maxLength": 200,
-			//         "pattern": "",
+			//         "pattern": "^arn:aws[a-zA-Z-]*:elasticfilesystem:[a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1}:\\d{12}:access-point/fsap-[a-f0-9]{17}$",
 			//         "type": "string"
 			//       },
 			//       "LocalMountPath": {
 			//         "description": "The path where the function can access the file system, starting with /mnt/.",
 			//         "maxLength": 160,
-			//         "pattern": "",
+			//         "pattern": "^/mnt/[a-zA-Z0-9-_.]+$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -277,7 +309,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "The name of the method within your code that Lambda calls to execute your function. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime",
 			//   "maxLength": 128,
-			//   "pattern": "",
+			//   "pattern": "^[^\\s]+$",
 			//   "type": "string"
 			// }
 			Description: "The name of the method within your code that Lambda calls to execute your function. The format includes the file name. It can also include namespaces and other qualifiers, depending on the runtime",
@@ -346,7 +378,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
-			//   "pattern": "",
+			//   "pattern": "^(arn:(aws[a-zA-Z-]*)?:[a-z0-9-.]+:.*)|()$",
 			//   "type": "string"
 			// }
 			Description: "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
@@ -376,7 +408,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The amount of memory that your function has access to. Increasing the function's memory also increases its CPU allocation. The default value is 128 MB. The value must be a multiple of 64 MB.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"package_type": {
@@ -403,7 +435,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of simultaneous executions to reserve for the function.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"role": {
@@ -411,7 +443,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The Amazon Resource Name (ARN) of the function's execution role.",
-			//   "pattern": "",
+			//   "pattern": "^arn:(aws[a-zA-Z-]*)?:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of the function's execution role.",
@@ -488,7 +520,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The amount of time that Lambda allows a function to run before stopping it. The default is 3 seconds. The maximum allowed value is 900 seconds.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"tracing_config": {
@@ -597,6 +629,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"description":                    "Description",
 		"entry_point":                    "EntryPoint",
 		"environment":                    "Environment",
+		"ephemeral_storage":              "EphemeralStorage",
 		"file_system_configs":            "FileSystemConfigs",
 		"function_name":                  "FunctionName",
 		"handler":                        "Handler",
@@ -616,6 +649,7 @@ func functionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"s3_key":                         "S3Key",
 		"s3_object_version":              "S3ObjectVersion",
 		"security_group_ids":             "SecurityGroupIds",
+		"size":                           "Size",
 		"subnet_ids":                     "SubnetIds",
 		"tags":                           "Tags",
 		"target_arn":                     "TargetArn",

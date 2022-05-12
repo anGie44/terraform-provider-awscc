@@ -23,9 +23,10 @@ func transitGatewayResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: AmazonSideAsn
 			// CloudFormation resource type schema:
 			// {
+			//   "format": "int64",
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Optional: true,
 			Computed: true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{

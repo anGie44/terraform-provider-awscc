@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package main
@@ -113,7 +114,7 @@ package {{ .PackageName }}
 
 import (
 	"context"
-	{{ if .ImportMathBig }}"math/big"{{- end }}
+	{{if .ImportRegexp }}"regexp"{{- end}}
 
 	{{if .ImportFrameworkAttr }}"github.com/hashicorp/terraform-plugin-framework/attr"{{- end}}
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -144,7 +145,7 @@ func {{ .FactoryFunctionName }}(ctx context.Context) (tfsdk.ResourceType, error)
 {{- end }}
 
 	schema := tfsdk.Schema{
-		Description: "{{ .SchemaDescription }}",
+		Description: {{ .SchemaDescription | printf "%q" }},
 		Version:     {{ .SchemaVersion }},
 		Attributes:  attributes,
 	}

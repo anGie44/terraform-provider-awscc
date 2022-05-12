@@ -50,7 +50,7 @@ func robotResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -153,7 +153,7 @@ func robotResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	}
 
 	schema := tfsdk.Schema{
-		Description: "AWS::RoboMaker::Robot resource creates an AWS RoboMaker fleet.",
+		Description: "AWS::RoboMaker::Robot resource creates an AWS RoboMaker Robot.",
 		Version:     1,
 		Attributes:  attributes,
 	}

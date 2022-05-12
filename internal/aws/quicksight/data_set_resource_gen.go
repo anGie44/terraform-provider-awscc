@@ -4,7 +4,7 @@ package quicksight
 
 import (
 	"context"
-	"math/big"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -41,7 +41,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 12,
 			//   "minLength": 12,
-			//   "pattern": "",
+			//   "pattern": "^[0-9]{12}$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -49,6 +49,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(12, 12),
+				validate.StringMatch(regexp.MustCompile("^[0-9]{12}$"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -213,7 +214,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "number"
 			// }
 			Description: "<p>The amount of SPICE capacity used by this dataset. This is 0 if the dataset isn't\n            imported into SPICE.</p>",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -345,14 +346,14 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"ingestion_wait_time_in_hours": {
 						// Property: IngestionWaitTimeInHours
 						Description: "<p>The maximum time (in hours) to wait for Ingestion to complete. Default timeout is 36 hours.\n Applicable only when DataSetImportMode mode is set to SPICE and WaitForSpiceIngestion is set to true.</p>",
-						Type:        types.NumberType,
+						Type:        types.Float64Type,
 						Optional:    true,
 						Computed:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.FloatBetween(1.000000, 36.000000),
 						},
 						PlanModifiers: []tfsdk.AttributePlanModifier{
-							DefaultValue(types.Number{Value: big.NewFloat(36.000000)}),
+							DefaultValue(types.Float64{Value: 36.000000}),
 							tfsdk.UseStateForUnknown(),
 						},
 					},
@@ -614,7 +615,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "description": "\u003cp\u003eLeft operand.\u003c/p\u003e",
 			//                   "maxLength": 64,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "[0-9a-zA-Z-]*",
 			//                   "type": "string"
 			//                 },
 			//                 "OnClause": {
@@ -635,7 +636,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "description": "\u003cp\u003eRight operand.\u003c/p\u003e",
 			//                   "maxLength": 64,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "[0-9a-zA-Z-]*",
 			//                   "type": "string"
 			//                 },
 			//                 "Type": {
@@ -660,7 +661,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "description": "\u003cp\u003ePhysical table ID.\u003c/p\u003e",
 			//               "maxLength": 64,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "[0-9a-zA-Z-]*",
 			//               "type": "string"
 			//             }
 			//           },
@@ -949,6 +950,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 64),
+													validate.StringMatch(regexp.MustCompile("[0-9a-zA-Z-]*"), ""),
 												},
 											},
 											"on_clause": {
@@ -980,6 +982,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 64),
+													validate.StringMatch(regexp.MustCompile("[0-9a-zA-Z-]*"), ""),
 												},
 											},
 											"type": {
@@ -1006,6 +1009,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 64),
+										validate.StringMatch(regexp.MustCompile("[0-9a-zA-Z-]*"), ""),
 									},
 								},
 							},
@@ -1643,7 +1647,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"start_from_row": {
 												// Property: StartFromRow
 												Description: "<p>A row number to start reading data from.</p>",
-												Type:        types.NumberType,
+												Type:        types.Float64Type,
 												Optional:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.FloatAtLeast(1.000000),
@@ -1694,7 +1698,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "description": "\u003cp\u003eThe namespace associated with the row-level permissions dataset.\u003c/p\u003e",
 			//       "maxLength": 64,
 			//       "minLength": 0,
-			//       "pattern": "",
+			//       "pattern": "^[a-zA-Z0-9._-]*$",
 			//       "type": "string"
 			//     },
 			//     "PermissionPolicy": {
@@ -1738,6 +1742,7 @@ func dataSetResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(0, 64),
+							validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9._-]*$"), ""),
 						},
 					},
 					"permission_policy": {

@@ -74,7 +74,7 @@ func healthCheckDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			//     },
 			//     "IPAddress": {
 			//       "maxLength": 45,
-			//       "pattern": "",
+			//       "pattern": "^((([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$|^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$",
 			//       "type": "string"
 			//     },
 			//     "InsufficientDataHealthStatus": {
@@ -177,7 +177,7 @@ func healthCheckDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					},
 					"failure_threshold": {
 						// Property: FailureThreshold
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"fully_qualified_domain_name": {
@@ -187,7 +187,7 @@ func healthCheckDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					},
 					"health_threshold": {
 						// Property: HealthThreshold
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"ip_address": {
@@ -212,7 +212,7 @@ func healthCheckDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					},
 					"port": {
 						// Property: Port
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"regions": {
@@ -222,7 +222,7 @@ func healthCheckDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					},
 					"request_interval": {
 						// Property: RequestInterval
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"resource_path": {

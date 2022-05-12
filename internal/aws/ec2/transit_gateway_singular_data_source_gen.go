@@ -23,9 +23,10 @@ func transitGatewayDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			// Property: AmazonSideAsn
 			// CloudFormation resource type schema:
 			// {
+			//   "format": "int64",
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Computed: true,
 		},
 		"association_default_route_table_id": {

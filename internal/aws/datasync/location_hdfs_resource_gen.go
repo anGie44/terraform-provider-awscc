@@ -4,7 +4,7 @@ package datasync
 
 import (
 	"context"
-	"math/big"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -29,7 +29,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "insertionOrder": false,
 			//   "items": {
 			//     "maxLength": 128,
-			//     "pattern": "",
+			//     "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 4,
@@ -38,10 +38,11 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// }
 			Description: "ARN(s) of the agent(s) to use for an HDFS location.",
 			Type:        types.ListType{ElemType: types.StringType},
-			Optional:    true,
+			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayLenBetween(1, 4),
 				validate.ArrayForEach(validate.StringLenAtMost(128)),
+				validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:agent/agent-[0-9a-z]{17}$"), "")),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),
@@ -60,7 +61,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// }
 			Description: "The authentication mode used to determine identity of user.",
 			Type:        types.StringType,
-			Optional:    true,
+			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringInSlice([]string{
 					"SIMPLE",
@@ -79,7 +80,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Size of chunks (blocks) in bytes that the data is divided into when stored in the HDFS cluster.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.IntBetween(1048576, 1073741824),
@@ -116,7 +117,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The unique identity, or principal, to which Kerberos can assign tickets.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^.+$",
 			//   "type": "string"
 			// }
 			Description: "The unique identity, or principal, to which Kerberos can assign tickets.",
@@ -124,6 +125,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("^.+$"), ""),
 			},
 		},
 		"kms_key_provider_uri": {
@@ -133,7 +135,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The identifier for the Key Management Server where the encryption keys that encrypt data inside HDFS clusters are stored.",
 			//   "maxLength": 255,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$",
 			//   "type": "string"
 			// }
 			Description: "The identifier for the Key Management Server where the encryption keys that encrypt data inside HDFS clusters are stored.",
@@ -141,6 +143,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 255),
+				validate.StringMatch(regexp.MustCompile("^kms:\\/\\/http[s]?@(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])(;(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9]))*:[0-9]{1,5}\\/kms$"), ""),
 			},
 		},
 		"location_arn": {
@@ -149,7 +152,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "description": "The Amazon Resource Name (ARN) of the HDFS location.",
 			//   "maxLength": 128,
-			//   "pattern": "",
+			//   "pattern": "^arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):datasync:[a-z\\-0-9]+:[0-9]{12}:location/loc-[0-9a-z]{17}$",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of the HDFS location.",
@@ -165,7 +168,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "description": "The URL of the HDFS location that was described.",
 			//   "maxLength": 4356,
-			//   "pattern": "",
+			//   "pattern": "^(efs|nfs|s3|smb|fsxw|hdfs)://[a-zA-Z0-9.:/\\-]+$",
 			//   "type": "string"
 			// }
 			Description: "The URL of the HDFS location that was described.",
@@ -188,7 +191,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "Hostname": {
 			//         "description": "The DNS name or IP address of the Name Node in the customer's on premises HDFS cluster.",
 			//         "maxLength": 255,
-			//         "pattern": "",
+			//         "pattern": "^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$",
 			//         "type": "string"
 			//       },
 			//       "Port": {
@@ -217,12 +220,13 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenAtMost(255),
+							validate.StringMatch(regexp.MustCompile("^(([a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9\\-]*[A-Za-z0-9])$"), ""),
 						},
 					},
 					"port": {
 						// Property: Port
 						Description: "The port on which the Name Node is listening on for client requests.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(1, 65536),
@@ -231,7 +235,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				},
 				tfsdk.ListNestedAttributesOptions{},
 			),
-			Optional: true,
+			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayLenAtLeast(1),
 			},
@@ -328,14 +332,14 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Number of copies of each block that exists inside the HDFS cluster.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.IntBetween(1, 512),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
-				DefaultValue(types.Number{Value: big.NewFloat(3)}),
+				DefaultValue(types.Int64{Value: 3}),
 				tfsdk.UseStateForUnknown(),
 			},
 		},
@@ -346,7 +350,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The user name that has read and write permissions on the specified HDFS cluster.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[_.A-Za-z0-9][-_.A-Za-z0-9]*$",
 			//   "type": "string"
 			// }
 			Description: "The user name that has read and write permissions on the specified HDFS cluster.",
@@ -354,6 +358,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("^[_.A-Za-z0-9][-_.A-Za-z0-9]*$"), ""),
 			},
 		},
 		"subdirectory": {
@@ -362,7 +367,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "description": "The subdirectory in HDFS that is used to read data from the HDFS source location or write data to the HDFS destination.",
 			//   "maxLength": 4096,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$",
 			//   "type": "string"
 			// }
 			Description: "The subdirectory in HDFS that is used to read data from the HDFS source location or write data to the HDFS destination.",
@@ -370,6 +375,7 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenAtMost(4096),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9_\\-\\+\\./\\(\\)\\$\\p{Zs}]+$"), ""),
 			},
 			// Subdirectory is a write-only property.
 		},
@@ -489,22 +495,6 @@ func locationHDFSResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)
 
 	opts = opts.WithUpdateTimeoutInMinutes(0)
-
-	opts = opts.WithRequiredAttributesValidators(validate.OneOfRequired(
-		validate.Required(
-			"name_nodes",
-			"authentication_type",
-			"agent_arns",
-			"simple_user",
-		),
-		validate.Required(
-			"name_nodes",
-			"authentication_type",
-			"agent_arns",
-			"kerberos_principal",
-		),
-	),
-	)
 
 	resourceType, err := NewResourceType(ctx, opts...)
 

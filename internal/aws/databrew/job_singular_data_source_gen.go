@@ -52,6 +52,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "Bucket": {
 			//                 "type": "string"
 			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
+			//                 "type": "string"
+			//               },
 			//               "Key": {
 			//                 "type": "string"
 			//               }
@@ -78,6 +83,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "S3 Output location",
 			//             "properties": {
 			//               "Bucket": {
+			//                 "type": "string"
+			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
 			//                 "type": "string"
 			//               },
 			//               "Key": {
@@ -140,6 +150,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 												Type:     types.StringType,
 												Computed: true,
 											},
+											"bucket_owner": {
+												// Property: BucketOwner
+												Type:     types.StringType,
+												Computed: true,
+											},
 											"key": {
 												// Property: Key
 												Type:     types.StringType,
@@ -169,6 +184,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 										map[string]tfsdk.Attribute{
 											"bucket": {
 												// Property: Bucket
+												Type:     types.StringType,
+												Computed: true,
+											},
+											"bucket_owner": {
+												// Property: BucketOwner
 												Type:     types.StringType,
 												Computed: true,
 											},
@@ -216,6 +236,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "S3 Output location",
 			//             "properties": {
 			//               "Bucket": {
+			//                 "type": "string"
+			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
 			//                 "type": "string"
 			//               },
 			//               "Key": {
@@ -271,6 +296,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 										map[string]tfsdk.Attribute{
 											"bucket": {
 												// Property: Bucket
+												Type:     types.StringType,
+												Computed: true,
+											},
+											"bucket_owner": {
+												// Property: BucketOwner
 												Type:     types.StringType,
 												Computed: true,
 											},
@@ -380,7 +410,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 					"size": {
 						// Property: Size
 						Description: "Sample configuration size for profile jobs.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -410,7 +440,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Max capacity",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"max_retries": {
@@ -421,7 +451,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Max retries",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"name": {
@@ -447,6 +477,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//     "Bucket": {
 			//       "type": "string"
 			//     },
+			//     "BucketOwner": {
+			//       "maxLength": 12,
+			//       "minLength": 12,
+			//       "type": "string"
+			//     },
 			//     "Key": {
 			//       "type": "string"
 			//     }
@@ -461,6 +496,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 				map[string]tfsdk.Attribute{
 					"bucket": {
 						// Property: Bucket
+						Type:     types.StringType,
+						Computed: true,
+					},
+					"bucket_owner": {
+						// Property: BucketOwner
 						Type:     types.StringType,
 						Computed: true,
 					},
@@ -534,6 +574,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "Bucket": {
 			//             "type": "string"
 			//           },
+			//           "BucketOwner": {
+			//             "maxLength": 12,
+			//             "minLength": 12,
+			//             "type": "string"
+			//           },
 			//           "Key": {
 			//             "type": "string"
 			//           }
@@ -542,6 +587,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "Bucket"
 			//         ],
 			//         "type": "object"
+			//       },
+			//       "MaxOutputFiles": {
+			//         "maximum": 999,
+			//         "minimum": 1,
+			//         "type": "integer"
 			//       },
 			//       "Overwrite": {
 			//         "type": "boolean"
@@ -607,6 +657,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:     types.StringType,
 									Computed: true,
 								},
+								"bucket_owner": {
+									// Property: BucketOwner
+									Type:     types.StringType,
+									Computed: true,
+								},
 								"key": {
 									// Property: Key
 									Type:     types.StringType,
@@ -614,6 +669,11 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								},
 							},
 						),
+						Computed: true,
+					},
+					"max_output_files": {
+						// Property: MaxOutputFiles
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"overwrite": {
@@ -672,7 +732,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                 "items": {
 			//                   "maxLength": 128,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "^[A-Z\\_]+$",
 			//                   "type": "string"
 			//                 },
 			//                 "minItems": 1,
@@ -695,7 +755,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                     "Statistic": {
 			//                       "maxLength": 128,
 			//                       "minLength": 1,
-			//                       "pattern": "",
+			//                       "pattern": "^[A-Z\\_]+$",
 			//                       "type": "string"
 			//                     }
 			//                   },
@@ -728,7 +788,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "items": {
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^[A-Z\\_]+$",
 			//             "type": "string"
 			//           },
 			//           "minItems": 1,
@@ -751,7 +811,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "Statistic": {
 			//                 "maxLength": 128,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "^[A-Z\\_]+$",
 			//                 "type": "string"
 			//               }
 			//             },
@@ -778,7 +838,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "items": {
 			//                 "maxLength": 128,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "^[A-Z\\_]+$",
 			//                 "type": "string"
 			//               },
 			//               "minItems": 1,
@@ -795,7 +855,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "items": {
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^[A-Z_][A-Z\\\\d_]*$",
 			//             "type": "string"
 			//           },
 			//           "minItems": 1,
@@ -1093,7 +1153,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Timeout",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"type": {
@@ -1182,6 +1242,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"allowed_statistics":               "AllowedStatistics",
 		"bucket":                           "Bucket",
+		"bucket_owner":                     "BucketOwner",
 		"catalog_id":                       "CatalogId",
 		"column_statistics_configurations": "ColumnStatisticsConfigurations",
 		"compression_format":               "CompressionFormat",
@@ -1207,6 +1268,7 @@ func jobDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"location":                         "Location",
 		"log_subscription":                 "LogSubscription",
 		"max_capacity":                     "MaxCapacity",
+		"max_output_files":                 "MaxOutputFiles",
 		"max_retries":                      "MaxRetries",
 		"mode":                             "Mode",
 		"name":                             "Name",

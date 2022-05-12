@@ -1,22 +1,250 @@
-## 0.12.0 (Unreleased)
-## [0.11.0](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v0.11.0) (January  7, 2022)
-
-NOTES:
-* provider: This is a test ([#100](https://github.com/anGie44/terraform-provider-awscc/issues/100))
+## 0.21.0 (Unreleased)
+## [0.20.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.20.0) (May  5, 2022)
 
 FEATURES:
-* **New Resource:** `awscc_example_resource` ([#101](https://github.com/anGie44/terraform-provider-awscc/issues/101))
+
+* **New Data Source:** `awscc_ec2_transit_gateway_attachment`
+* **New Data Source:** `awscc_ec2_transit_gateway_attachments`
+* **New Data Source:** `awscc_voiceid_domain`
+* **New Data Source:** `awscc_voiceid_domains`
+* **New Resource:** `awscc_ec2_transit_gateway_attachment`
+* **New Resource:** `awscc_voiceid_domain`
+* Adds support for assuming IAM role with web identity.
 
 BUG FIXES:
-* provider: commit changelog only if changes exist ([#10](https://github.com/anGie44/terraform-provider-awscc/issues/10))
 
-## [0.10.0](https://github.com/anGie44/terraform-provider-awscc/releases/tag/v0.10.0) (January  7, 2022)
+* Provider parameter `skip_medatadata_api_check = false` now correctly overrides environment variable `AWS_EC2_METADATA_DISABLED`
 
-ENHANCEMENTS:
-* provider: Migrate off of go-changelog ([#1](https://github.com/anGie44/terraform-provider-awscc/issues/1))
+## [0.19.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.19.0) (April 21, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_connect_phone_number`
+* **New Data Source:** `awscc_iottwinmaker_scene`
+* **New Data Source:** `awscc_iottwinmaker_workspace`
+* **New Data Source:** `awscc_iottwinmaker_workspaces`
+* **New Resource:** `awscc_connect_phone_number`
+* **New Resource:** `awscc_iottwinmaker_scene`
+* **New Resource:** `awscc_iottwinmaker_workspace`
+
+## [0.18.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.18.0) (April 14, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_apprunner_observability_configuration`
+* **New Data Source:** `awscc_apprunner_observability_configurations`
+* **New Data Source:** `awscc_ssm_documents`
+* **New Resource:** `awscc_apprunner_observability_configuration`
+
+## [0.17.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.17.0) (April  7, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_datasync_location_fsx_open_zfs`
+* **New Data Source:** `awscc_datasync_location_fsx_open_zfs_plural`
+* **New Data Source:** `awscc_events_endpoint`
+* **New Data Source:** `awscc_events_endpoints`
+* **New Data Source:** `awscc_lambda_url`
+* **New Resource:** `awscc_datasync_location_fsx_open_zfs`
+* **New Resource:** `awscc_events_endpoint`
+* **New Resource:** `awscc_lambda_url`
+
+## [0.16.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.16.0) (March 24, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_iotevents_alarm_model`
+* **New Data Source:** `awscc_iotevents_alarm_models`
+* **New Resource:** `awscc_iotevents_alarm_model`
+
+## [0.15.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.15.0) (March 17, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_billingconductor_billing_group`
+* **New Data Source:** `awscc_billingconductor_custom_line_item`
+* **New Data Source:** `awscc_billingconductor_pricing_plan`
+* **New Data Source:** `awscc_billingconductor_pricing_rule`
+* **New Data Source:** `awscc_inspector_assessment_target`
+* **New Data Source:** `awscc_inspector_assessment_targets`
+* **New Data Source:** `awscc_inspector_assessment_template`
+* **New Data Source:** `awscc_inspector_assessment_templates`
+* **New Data Source:** `awscc_inspector_resource_group`
+* **New Resource:** `awscc_billingconductor_billing_group`
+* **New Resource:** `awscc_billingconductor_custom_line_item`
+* **New Resource:** `awscc_billingconductor_pricing_plan`
+* **New Resource:** `awscc_billingconductor_pricing_rule`
+* **New Resource:** `awscc_inspector_assessment_target`
+* **New Resource:** `awscc_inspector_assessment_template`
+* **New Resource:** `awscc_inspector_resource_group`
+
+## [0.14.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.14.0) (March 11, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_eks_identity_provider_config`
+* **New Data Source:** `awscc_msk_batch_scram_secret`
+* **New Data Source:** `awscc_msk_cluster`
+* **New Data Source:** `awscc_msk_clusters`
+* **New Data Source:** `awscc_msk_configuration`
+* **New Data Source:** `awscc_msk_configurations`
+* **New Data Source:** `awscc_personalize_dataset`
+* **New Data Source:** `awscc_personalize_dataset_group`
+* **New Data Source:** `awscc_personalize_dataset_groups`
+* **New Data Source:** `awscc_personalize_datasets`
+* **New Data Source:** `awscc_personalize_schema`
+* **New Data Source:** `awscc_personalize_schemas`
+* **New Data Source:** `awscc_personalize_solution`
+* **New Data Source:** `awscc_personalize_solutions`
+* **New Resource:** `awscc_eks_identity_provider_config`
+* **New Resource:** `awscc_msk_batch_scram_secret`
+* **New Resource:** `awscc_msk_cluster`
+* **New Resource:** `awscc_msk_configuration`
+* **New Resource:** `awscc_personalize_dataset`
+* **New Resource:** `awscc_personalize_dataset_group`
+* **New Resource:** `awscc_personalize_schema`
+* **New Resource:** `awscc_personalize_solution`
+
+## [0.13.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.13.0) (February 24, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_datasync_location_fsx_lustre`
+* **New Data Source:** `awscc_datasync_location_fsx_lustres`
+* **New Resource:** `awscc_datasync_location_fsx_lustre`
+* Support property `pattern` validation ([#88](https://github.com/hashicorp/terraform-provider-awscc/issues/88))
+
+## [0.12.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.12.0) (February 17, 2022)
+
+BREAKING CHANGES:
+
+* data-source/awscc_cloudfront_distribution: `distribution_config.cnam_es` attribute renamed to `distribution_config.cnames`
+* resource/awscc_cloudfront_distribution: `distribution_config.cnam_es` attribute renamed to `distribution_config.cnames`
+
+FEATURES:
+
+* **New Data Source:** `awscc_amplify_apps.md`
+* **New Data Source:** `awscc_apprunner_vpc_connector.md`
+* **New Data Source:** `awscc_apprunner_vpc_connectors.md`
+* **New Data Source:** `awscc_batch_compute_environment.md`
+* **New Data Source:** `awscc_batch_compute_environments.md`
+* **New Data Source:** `awscc_batch_job_queue.md`
+* **New Data Source:** `awscc_batch_job_queues.md`
+* **New Data Source:** `awscc_cloudformation_hook_default_version.md`
+* **New Data Source:** `awscc_cloudformation_hook_type_config.md`
+* **New Data Source:** `awscc_cloudformation_hook_version.md`
+* **New Data Source:** `awscc_ecr_pull_through_cache_rule.md`
+* **New Data Source:** `awscc_ecr_pull_through_cache_rules.md`
+* **New Data Source:** `awscc_eks_nodegroup.md`
+* **New Data Source:** `awscc_frauddetector_event_types.md`
+* **New Data Source:** `awscc_gamelift_game_server_groups.md`
+* **New Data Source:** `awscc_robomaker_robot_application.md`
+* **New Data Source:** `awscc_robomaker_robot_applications.md`
+* **New Data Source:** `awscc_ses_configuration_set_event_destination.md`
+* **New Data Source:** `awscc_ses_template.md`
+* **New Data Source:** `awscc_ses_templates.md`
+* **New Data Source:** `awscc_sqs_queue.md`
+* **New Data Source:** `awscc_sqs_queues.md`
+* **New Resource:** `awscc_apprunner_vpc_connector.md`
+* **New Resource:** `awscc_batch_compute_environment.md`
+* **New Resource:** `awscc_batch_job_queue.md`
+* **New Resource:** `awscc_cloudformation_hook_default_version.md`
+* **New Resource:** `awscc_cloudformation_hook_type_config.md`
+* **New Resource:** `awscc_cloudformation_hook_version.md`
+* **New Resource:** `awscc_ecr_pull_through_cache_rule.md`
+* **New Resource:** `awscc_eks_nodegroup.md`
+* **New Resource:** `awscc_robomaker_robot_application.md`
+* **New Resource:** `awscc_ses_configuration_set_event_destination.md`
+* **New Resource:** `awscc_ses_template.md`
+* **New Resource:** `awscc_sqs_queue.md`
+
+## [0.11.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.11.0) (January 27, 2022)
+
+BREAKING CHANGES:
+
+* data-source/awscc_frauddetector_event_types: Temporarily removed
+
+FEATURES:
+
+* **New Data Source:** `awscc_appintegrations_data_integration`
+* **New Data Source:** `awscc_appintegrations_data_integrations`
+* **New Data Source:** `awscc_athena_data_catalogs`
+* **New Data Source:** `awscc_cloudformation_module_default_versions`
+* **New Data Source:** `awscc_iotcoredeviceadvisor_suite_definitions`
+* **New Data Source:** `awscc_forecast_dataset`
+* **New Data Source:** `awscc_forecast_datasets`
+* **New Data Source:** `awscc_kafkaconnect_connector`
+* **New Data Source:** `awscc_kafkaconnect_connectors`
+* **New Data Source:** `awscc_lightsail_certificate`
+* **New Data Source:** `awscc_lightsail_certificates`
+* **New Data Source:** `awscc_lightsail_container`
+* **New Data Source:** `awscc_lightsail_containers`
+* **New Data Source:** `awscc_lightsail_distribution`
+* **New Data Source:** `awscc_lightsail_distributions`
+* **New Data Source:** `awscc_rekognition_collection`
+* **New Data Source:** `awscc_rekognition_collections`
+* **New Data Source:** `awscc_route53_dnssecs`
+* **New Data Source:** `awscc_route53_key_signing_keys`
+* **New Data Source:** `awscc_route53recoveryreadiness_readiness_checks`
+* **New Data Source:** `awscc_servicecatalogappregistry_applications`
+* **New Data Source:** `awscc_servicecatalogappregistry_attribute_groups`
+* **New Resource:** `awscc_appintegrations_data_integration`
+* **New Resource:** `awscc_forecast_dataset`
+* **New Resource:** `awscc_kafkaconnect_connector`
+* **New Resource:** `awscc_lightsail_certificate`
+* **New Resource:** `awscc_lightsail_container`
+* **New Resource:** `awscc_lightsail_distribution`
+* **New Resource:** `awscc_rekognition_collection`
 
 BUG FIXES:
-* provider: Prevent errors like `Unable to set Terraform State Unknown values from Cloud Control API Properties.` during `terraform apply` ([#331](https://github.com/anGie44/terraform-provider-awscc/issues/331))
+
+* Prevent errors like `planned value ... for a non-computed attribute` for list arguments during `terraform plan` ([#368](https://github.com/hashicorp/terraform-provider-awscc/issues/368))
+
+## [0.10.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.10.0) (January 13, 2022)
+
+FEATURES:
+
+* **New Data Source:** `awscc_appstream_application_entitlement_association`
+* **New Data Source:** `awscc_appstream_entitlement`
+* **New Data Source:** `awscc_ec2_host`
+* **New Data Source:** `awscc_ec2_hosts`
+* **New Data Source:** `awscc_ec2_network_insights_access_scope`
+* **New Data Source:** `awscc_ec2_network_insights_access_scope_analyses`
+* **New Data Source:** `awscc_ec2_network_insights_access_scope_analysis`
+* **New Data Source:** `awscc_ec2_network_insights_access_scopes`
+* **New Data Source:** `awscc_forecast_dataset_group`
+* **New Data Source:** `awscc_forecast_dataset_groups`
+* **New Data Source:** `awscc_inspectorv2_filter`
+* **New Data Source:** `awscc_inspectorv2_filters`
+* **New Data Source:** `awscc_kinesisvideo_signaling_channel`
+* **New Data Source:** `awscc_kinesisvideo_stream`
+* **New Data Source:** `awscc_lightsail_alarm`
+* **New Data Source:** `awscc_lightsail_alarms`
+* **New Data Source:** `awscc_lightsail_bucket`
+* **New Data Source:** `awscc_lightsail_buckets`
+* **New Data Source:** `awscc_lightsail_load_balancer`
+* **New Data Source:** `awscc_lightsail_load_balancer_tls_certificate`
+* **New Data Source:** `awscc_lightsail_load_balancers`
+* **New Data Source:** `awscc_route53resolver_resolver_rule_association`
+* **New Data Source:** `awscc_route53resolver_resolver_rule_associations`
+* **New Resource:** `awscc_appstream_application_entitlement_association`
+* **New Resource:** `awscc_appstream_entitlement`
+* **New Resource:** `awscc_ec2_host`
+* **New Resource:** `awscc_ec2_network_insights_access_scope`
+* **New Resource:** `awscc_ec2_network_insights_access_scope_analysis`
+* **New Resource:** `awscc_forecast_dataset_group`
+* **New Resource:** `awscc_inspectorv2_filter`
+* **New Resource:** `awscc_kinesisvideo_signaling_channel`
+* **New Resource:** `awscc_kinesisvideo_stream`
+* **New Resource:** `awscc_lightsail_alarm`
+* **New Resource:** `awscc_lightsail_bucket`
+* **New Resource:** `awscc_lightsail_load_balancer`
+* **New Resource:** `awscc_lightsail_load_balancer_tls_certificate`
+* **New Resource:** `awscc_route53resolver_resolver_rule_association`
+
+BUG FIXES:
+
+* Prevent errors like `Unable to set Terraform State Unknown values from Cloud Control API Properties.` during `terraform apply` ([#331](https://github.com/hashicorp/terraform-provider-awscc/issues/331))
 
 ## [0.9.0](https://github.com/hashicorp/terraform-provider-awscc/releases/tag/v0.9.0) (December 16, 2021)
 

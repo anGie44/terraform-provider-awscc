@@ -24,11 +24,13 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: ContainerDefinitions
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "additionalProperties": false,
 			//     "description": "List of container definitions that are passed to the Docker daemon on a container instance",
 			//     "properties": {
 			//       "Command": {
+			//         "insertionOrder": true,
 			//         "items": {
 			//           "type": "string"
 			//         },
@@ -38,6 +40,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "integer"
 			//       },
 			//       "DependsOn": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -56,12 +59,14 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "boolean"
 			//       },
 			//       "DnsSearchDomains": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "type": "string"
 			//         },
 			//         "type": "array"
 			//       },
 			//       "DnsServers": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "type": "string"
 			//         },
@@ -77,12 +82,14 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "object"
 			//       },
 			//       "DockerSecurityOptions": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "type": "string"
 			//         },
 			//         "type": "array"
 			//       },
 			//       "EntryPoint": {
+			//         "insertionOrder": true,
 			//         "items": {
 			//           "type": "string"
 			//         },
@@ -90,6 +97,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       },
 			//       "Environment": {
 			//         "description": "The environment variables to pass to a container",
+			//         "insertionOrder": true,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -107,6 +115,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       },
 			//       "EnvironmentFiles": {
 			//         "description": "The list of one or more files that contain the environment variables to pass to a container",
+			//         "insertionOrder": true,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -125,6 +134,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "boolean"
 			//       },
 			//       "ExtraHosts": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -163,6 +173,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "properties": {
 			//           "Command": {
 			//             "description": "A string array representing the command that the container runs to determine if it is healthy.",
+			//             "insertionOrder": true,
 			//             "items": {
 			//               "type": "string"
 			//             },
@@ -198,6 +209,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "boolean"
 			//       },
 			//       "Links": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "type": "string"
 			//         },
@@ -211,12 +223,14 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "additionalProperties": false,
 			//             "properties": {
 			//               "Add": {
+			//                 "insertionOrder": false,
 			//                 "items": {
 			//                   "type": "string"
 			//                 },
 			//                 "type": "array"
 			//               },
 			//               "Drop": {
+			//                 "insertionOrder": false,
 			//                 "items": {
 			//                   "type": "string"
 			//                 },
@@ -226,6 +240,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "type": "object"
 			//           },
 			//           "Devices": {
+			//             "insertionOrder": false,
 			//             "items": {
 			//               "additionalProperties": false,
 			//               "properties": {
@@ -236,6 +251,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//                   "type": "string"
 			//                 },
 			//                 "Permissions": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "type": "string"
 			//                   },
@@ -260,6 +276,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "type": "integer"
 			//           },
 			//           "Tmpfs": {
+			//             "insertionOrder": false,
 			//             "items": {
 			//               "additionalProperties": false,
 			//               "properties": {
@@ -267,6 +284,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//                   "type": "string"
 			//                 },
 			//                 "MountOptions": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "type": "string"
 			//                   },
@@ -302,6 +320,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "type": "object"
 			//           },
 			//           "SecretOptions": {
+			//             "insertionOrder": false,
 			//             "items": {
 			//               "additionalProperties": false,
 			//               "properties": {
@@ -334,6 +353,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "integer"
 			//       },
 			//       "MountPoints": {
+			//         "insertionOrder": true,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -358,6 +378,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       },
 			//       "PortMappings": {
 			//         "description": "Port mappings allow containers to access ports on the host container instance to send or receive traffic.",
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -395,6 +416,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "object"
 			//       },
 			//       "ResourceRequirements": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -414,6 +436,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "array"
 			//       },
 			//       "Secrets": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -439,6 +462,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "integer"
 			//       },
 			//       "SystemControls": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -454,6 +478,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "array"
 			//       },
 			//       "Ulimits": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -480,6 +505,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "string"
 			//       },
 			//       "VolumesFrom": {
+			//         "insertionOrder": false,
 			//         "items": {
 			//           "additionalProperties": false,
 			//           "properties": {
@@ -504,7 +530,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "array",
 			//   "uniqueItems": true
 			// }
-			Attributes: tfsdk.ListNestedAttributes(
+			Attributes: tfsdk.SetNestedAttributes(
 				map[string]tfsdk.Attribute{
 					"command": {
 						// Property: Command
@@ -513,7 +539,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"cpu": {
 						// Property: Cpu
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"depends_on": {
@@ -534,6 +560,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"disable_networking": {
 						// Property: DisableNetworking
@@ -544,11 +573,17 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						// Property: DnsSearchDomains
 						Type:     types.ListType{ElemType: types.StringType},
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"dns_servers": {
 						// Property: DnsServers
 						Type:     types.ListType{ElemType: types.StringType},
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"docker_labels": {
 						// Property: DockerLabels
@@ -560,6 +595,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						// Property: DockerSecurityOptions
 						Type:     types.ListType{ElemType: types.StringType},
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"entry_point": {
 						// Property: EntryPoint
@@ -632,6 +670,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"firelens_configuration": {
 						// Property: FirelensConfiguration
@@ -666,25 +707,25 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"interval": {
 									// Property: Interval
 									Description: "The time period in seconds between each health check execution. You may specify between 5 and 300 seconds. The default value is 30 seconds.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"retries": {
 									// Property: Retries
 									Description: "The number of times to retry a failed health check before the container is considered unhealthy. You may specify between 1 and 10 retries. The default value is three retries.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"start_period": {
 									// Property: StartPeriod
 									Description: "The optional grace period within which to provide containers time to bootstrap before failed health checks count towards the maximum number of retries. You may specify between 0 and 300 seconds. The startPeriod is disabled by default.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"timeout": {
 									// Property: Timeout
 									Description: "The time period in seconds to wait for a health check to succeed before it is considered a failure. You may specify between 2 and 60 seconds. The default value is 5 seconds.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 							},
@@ -709,11 +750,8 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"links": {
 						// Property: Links
-						Type:     types.ListType{ElemType: types.StringType},
+						Type:     types.SetType{ElemType: types.StringType},
 						Optional: true,
-						Validators: []tfsdk.AttributeValidator{
-							validate.UniqueItems(),
-						},
 					},
 					"linux_parameters": {
 						// Property: LinuxParameters
@@ -727,11 +765,17 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												// Property: Add
 												Type:     types.ListType{ElemType: types.StringType},
 												Optional: true,
+												PlanModifiers: []tfsdk.AttributePlanModifier{
+													Multiset(),
+												},
 											},
 											"drop": {
 												// Property: Drop
 												Type:     types.ListType{ElemType: types.StringType},
 												Optional: true,
+												PlanModifiers: []tfsdk.AttributePlanModifier{
+													Multiset(),
+												},
 											},
 										},
 									),
@@ -753,16 +797,16 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 											},
 											"permissions": {
 												// Property: Permissions
-												Type:     types.ListType{ElemType: types.StringType},
+												Type:     types.SetType{ElemType: types.StringType},
 												Optional: true,
-												Validators: []tfsdk.AttributeValidator{
-													validate.UniqueItems(),
-												},
 											},
 										},
 										tfsdk.ListNestedAttributesOptions{},
 									),
 									Optional: true,
+									PlanModifiers: []tfsdk.AttributePlanModifier{
+										Multiset(),
+									},
 								},
 								"init_process_enabled": {
 									// Property: InitProcessEnabled
@@ -771,17 +815,17 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								},
 								"max_swap": {
 									// Property: MaxSwap
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"shared_memory_size": {
 									// Property: SharedMemorySize
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"swappiness": {
 									// Property: Swappiness
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"tmpfs": {
@@ -797,16 +841,22 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												// Property: MountOptions
 												Type:     types.ListType{ElemType: types.StringType},
 												Optional: true,
+												PlanModifiers: []tfsdk.AttributePlanModifier{
+													Multiset(),
+												},
 											},
 											"size": {
 												// Property: Size
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Required: true,
 											},
 										},
 										tfsdk.ListNestedAttributesOptions{},
 									),
 									Optional: true,
+									PlanModifiers: []tfsdk.AttributePlanModifier{
+										Multiset(),
+									},
 								},
 							},
 						),
@@ -845,6 +895,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 										tfsdk.ListNestedAttributesOptions{},
 									),
 									Optional: true,
+									PlanModifiers: []tfsdk.AttributePlanModifier{
+										Multiset(),
+									},
 								},
 							},
 						),
@@ -853,12 +906,12 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"memory": {
 						// Property: Memory
 						Description: "The amount (in MiB) of memory to present to the container. If your container attempts to exceed the memory specified here, the container is killed.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"memory_reservation": {
 						// Property: MemoryReservation
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"mount_points": {
@@ -897,16 +950,16 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"port_mappings": {
 						// Property: PortMappings
 						Description: "Port mappings allow containers to access ports on the host container instance to send or receive traffic.",
-						Attributes: tfsdk.ListNestedAttributes(
+						Attributes: tfsdk.SetNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"container_port": {
 									// Property: ContainerPort
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"host_port": {
 									// Property: HostPort
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"protocol": {
@@ -915,12 +968,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Optional: true,
 								},
 							},
-							tfsdk.ListNestedAttributesOptions{},
+							tfsdk.SetNestedAttributesOptions{},
 						),
 						Optional: true,
-						Validators: []tfsdk.AttributeValidator{
-							validate.UniqueItems(),
-						},
 					},
 					"privileged": {
 						// Property: Privileged
@@ -968,6 +1018,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"secrets": {
 						// Property: Secrets
@@ -987,15 +1040,18 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"start_timeout": {
 						// Property: StartTimeout
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"stop_timeout": {
 						// Property: StopTimeout
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 					"system_controls": {
@@ -1016,6 +1072,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"ulimits": {
 						// Property: Ulimits
@@ -1023,7 +1082,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							map[string]tfsdk.Attribute{
 								"hard_limit": {
 									// Property: HardLimit
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 								},
 								"name": {
@@ -1033,13 +1092,16 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								},
 								"soft_limit": {
 									// Property: SoftLimit
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 								},
 							},
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"user": {
 						// Property: User
@@ -1048,7 +1110,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"volumes_from": {
 						// Property: VolumesFrom
-						Attributes: tfsdk.ListNestedAttributes(
+						Attributes: tfsdk.SetNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"read_only": {
 									// Property: ReadOnly
@@ -1061,12 +1123,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Optional: true,
 								},
 							},
-							tfsdk.ListNestedAttributesOptions{},
+							tfsdk.SetNestedAttributesOptions{},
 						),
 						Optional: true,
-						Validators: []tfsdk.AttributeValidator{
-							validate.UniqueItems(),
-						},
 					},
 					"working_directory": {
 						// Property: WorkingDirectory
@@ -1074,13 +1133,10 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 					},
 				},
-				tfsdk.ListNestedAttributesOptions{},
+				tfsdk.SetNestedAttributesOptions{},
 			),
 			Optional: true,
 			Computed: true,
-			Validators: []tfsdk.AttributeValidator{
-				validate.UniqueItems(),
-			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
@@ -1116,7 +1172,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 				map[string]tfsdk.Attribute{
 					"size_in_gi_b": {
 						// Property: SizeInGiB
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 					},
 				},
@@ -1160,6 +1216,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: InferenceAccelerators
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "additionalProperties": false,
 			//     "properties": {
@@ -1175,7 +1232,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "array",
 			//   "uniqueItems": true
 			// }
-			Attributes: tfsdk.ListNestedAttributes(
+			Attributes: tfsdk.SetNestedAttributes(
 				map[string]tfsdk.Attribute{
 					"device_name": {
 						// Property: DeviceName
@@ -1188,13 +1245,10 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 					},
 				},
-				tfsdk.ListNestedAttributesOptions{},
+				tfsdk.SetNestedAttributesOptions{},
 			),
 			Optional: true,
 			Computed: true,
-			Validators: []tfsdk.AttributeValidator{
-				validate.UniqueItems(),
-			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
@@ -1260,6 +1314,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: PlacementConstraints
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "additionalProperties": false,
 			//     "properties": {
@@ -1278,7 +1333,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "array",
 			//   "uniqueItems": true
 			// }
-			Attributes: tfsdk.ListNestedAttributes(
+			Attributes: tfsdk.SetNestedAttributes(
 				map[string]tfsdk.Attribute{
 					"expression": {
 						// Property: Expression
@@ -1291,13 +1346,10 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 					},
 				},
-				tfsdk.ListNestedAttributesOptions{},
+				tfsdk.SetNestedAttributesOptions{},
 			),
 			Optional: true,
 			Computed: true,
-			Validators: []tfsdk.AttributeValidator{
-				validate.UniqueItems(),
-			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
@@ -1313,6 +1365,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       "type": "string"
 			//     },
 			//     "ProxyConfigurationProperties": {
+			//       "insertionOrder": false,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -1346,7 +1399,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"proxy_configuration_properties": {
 						// Property: ProxyConfigurationProperties
-						Attributes: tfsdk.ListNestedAttributes(
+						Attributes: tfsdk.SetNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"name": {
 									// Property: Name
@@ -1359,12 +1412,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Optional: true,
 								},
 							},
-							tfsdk.ListNestedAttributesOptions{},
+							tfsdk.SetNestedAttributesOptions{},
 						),
 						Optional: true,
-						Validators: []tfsdk.AttributeValidator{
-							validate.UniqueItems(),
-						},
 					},
 					"type": {
 						// Property: Type
@@ -1384,18 +1434,16 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: RequiresCompatibilities
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "type": "string"
 			//   },
 			//   "type": "array",
 			//   "uniqueItems": true
 			// }
-			Type:     types.ListType{ElemType: types.StringType},
+			Type:     types.SetType{ElemType: types.StringType},
 			Optional: true,
 			Computed: true,
-			Validators: []tfsdk.AttributeValidator{
-				validate.UniqueItems(),
-			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
@@ -1441,6 +1489,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: Tags
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "additionalProperties": false,
 			//     "properties": {
@@ -1471,6 +1520,9 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 				tfsdk.ListNestedAttributesOptions{},
 			),
 			Optional: true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				Multiset(),
+			},
 		},
 		"task_definition_arn": {
 			// Property: TaskDefinitionArn
@@ -1504,6 +1556,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// Property: Volumes
 			// CloudFormation resource type schema:
 			// {
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "additionalProperties": false,
 			//     "properties": {
@@ -1599,7 +1652,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "array",
 			//   "uniqueItems": true
 			// }
-			Attributes: tfsdk.ListNestedAttributes(
+			Attributes: tfsdk.SetNestedAttributes(
 				map[string]tfsdk.Attribute{
 					"docker_volume_configuration": {
 						// Property: DockerVolumeConfiguration
@@ -1687,7 +1740,7 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								},
 								"transit_encryption_port": {
 									// Property: TransitEncryptionPort
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -1713,13 +1766,10 @@ func taskDefinitionResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Optional: true,
 					},
 				},
-				tfsdk.ListNestedAttributesOptions{},
+				tfsdk.SetNestedAttributesOptions{},
 			),
 			Optional: true,
 			Computed: true,
-			Validators: []tfsdk.AttributeValidator{
-				validate.UniqueItems(),
-			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),

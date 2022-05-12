@@ -36,7 +36,7 @@ func missionProfileDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			//   "type": "integer"
 			// }
 			Description: "Post-pass time needed after the contact.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"contact_pre_pass_duration_seconds": {
@@ -47,7 +47,7 @@ func missionProfileDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			//   "type": "integer"
 			// }
 			Description: "Pre-pass time needed before the contact.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"dataflow_edges": {
@@ -105,7 +105,7 @@ func missionProfileDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			//   "type": "integer"
 			// }
 			Description: "Visibilities with shorter duration than the specified minimum viable contact duration will be ignored when searching for available contacts.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"name": {
@@ -113,7 +113,7 @@ func missionProfileDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "A name used to identify a mission profile.",
-			//   "pattern": "",
+			//   "pattern": "^[ a-zA-Z0-9_:-]{1,256}$",
 			//   "type": "string"
 			// }
 			Description: "A name used to identify a mission profile.",
@@ -137,11 +137,11 @@ func missionProfileDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "Key": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,128}$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
-			//         "pattern": "",
+			//         "pattern": "^[ a-zA-Z0-9\\+\\-=._:/@]{1,256}$",
 			//         "type": "string"
 			//       }
 			//     },

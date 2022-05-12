@@ -23,7 +23,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*/experiment/[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -66,13 +66,13 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			//       "MetricName": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^[\\S]+$",
 			//         "type": "string"
 			//       },
 			//       "UnitLabel": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": ".*",
 			//         "type": "string"
 			//       },
 			//       "ValueKey": {
@@ -140,7 +140,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -155,7 +155,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			//     "ControlTreatmentName": {
 			//       "maxLength": 127,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "[-a-zA-Z0-9._]*",
 			//       "type": "string"
 			//     },
 			//     "TreatmentWeights": {
@@ -171,7 +171,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			//           "Treatment": {
 			//             "maxLength": 127,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[-a-zA-Z0-9._]*",
 			//             "type": "string"
 			//           }
 			//         },
@@ -200,7 +200,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 							map[string]tfsdk.Attribute{
 								"split_weight": {
 									// Property: SplitWeight
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"treatment": {
@@ -223,7 +223,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			// {
 			//   "maxLength": 2048,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -235,10 +235,83 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": ".*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
+			Computed: true,
+		},
+		"running_status": {
+			// Property: RunningStatus
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Start Experiment. Default is False",
+			//   "oneOf": [
+			//     {
+			//       "required": [
+			//         "Status",
+			//         "AnalysisCompleteTime"
+			//       ]
+			//     },
+			//     {
+			//       "required": [
+			//         "Status",
+			//         "Reason",
+			//         "DesiredState"
+			//       ]
+			//     }
+			//   ],
+			//   "properties": {
+			//     "AnalysisCompleteTime": {
+			//       "description": "Provide the analysis Completion time for an experiment",
+			//       "type": "string"
+			//     },
+			//     "DesiredState": {
+			//       "description": "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+			//       "pattern": "^(CANCELLED|COMPLETED)",
+			//       "type": "string"
+			//     },
+			//     "Reason": {
+			//       "description": "Reason is a required input for stopping the experiment",
+			//       "type": "string"
+			//     },
+			//     "Status": {
+			//       "description": "Provide START or STOP action to apply on an experiment",
+			//       "type": "string"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Description: "Start Experiment. Default is False",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"analysis_complete_time": {
+						// Property: AnalysisCompleteTime
+						Description: "Provide the analysis Completion time for an experiment",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"desired_state": {
+						// Property: DesiredState
+						Description: "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"reason": {
+						// Property: Reason
+						Description: "Reason is a required input for stopping the experiment",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"status": {
+						// Property: Status
+						Description: "Provide START or STOP action to apply on an experiment",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+				},
+			),
 			Computed: true,
 		},
 		"sampling_rate": {
@@ -249,7 +322,7 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			//   "minimum": 0,
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Computed: true,
 		},
 		"tags": {
@@ -317,19 +390,19 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 			//         "type": "string"
 			//       },
 			//       "Feature": {
-			//         "pattern": "",
+			//         "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)",
 			//         "type": "string"
 			//       },
 			//       "TreatmentName": {
 			//         "maxLength": 127,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       },
 			//       "Variation": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       }
 			//     },
@@ -391,10 +464,12 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 	opts = opts.WithCloudFormationTypeName("AWS::Evidently::Experiment").WithTerraformTypeName("awscc_evidently_experiment")
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithAttributeNameMap(map[string]string{
+		"analysis_complete_time": "AnalysisCompleteTime",
 		"arn":                    "Arn",
 		"control_treatment_name": "ControlTreatmentName",
 		"description":            "Description",
 		"desired_change":         "DesiredChange",
+		"desired_state":          "DesiredState",
 		"entity_id_key":          "EntityIdKey",
 		"event_pattern":          "EventPattern",
 		"feature":                "Feature",
@@ -405,8 +480,11 @@ func experimentDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error)
 		"online_ab_config":       "OnlineAbConfig",
 		"project":                "Project",
 		"randomization_salt":     "RandomizationSalt",
+		"reason":                 "Reason",
+		"running_status":         "RunningStatus",
 		"sampling_rate":          "SamplingRate",
 		"split_weight":           "SplitWeight",
+		"status":                 "Status",
 		"tags":                   "Tags",
 		"treatment":              "Treatment",
 		"treatment_name":         "TreatmentName",

@@ -29,7 +29,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "The maximum number of items to retrieve in a single batch.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"bisect_batch_on_function_error": {
@@ -58,7 +58,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//           "description": "The Amazon Resource Name (ARN) of the destination resource.",
 			//           "maxLength": 1024,
 			//           "minLength": 12,
-			//           "pattern": "",
+			//           "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
 			//           "type": "string"
 			//         }
 			//       },
@@ -107,7 +107,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "description": "The Amazon Resource Name (ARN) of the event source.",
 			//   "maxLength": 1024,
 			//   "minLength": 12,
-			//   "pattern": "",
+			//   "pattern": "arn:(aws[a-zA-Z0-9-]*):([a-zA-Z0-9\\-])+:([a-z]{2}(-gov)?-[a-z]+-\\d{1})?:(\\d{12})?:(.*)",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of the event source.",
@@ -131,7 +131,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//             "description": "The filter pattern that defines which events should be passed for invocations.",
 			//             "maxLength": 4096,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": ".*",
 			//             "type": "string"
 			//           }
 			//         },
@@ -175,7 +175,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "description": "The name of the Lambda function.",
 			//   "maxLength": 140,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "(arn:(aws[a-zA-Z-]*)?:lambda:)?([a-z]{2}(-gov)?-[a-z]+-\\d{1}:)?(\\d{12}:)?(function:)?([a-zA-Z0-9-_]+)(:(\\$LATEST|[a-zA-Z0-9-_]+))?",
 			//   "type": "string"
 			// }
 			Description: "The name of the Lambda function.",
@@ -209,7 +209,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "description": "Event Source Mapping Identifier UUID.",
 			//   "maxLength": 36,
 			//   "minLength": 36,
-			//   "pattern": "",
+			//   "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
 			//   "type": "string"
 			// }
 			Description: "Event Source Mapping Identifier UUID.",
@@ -226,7 +226,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "(Streams) The maximum amount of time to gather records before invoking the function, in seconds.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"maximum_record_age_in_seconds": {
@@ -239,7 +239,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "(Streams) The maximum age of a record that Lambda sends to a function for processing.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"maximum_retry_attempts": {
@@ -252,7 +252,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "(Streams) The maximum number of times to retry when the function returns an error.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"parallelization_factor": {
@@ -265,7 +265,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "(Streams) The number of batches to process from each shard concurrently.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"queues": {
@@ -276,7 +276,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "items": {
 			//     "maxLength": 1000,
 			//     "minLength": 1,
-			//     "pattern": "",
+			//     "pattern": "[\\s\\S]*",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 1,
@@ -305,7 +305,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//             "description": "The URL of a Kafka server.",
 			//             "maxLength": 300,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9]):[0-9]{1,5}",
 			//             "type": "string"
 			//           },
 			//           "maxItems": 10,
@@ -368,7 +368,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//         "description": "The URI for the source access configuration resource.",
 			//         "maxLength": 200,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[a-zA-Z0-9-\\/*:_+=.@-]*",
 			//         "type": "string"
 			//       }
 			//     },
@@ -406,7 +406,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "description": "The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Streams sources.",
 			//   "maxLength": 12,
 			//   "minLength": 6,
-			//   "pattern": "",
+			//   "pattern": "(LATEST|TRIM_HORIZON|AT_TIMESTAMP)+",
 			//   "type": "string"
 			// }
 			Description: "The position in a stream from which to start reading. Required for Amazon Kinesis and Amazon DynamoDB Streams sources.",
@@ -421,7 +421,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "number"
 			// }
 			Description: "With StartingPosition set to AT_TIMESTAMP, the time from which to start reading, in Unix time seconds.",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Computed:    true,
 		},
 		"topics": {
@@ -432,7 +432,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "items": {
 			//     "maxLength": 249,
 			//     "minLength": 1,
-			//     "pattern": "",
+			//     "pattern": "^[^.]([a-zA-Z0-9\\-_.]+)",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 1,
@@ -454,7 +454,7 @@ func eventSourceMappingDataSourceType(ctx context.Context) (tfsdk.DataSourceType
 			//   "type": "integer"
 			// }
 			Description: "(Streams) Tumbling window (non-overlapping time window) duration to perform aggregations.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 	}

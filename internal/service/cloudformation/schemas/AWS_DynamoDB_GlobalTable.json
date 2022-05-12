@@ -130,6 +130,9 @@
         "PointInTimeRecoverySpecification" : {
           "$ref" : "#/definitions/PointInTimeRecoverySpecification"
         },
+        "TableClass" : {
+          "type" : "string"
+        },
         "SSESpecification": {
           "$ref": "#/definitions/ReplicaSSESpecification"
         },
@@ -464,7 +467,7 @@
                 "kms:RevokeGrant",
                 "cloudwatch:PutMetricData"
             ],
-            "timeoutInMinutes": 360
+            "timeoutInMinutes": 1200
         },
         "delete": {
             "permissions": [

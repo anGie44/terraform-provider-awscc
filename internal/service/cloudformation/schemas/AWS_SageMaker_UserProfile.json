@@ -7,7 +7,7 @@
             "type": "string",
             "description": "The user profile Amazon Resource Name (ARN).",
             "maxLength": 256,
-            "pattern": ""
+            "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:user-profile/.*"
         },
         "DomainId": {
             "type": "string",
@@ -18,7 +18,7 @@
         "SingleSignOnUserIdentifier": {
             "type": "string",
             "description": "A specifier for the type of value specified in SingleSignOnUserValue. Currently, the only supported value is \"UserName\". If the Domain's AuthMode is SSO, this field is required. If the Domain's AuthMode is not SSO, this field cannot be specified.",
-            "pattern": ""
+            "pattern": "UserName"
         },
         "SingleSignOnUserValue": {
             "type": "string",
@@ -61,7 +61,7 @@
                     "description": "The user profile Amazon Resource Name (ARN).",
                     "minLength": 20,
                     "maxLength": 2048,
-                    "pattern": ""
+                    "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
                 },
                 "JupyterServerAppSettings": {
                     "$ref": "#/definitions/JupyterServerAppSettings",
@@ -70,6 +70,9 @@
                 "KernelGatewayAppSettings": {
                     "$ref": "#/definitions/KernelGatewayAppSettings",
                     "description": "The kernel gateway app settings."
+                },
+                "RStudioServerProAppSettings": {
+                    "$ref": "#/definitions/RStudioServerProAppSettings"
                 },
                 "SecurityGroups": {
                     "type": "array",
@@ -80,7 +83,7 @@
                     "items": {
                         "type": "string",
                         "maxLength": 32,
-                        "pattern": ""
+                        "pattern": "[-0-9a-zA-Z]+"
                     }
                 },
                 "SharingSettings": {
@@ -145,13 +148,13 @@
                     "type": "string",
                     "description": "The ARN of the SageMaker image that the image version belongs to.",
                     "maxLength": 256,
-                    "pattern": ""
+                    "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$"
                 },
                 "SageMakerImageVersionArn": {
                     "type": "string",
                     "description": "The ARN of the image version created on the instance.",
                     "maxLength": 256,
-                    "pattern": ""
+                    "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$"
                 }
             }
         },
@@ -185,13 +188,13 @@
                     "type": "string",
                     "description": "The Name of the AppImageConfig.",
                     "maxLength": 63,
-                    "pattern": ""
+                    "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
                 },
                 "ImageName": {
                     "type": "string",
                     "description": "The name of the CustomImage. Must be unique to your account.",
                     "maxLength": 63,
-                    "pattern": ""
+                    "pattern": "^[a-zA-Z0-9]([-.]?[a-zA-Z0-9]){0,62}$"
                 },
                 "ImageVersionNumber": {
                     "type": "integer",
@@ -221,13 +224,13 @@
                     "type": "string",
                     "description": "When NotebookOutputOption is Allowed, the AWS Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket.",
                     "maxLength": 2048,
-                    "pattern": ""
+                    "pattern": ".*"
                 },
                 "S3OutputPath": {
                     "type": "string",
                     "description": "When NotebookOutputOption is Allowed, the Amazon S3 bucket used to store the shared notebook snapshots.",
                     "maxLength": 1024,
-                    "pattern": ""
+                    "pattern": "^(https|s3)://([^/]+)/?(.*)$"
                 }
             }
         },
@@ -250,6 +253,29 @@
                 "Key",
                 "Value"
             ]
+        },
+        "RStudioServerProAppSettings": {
+            "type": "object",
+            "description": "A collection of settings that configure user interaction with the RStudioServerPro app.",
+            "additionalProperties": false,
+            "properties": {
+                "AccessStatus": {
+                    "type": "string",
+                    "description": "Indicates whether the current user has access to the RStudioServerPro app.",
+                    "enum": [
+                        "ENABLED",
+                        "DISABLED"
+                    ]
+                },
+                "UserGroup": {
+                    "type": "string",
+                    "description": "The level of permissions that the user has within the RStudioServerPro app. This value defaults to User. The Admin value allows the user access to the RStudio Administrative Dashboard.",
+                    "enum": [
+                        "R_STUDIO_ADMIN",
+                        "R_STUDIO_USER"
+                    ]
+                }
+            }
         }
     },
     "required": [
@@ -261,6 +287,8 @@
         "/properties/UserProfileName",
         "/properties/SingleSignOnUserIdentifier",
         "/properties/SingleSignOnUserValue",
+        "/properties/UserSettings/RStudioServerProAppSettings/AccessStatus",
+        "/properties/UserSettings/RStudioServerProAppSettings/UserGroup",
         "/properties/Tags"
     ],
     "writeOnlyProperties": [

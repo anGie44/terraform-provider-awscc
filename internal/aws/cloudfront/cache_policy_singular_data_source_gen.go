@@ -50,7 +50,7 @@ func cachePolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			//           "additionalProperties": false,
 			//           "properties": {
 			//             "CookieBehavior": {
-			//               "pattern": "",
+			//               "pattern": "^(none|whitelist|allExcept|all)$",
 			//               "type": "string"
 			//             },
 			//             "Cookies": {
@@ -76,7 +76,7 @@ func cachePolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			//           "additionalProperties": false,
 			//           "properties": {
 			//             "HeaderBehavior": {
-			//               "pattern": "",
+			//               "pattern": "^(none|whitelist)$",
 			//               "type": "string"
 			//             },
 			//             "Headers": {
@@ -96,7 +96,7 @@ func cachePolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 			//           "additionalProperties": false,
 			//           "properties": {
 			//             "QueryStringBehavior": {
-			//               "pattern": "",
+			//               "pattern": "^(none|whitelist|allExcept|all)$",
 			//               "type": "string"
 			//             },
 			//             "QueryStrings": {
@@ -140,17 +140,17 @@ func cachePolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error
 					},
 					"default_ttl": {
 						// Property: DefaultTTL
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Computed: true,
 					},
 					"max_ttl": {
 						// Property: MaxTTL
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Computed: true,
 					},
 					"min_ttl": {
 						// Property: MinTTL
-						Type:     types.NumberType,
+						Type:     types.Float64Type,
 						Computed: true,
 					},
 					"name": {

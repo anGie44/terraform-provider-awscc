@@ -4,6 +4,7 @@ package eks
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -168,7 +169,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The Kubernetes network configuration for the cluster.",
 			//   "properties": {
 			//     "IpFamily": {
-			//       "description": "Ipv4 or Ipv6, Ipv6 is only supported on cluster with k8s version 1.21",
+			//       "description": "Ipv4 or Ipv6. You can only specify ipv6 for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on",
 			//       "enum": [
 			//         "ipv4",
 			//         "ipv6"
@@ -191,7 +192,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				map[string]tfsdk.Attribute{
 					"ip_family": {
 						// Property: IpFamily
-						Description: "Ipv4 or Ipv6, Ipv6 is only supported on cluster with k8s version 1.21",
+						Description: "Ipv4 or Ipv6. You can only specify ipv6 for 1.21 and later clusters that use version 1.10.1 or later of the Amazon VPC CNI add-on",
 						Type:        types.StringType,
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
@@ -325,6 +326,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 100),
+				validate.StringMatch(regexp.MustCompile("^[0-9A-Za-z][A-Za-z0-9\\-_]*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -526,6 +528,9 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "The desired Kubernetes version for your cluster. If you don't specify a value here, the latest version available in Amazon EKS is used.",
 			Type:        types.StringType,
 			Optional:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("1\\.\\d\\d"), ""),
+			},
 		},
 	}
 
@@ -584,7 +589,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 
 	opts = opts.WithCreateTimeoutInMinutes(0).WithDeleteTimeoutInMinutes(0)
 
-	opts = opts.WithUpdateTimeoutInMinutes(0)
+	opts = opts.WithUpdateTimeoutInMinutes(150)
 
 	resourceType, err := NewResourceType(ctx, opts...)
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -31,7 +32,7 @@ func (validator stringLenBetweenValidator) MarkdownDescription(ctx context.Conte
 
 // Validate performs the validation.
 func (validator stringLenBetweenValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(request, response)
+	s, ok := validateString(ctx, request, response)
 	if !ok {
 		return
 	}
@@ -76,7 +77,7 @@ func (validator stringLenAtLeastValidator) MarkdownDescription(ctx context.Conte
 
 // Validate performs the validation.
 func (validator stringLenAtLeastValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(request, response)
+	s, ok := validateString(ctx, request, response)
 	if !ok {
 		return
 	}
@@ -120,7 +121,7 @@ func (validator stringLenAtMostValidator) MarkdownDescription(ctx context.Contex
 
 // Validate performs the validation.
 func (validator stringLenAtMostValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(request, response)
+	s, ok := validateString(ctx, request, response)
 	if !ok {
 		return
 	}
@@ -164,7 +165,7 @@ func (validator stringInSliceValidator) MarkdownDescription(ctx context.Context)
 
 // Validate performs the validation.
 func (validator stringInSliceValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(request, response)
+	s, ok := validateString(ctx, request, response)
 	if !ok {
 		return
 	}
@@ -196,6 +197,52 @@ func StringInSlice(valid []string) tfsdk.AttributeValidator {
 	}
 }
 
+// stringMatchValidator validates that a string Attribute's value matches the specified regular expression.
+type stringMatchValidator struct {
+	tfsdk.AttributeValidator
+
+	re      *regexp.Regexp
+	message string
+}
+
+// Description describes the validation in plain text formatting.
+func (validator stringMatchValidator) Description(_ context.Context) string {
+	return fmt.Sprintf("value must match regular expression '%s'", validator.re)
+}
+
+// MarkdownDescription describes the validation in Markdown formatting.
+func (validator stringMatchValidator) MarkdownDescription(ctx context.Context) string {
+	return validator.Description(ctx)
+}
+
+// Validate performs the validation.
+func (validator stringMatchValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
+	s, ok := validateString(ctx, request, response)
+	if !ok {
+		return
+	}
+
+	if ok := validator.re.MatchString(s); ok {
+		return
+	}
+
+	if v := validator.message; v != "" {
+		response.Diagnostics.Append(ccdiag.NewInvalidValueAttributeError(request.AttributePath, v))
+	}
+
+	response.Diagnostics.Append(ccdiag.NewInvalidValueAttributeError(
+		request.AttributePath,
+		fmt.Sprintf("expected value of %s to match regular expression '%s'", s, validator.re)))
+}
+
+// StringMatch returns a new string match validator.
+func StringMatch(re *regexp.Regexp, message string) tfsdk.AttributeValidator {
+	return stringMatchValidator{
+		re:      re,
+		message: message,
+	}
+}
+
 // stringIsJsonObjectValidator validates that a string Attribute's value is a valid JSON object.
 type stringIsJsonObjectValidator struct {
 	tfsdk.AttributeValidator
@@ -213,7 +260,7 @@ func (validator stringIsJsonObjectValidator) MarkdownDescription(ctx context.Con
 
 // Validate performs the validation.
 func (validator stringIsJsonObjectValidator) Validate(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) {
-	s, ok := validateString(request, response)
+	s, ok := validateString(ctx, request, response)
 	if !ok {
 		return
 	}
@@ -243,14 +290,12 @@ func StringIsJsonObject() tfsdk.AttributeValidator {
 	return stringIsJsonObjectValidator{}
 }
 
-func validateString(request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (string, bool) {
-	s, ok := request.AttributeConfig.(types.String)
+func validateString(ctx context.Context, request tfsdk.ValidateAttributeRequest, response *tfsdk.ValidateAttributeResponse) (string, bool) {
+	var s types.String
+	diags := tfsdk.ValueAs(ctx, request.AttributeConfig, &s)
 
-	if !ok {
-		response.Diagnostics.Append(ccdiag.NewIncorrectValueTypeAttributeError(
-			request.AttributePath,
-			request.AttributeConfig,
-		))
+	if diags.HasError() {
+		response.Diagnostics = append(response.Diagnostics, diags...)
 
 		return "", false
 	}

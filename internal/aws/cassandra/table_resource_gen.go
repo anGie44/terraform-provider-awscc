@@ -4,6 +4,7 @@ package cassandra
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -86,7 +87,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 							map[string]tfsdk.Attribute{
 								"read_capacity_units": {
 									// Property: ReadCapacityUnits
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntAtLeast(1),
@@ -94,7 +95,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"write_capacity_units": {
 									// Property: WriteCapacityUnits
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntAtLeast(1),
@@ -121,7 +122,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "additionalProperties": false,
 			//         "properties": {
 			//           "ColumnName": {
-			//             "pattern": "",
+			//             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//             "type": "string"
 			//           },
 			//           "ColumnType": {
@@ -162,6 +163,9 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									// Property: ColumnName
 									Type:     types.StringType,
 									Required: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"), ""),
+									},
 								},
 								"column_type": {
 									// Property: ColumnType
@@ -210,7 +214,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Default TTL (Time To Live) in seconds, where zero is disabled. If the value is greater than zero, TTL is enabled for the entire table and an expiration timestamp is added to each column.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.IntAtLeast(0),
@@ -277,12 +281,15 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Name for Cassandra keyspace",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//   "type": "string"
 			// }
 			Description: "Name for Cassandra keyspace",
 			Type:        types.StringType,
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
 			},
@@ -297,7 +304,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "ColumnName": {
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//         "type": "string"
 			//       },
 			//       "ColumnType": {
@@ -321,6 +328,9 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						// Property: ColumnName
 						Type:     types.StringType,
 						Required: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"), ""),
+						},
 					},
 					"column_type": {
 						// Property: ColumnType
@@ -360,7 +370,7 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "ColumnName": {
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//         "type": "string"
 			//       },
 			//       "ColumnType": {
@@ -383,6 +393,9 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						// Property: ColumnName
 						Type:     types.StringType,
 						Required: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"), ""),
+						},
 					},
 					"column_type": {
 						// Property: ColumnType
@@ -399,13 +412,16 @@ func tableResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Name for Cassandra table",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//   "type": "string"
 			// }
 			Description: "Name for Cassandra table",
 			Type:        types.StringType,
 			Optional:    true,
 			Computed:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),

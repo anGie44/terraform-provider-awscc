@@ -4,6 +4,7 @@ package sagemaker
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -20,6 +21,38 @@ func init() {
 // This Terraform resource type corresponds to the CloudFormation AWS::SageMaker::Pipeline resource type.
 func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	attributes := map[string]tfsdk.Attribute{
+		"parallelism_configuration": {
+			// Property: ParallelismConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "properties": {
+			//     "MaxParallelExecutionSteps": {
+			//       "description": "Maximum parallel execution steps",
+			//       "minimum": 1,
+			//       "type": "integer"
+			//     }
+			//   },
+			//   "required": [
+			//     "MaxParallelExecutionSteps"
+			//   ],
+			//   "type": "object"
+			// }
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"max_parallel_execution_steps": {
+						// Property: MaxParallelExecutionSteps
+						Description: "Maximum parallel execution steps",
+						Type:        types.Int64Type,
+						Required:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.IntAtLeast(1),
+						},
+					},
+				},
+			),
+			Optional: true,
+		},
 		"pipeline_definition": {
 			// Property: PipelineDefinition
 			// CloudFormation resource type schema:
@@ -125,7 +158,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The display name of the Pipeline.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*",
 			//   "type": "string"
 			// }
 			Description: "The display name of the Pipeline.",
@@ -133,6 +166,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9](-*[a-zA-Z0-9])*"), ""),
 			},
 		},
 		"pipeline_name": {
@@ -142,7 +176,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The name of the Pipeline.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9])*",
 			//   "type": "string"
 			// }
 			Description: "The name of the Pipeline.",
@@ -150,6 +184,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9](-*[a-zA-Z0-9])*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -162,7 +197,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Role Arn",
 			//   "maxLength": 2048,
 			//   "minLength": 20,
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
 			//   "type": "string"
 			// }
 			Description: "Role Arn",
@@ -170,6 +205,7 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(20, 2048),
+				validate.StringMatch(regexp.MustCompile("^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"), ""),
 			},
 		},
 		"tags": {
@@ -238,6 +274,8 @@ func pipelineResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"bucket":                          "Bucket",
 		"e_tag":                           "ETag",
 		"key":                             "Key",
+		"max_parallel_execution_steps":    "MaxParallelExecutionSteps",
+		"parallelism_configuration":       "ParallelismConfiguration",
 		"pipeline_definition":             "PipelineDefinition",
 		"pipeline_definition_body":        "PipelineDefinitionBody",
 		"pipeline_definition_s3_location": "PipelineDefinitionS3Location",

@@ -4,6 +4,7 @@ package iot
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -34,7 +35,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//         "description": "What is measured by the behavior.",
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[a-zA-Z0-9:_-]+",
 			//         "type": "string"
 			//       },
 			//       "MetricDimension": {
@@ -45,7 +46,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//             "description": "A unique identifier for the dimension.",
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[a-zA-Z0-9:_-]+",
 			//             "type": "string"
 			//           },
 			//           "Operator": {
@@ -81,6 +82,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 						},
 					},
 					"metric_dimension": {
@@ -95,6 +97,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 128),
+										validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 									},
 								},
 								"operator": {
@@ -325,7 +328,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//         "description": "What is measured by the behavior.",
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[a-zA-Z0-9:_-]+",
 			//         "type": "string"
 			//       },
 			//       "MetricDimension": {
@@ -336,7 +339,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//             "description": "A unique identifier for the dimension.",
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[a-zA-Z0-9:_-]+",
 			//             "type": "string"
 			//           },
 			//           "Operator": {
@@ -357,7 +360,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//         "description": "The name for the behavior.",
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[a-zA-Z0-9:_-]+",
 			//         "type": "string"
 			//       },
 			//       "SuppressAlerts": {
@@ -405,7 +408,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 								"consecutive_datapoints_to_alarm": {
 									// Property: ConsecutiveDatapointsToAlarm
 									Description: "If a device is in violation of the behavior for the specified number of consecutive datapoints, an alarm occurs. If not specified, the default is 1.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 10),
@@ -414,7 +417,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 								"consecutive_datapoints_to_clear": {
 									// Property: ConsecutiveDatapointsToClear
 									Description: "If an alarm has occurred and the offending device is no longer in violation of the behavior for the specified number of consecutive datapoints, the alarm is cleared. If not specified, the default is 1.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 10),
@@ -423,7 +426,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 								"duration_seconds": {
 									// Property: DurationSeconds
 									Description: "Use this to specify the time duration over which the behavior is evaluated.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"ml_detection_config": {
@@ -499,19 +502,19 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 											"number": {
 												// Property: Number
 												Description: "The numeral value of a metric.",
-												Type:        types.NumberType,
+												Type:        types.Float64Type,
 												Optional:    true,
 											},
 											"numbers": {
 												// Property: Numbers
 												Description: "The numeral values of a metric.",
-												Type:        types.SetType{ElemType: types.NumberType},
+												Type:        types.SetType{ElemType: types.Float64Type},
 												Optional:    true,
 											},
 											"ports": {
 												// Property: Ports
 												Description: "If the ComparisonOperator calls for a set of ports, use this to specify that set to be compared with the metric.",
-												Type:        types.SetType{ElemType: types.NumberType},
+												Type:        types.SetType{ElemType: types.Int64Type},
 												Optional:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayForEach(validate.IntBetween(0, 65535)),
@@ -538,6 +541,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 						},
 					},
 					"metric_dimension": {
@@ -552,6 +556,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 128),
+										validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 									},
 								},
 								"operator": {
@@ -577,6 +582,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 						},
 					},
 					"suppress_alerts": {
@@ -626,7 +632,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "description": "A unique identifier for the security profile.",
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9:_-]+",
 			//   "type": "string"
 			// }
 			Description: "A unique identifier for the security profile.",
@@ -635,6 +641,7 @@ func securityProfileResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 128),
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9:_-]+"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),

@@ -29,7 +29,7 @@
     },
     "AuthorizerName": {
       "type": "string",
-      "pattern": "",
+      "pattern": "[\\w=,@-]+",
       "minLength": 1,
       "maxLength": 128
     },
@@ -48,12 +48,16 @@
     },
     "TokenSigningPublicKeys": {
       "type": "object",
+      "additionalProperties": false,
       "patternProperties": {
         "": {
           "type": "string",
           "maxLength": 5120
         }
       }
+    },
+    "EnableCachingForHttp": {
+      "type": "boolean"
     },
     "Tags": {
       "type": "array",

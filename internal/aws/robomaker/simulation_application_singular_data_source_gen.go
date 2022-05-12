@@ -23,7 +23,7 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[\\w+=/,.@-]+:[\\w+=/,.@-]+:[\\w+=/,.@-]*:[0-9]*:[\\w+=,.@-]+(/[\\w+=,.@-]+)*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -58,7 +58,7 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//   "description": "The name of the simulation application.",
 			//   "maxLength": 255,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9_\\-]*",
 			//   "type": "string"
 			// }
 			Description: "The name of the simulation application.",
@@ -81,7 +81,7 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//     },
 			//     "Version": {
 			//       "description": "The version of the rendering engine.",
-			//       "pattern": "",
+			//       "pattern": "1.x",
 			//       "type": "string"
 			//     }
 			//   },
@@ -115,18 +115,19 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			// CloudFormation resource type schema:
 			// {
 			//   "additionalProperties": false,
-			//   "description": "The robot software suite (ROS distribution) used by the simulation application.",
+			//   "description": "The robot software suite used by the simulation application.",
 			//   "properties": {
 			//     "Name": {
-			//       "description": "The name of the robot software suite (ROS distribution).",
+			//       "description": "The name of the robot software suite.",
 			//       "enum": [
 			//         "ROS",
-			//         "ROS2"
+			//         "ROS2",
+			//         "General"
 			//       ],
 			//       "type": "string"
 			//     },
 			//     "Version": {
-			//       "description": "The version of the robot software suite (ROS distribution).",
+			//       "description": "The version of the robot software suite.",
 			//       "enum": [
 			//         "Kinetic",
 			//         "Melodic",
@@ -137,23 +138,22 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//     }
 			//   },
 			//   "required": [
-			//     "Name",
-			//     "Version"
+			//     "Name"
 			//   ],
 			//   "type": "object"
 			// }
-			Description: "The robot software suite (ROS distribution) used by the simulation application.",
+			Description: "The robot software suite used by the simulation application.",
 			Attributes: tfsdk.SingleNestedAttributes(
 				map[string]tfsdk.Attribute{
 					"name": {
 						// Property: Name
-						Description: "The name of the robot software suite (ROS distribution).",
+						Description: "The name of the robot software suite.",
 						Type:        types.StringType,
 						Computed:    true,
 					},
 					"version": {
 						// Property: Version
-						Description: "The version of the robot software suite (ROS distribution).",
+						Description: "The version of the robot software suite.",
 						Type:        types.StringType,
 						Computed:    true,
 					},
@@ -172,7 +172,8 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//       "description": "The name of the simulation software suite.",
 			//       "enum": [
 			//         "Gazebo",
-			//         "RosbagPlay"
+			//         "RosbagPlay",
+			//         "SimulationRuntime"
 			//       ],
 			//       "type": "string"
 			//     },
@@ -191,8 +192,7 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//     }
 			//   },
 			//   "required": [
-			//     "Name",
-			//     "Version"
+			//     "Name"
 			//   ],
 			//   "type": "object"
 			// }
@@ -236,7 +236,7 @@ func simulationApplicationDataSourceType(ctx context.Context) (tfsdk.DataSourceT
 			//       },
 			//       "S3Bucket": {
 			//         "description": "The Amazon S3 bucket name.",
-			//         "pattern": "",
+			//         "pattern": "[a-z0-9][a-z0-9.\\-]*[a-z0-9]",
 			//         "type": "string"
 			//       },
 			//       "S3Key": {

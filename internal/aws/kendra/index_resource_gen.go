@@ -4,6 +4,7 @@ package kendra
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -60,7 +61,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				map[string]tfsdk.Attribute{
 					"query_capacity_units": {
 						// Property: QueryCapacityUnits
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(0),
@@ -68,7 +69,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					},
 					"storage_capacity_units": {
 						// Property: StorageCapacityUnits
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(0),
@@ -112,7 +113,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "Duration": {
 			//             "maxLength": 10,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[0-9]+[s]",
 			//             "type": "string"
 			//           },
 			//           "Freshness": {
@@ -210,6 +211,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 10),
+										validate.StringMatch(regexp.MustCompile("[0-9]+[s]"), ""),
 									},
 								},
 								"freshness": {
@@ -219,7 +221,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"importance": {
 									// Property: Importance
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 10),
@@ -250,7 +252,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"value": {
 												// Property: Value
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntBetween(1, 10),
@@ -563,7 +565,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "URL": {
 			//             "maxLength": 2048,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(https?|ftp|file):\\/\\/([^\\s]*)",
 			//             "type": "string"
 			//           },
 			//           "UserNameAttributeField": {
@@ -663,6 +665,7 @@ func indexResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 2048),
+										validate.StringMatch(regexp.MustCompile("^(https?|ftp|file):\\/\\/([^\\s]*)"), ""),
 									},
 								},
 								"user_name_attribute_field": {

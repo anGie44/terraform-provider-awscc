@@ -7,7 +7,7 @@
             "type": "string",
             "description": "The Amazon Resource Name (ARN) of the created domain.",
             "maxLength": 256,
-            "pattern": ""
+            "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:domain/.*"
         },
         "Url": {
             "type": "string",
@@ -38,13 +38,13 @@
             "type": "string",
             "description": "A name for the domain.",
             "maxLength": 63,
-            "pattern": ""
+            "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
         },
         "KmsKeyId": {
             "type": "string",
             "description": "SageMaker uses AWS KMS to encrypt the EFS volume attached to the domain with an AWS managed customer master key (CMK) by default.",
             "maxLength": 2048,
-            "pattern": ""
+            "pattern": ".*"
         },
         "SubnetIds": {
             "type": "array",
@@ -55,7 +55,7 @@
             "items": {
                 "type": "string",
                 "maxLength": 32,
-                "pattern": ""
+                "pattern": "[-0-9a-zA-Z]+"
             }
         },
         "Tags": {
@@ -72,13 +72,13 @@
             "type": "string",
             "description": "The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.",
             "maxLength": 32,
-            "pattern": ""
+            "pattern": "[-0-9a-zA-Z]+"
         },
         "DomainId": {
             "type": "string",
             "description": "The domain name.",
             "maxLength": 63,
-            "pattern": ""
+            "pattern": "^d-(-*[a-z0-9])+"
         },
         "HomeEfsFileSystemId": {
             "type" : "string",
@@ -89,6 +89,23 @@
             "type" : "string",
             "description" : "The SSO managed application instance ID.",
             "maxLength" : 256
+        },
+        "DomainSettings": {
+            "$ref": "#/definitions/DomainSettings"
+        },
+        "AppSecurityGroupManagement": {
+            "type": "string",
+            "description": "The entity that creates and manages the required security groups for inter-app communication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType is VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn is provided.",
+            "enum": [
+                "Service",
+                "Customer"
+            ]
+        },
+        "SecurityGroupIdForDomainBoundary": {
+            "type": "string",
+            "description": "The ID of the security group that authorizes traffic between the RSessionGateway apps and the RStudioServerPro app.",
+            "maxLength": 32,
+            "pattern": "[-0-9a-zA-Z]+"
         }
     },
     "definitions": {
@@ -102,7 +119,7 @@
                     "description": "The user profile Amazon Resource Name (ARN).",
                     "minLength": 20,
                     "maxLength": 2048,
-                    "pattern": ""
+                    "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
                 },
                 "JupyterServerAppSettings": {
                     "$ref": "#/definitions/JupyterServerAppSettings",
@@ -111,6 +128,9 @@
                 "KernelGatewayAppSettings": {
                     "$ref": "#/definitions/KernelGatewayAppSettings",
                     "description": "The kernel gateway app settings."
+                },
+                "RStudioServerProAppSettings": {
+                    "$ref": "#/definitions/RStudioServerProAppSettings"
                 },
                 "SecurityGroups": {
                     "type": "array",
@@ -121,7 +141,7 @@
                     "items": {
                         "type": "string",
                         "maxLength": 32,
-                        "pattern": ""
+                        "pattern": "[-0-9a-zA-Z]+"
                     }
                 },
                 "SharingSettings": {
@@ -186,13 +206,13 @@
                     "type": "string",
                     "description": "The ARN of the SageMaker image that the image version belongs to.",
                     "maxLength": 256,
-                    "pattern": ""
+                    "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$"
                 },
                 "SageMakerImageVersionArn": {
                     "type": "string",
                     "description": "The ARN of the image version created on the instance.",
                     "maxLength": 256,
-                    "pattern": ""
+                    "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$"
                 }
             }
         },
@@ -226,13 +246,13 @@
                     "type": "string",
                     "description": "The Name of the AppImageConfig.",
                     "maxLength": 63,
-                    "pattern": ""
+                    "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"
                 },
                 "ImageName": {
                     "type": "string",
                     "description": "The name of the CustomImage. Must be unique to your account.",
                     "maxLength": 63,
-                    "pattern": ""
+                    "pattern": "^[a-zA-Z0-9]([-.]?[a-zA-Z0-9]){0,62}$"
                 },
                 "ImageVersionNumber": {
                     "type": "integer",
@@ -262,13 +282,13 @@
                     "type": "string",
                     "description": "When NotebookOutputOption is Allowed, the AWS Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket.",
                     "maxLength": 2048,
-                    "pattern": ""
+                    "pattern": ".*"
                 },
                 "S3OutputPath": {
                     "type": "string",
                     "description": "When NotebookOutputOption is Allowed, the Amazon S3 bucket used to store the shared notebook snapshots.",
                     "maxLength": 1024,
-                    "pattern": ""
+                    "pattern": "^(https|s3)://([^/]+)/?(.*)$"
                 }
             }
         },
@@ -291,6 +311,79 @@
                 "Key",
                 "Value"
             ]
+        },
+        "DomainSettings": {
+            "type": "object",
+            "description":"A collection of Domain settings.",
+            "additionalProperties": false,
+            "properties": {
+                "SecurityGroupIds": {
+                    "type": "array",
+                    "description": "The security groups for the Amazon Virtual Private Cloud that the Domain uses for communication between Domain-level apps and user apps.",
+                    "uniqueItems": false,
+                    "minItems": 1,
+                    "maxItems": 3,
+                    "items": {
+                        "type": "string",
+                        "maxLength": 32,
+                        "pattern": "[-0-9a-zA-Z]+"
+                    }
+                },
+                "RStudioServerProDomainSettings": {
+                    "$ref": "#/definitions/RStudioServerProDomainSettings"
+                }
+            }
+        },
+        "RStudioServerProDomainSettings": {
+            "type": "object",
+            "description": "A collection of settings that update the current configuration for the RStudioServerPro Domain-level app.",
+            "additionalProperties": false,
+            "properties": {
+                "DomainExecutionRoleArn": {
+                    "type": "string",
+                    "description": "The ARN of the execution role for the RStudioServerPro Domain-level app.",
+                    "minLength": 20,
+                    "maxLength": 2048,
+                    "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$"
+                },
+                "RStudioConnectUrl": {
+                    "type": "string",
+                    "description": "A URL pointing to an RStudio Connect server.",
+                    "pattern": "^(https:|http:|www\\.)\\S*"
+                },
+                "RStudioPackageManagerUrl": {
+                    "type": "string",
+                    "description": "A URL pointing to an RStudio Package Manager server.",
+                    "pattern": "^(https:|http:|www\\.)\\S*"
+                },
+                "DefaultResourceSpec": {
+                    "$ref": "#/definitions/ResourceSpec"
+                }
+            },
+            "required":["DomainExecutionRoleArn"]
+        },
+        "RStudioServerProAppSettings": {
+            "type": "object",
+            "description": "A collection of settings that configure user interaction with the RStudioServerPro app.",
+            "additionalProperties": false,
+            "properties": {
+                "AccessStatus": {
+                    "type": "string",
+                    "description": "Indicates whether the current user has access to the RStudioServerPro app.",
+                    "enum": [
+                        "ENABLED",
+                        "DISABLED"
+                    ]
+                },
+                "UserGroup": {
+                    "type": "string",
+                    "description": "The level of permissions that the user has within the RStudioServerPro app. This value defaults to User. The Admin value allows the user access to the RStudio Administrative Dashboard.",
+                    "enum": [
+                        "R_STUDIO_ADMIN",
+                        "R_STUDIO_USER"
+                    ]
+                }
+            }
         }
     },
     "required": [
@@ -302,8 +395,12 @@
     ],
     "createOnlyProperties": [
         "/properties/AppNetworkAccessType",
+        "/properties/AppSecurityGroupManagement",
         "/properties/AuthMode",
         "/properties/DomainName",
+        "/properties/DomainSettings/SecurityGroupIds",
+        "/properties/DomainSettings/RStudioServerProDomainSettings/DomainExecutionRoleArn",
+        "/properties/DomainSettings/RStudioServerProDomainSettings/DefaultResourceSpec",
         "/properties/KmsKeyId",
         "/properties/SubnetIds",
         "/properties/VpcId",
@@ -320,11 +417,13 @@
         "/properties/Url",
         "/properties/DomainId",
         "/properties/HomeEfsFileSystemId",
+        "/properties/SecurityGroupIdForDomainBoundary",
         "/properties/SingleSignOnManagedApplicationInstanceId"
     ],
     "handlers": {
         "create": {
             "permissions": [
+                "sagemaker:CreateApp",
                 "sagemaker:CreateDomain",
                 "sagemaker:DescribeDomain",
                 "sagemaker:DescribeImage",
@@ -354,6 +453,7 @@
         },
         "delete": {
             "permissions": [
+                "sagemaker:DeleteApp",
                 "sagemaker:DeleteDomain",
                 "sagemaker:DescribeDomain"
             ]

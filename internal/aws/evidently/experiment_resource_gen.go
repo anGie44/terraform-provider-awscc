@@ -4,6 +4,7 @@ package evidently
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -24,7 +25,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*/experiment/[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -73,13 +74,13 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "MetricName": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^[\\S]+$",
 			//         "type": "string"
 			//       },
 			//       "UnitLabel": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": ".*",
 			//         "type": "string"
 			//       },
 			//       "ValueKey": {
@@ -132,6 +133,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 255),
+							validate.StringMatch(regexp.MustCompile("^[\\S]+$"), ""),
 						},
 					},
 					"unit_label": {
@@ -140,6 +142,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 256),
+							validate.StringMatch(regexp.MustCompile(".*"), ""),
 						},
 					},
 					"value_key": {
@@ -163,13 +166,14 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 127),
+				validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -184,7 +188,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "ControlTreatmentName": {
 			//       "maxLength": 127,
 			//       "minLength": 1,
-			//       "pattern": "",
+			//       "pattern": "[-a-zA-Z0-9._]*",
 			//       "type": "string"
 			//     },
 			//     "TreatmentWeights": {
@@ -200,7 +204,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "Treatment": {
 			//             "maxLength": 127,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "[-a-zA-Z0-9._]*",
 			//             "type": "string"
 			//           }
 			//         },
@@ -224,6 +228,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 127),
+							validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 						},
 					},
 					"treatment_weights": {
@@ -232,7 +237,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 							map[string]tfsdk.Attribute{
 								"split_weight": {
 									// Property: SplitWeight
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(0, 100000),
@@ -244,6 +249,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 127),
+										validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 									},
 								},
 							},
@@ -261,13 +267,14 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 2048,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 2048),
+				validate.StringMatch(regexp.MustCompile("([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -279,13 +286,105 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": ".*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Optional: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 127),
+				validate.StringMatch(regexp.MustCompile(".*"), ""),
+			},
+		},
+		"running_status": {
+			// Property: RunningStatus
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Start Experiment. Default is False",
+			//   "oneOf": [
+			//     {
+			//       "required": [
+			//         "Status",
+			//         "AnalysisCompleteTime"
+			//       ]
+			//     },
+			//     {
+			//       "required": [
+			//         "Status",
+			//         "Reason",
+			//         "DesiredState"
+			//       ]
+			//     }
+			//   ],
+			//   "properties": {
+			//     "AnalysisCompleteTime": {
+			//       "description": "Provide the analysis Completion time for an experiment",
+			//       "type": "string"
+			//     },
+			//     "DesiredState": {
+			//       "description": "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+			//       "pattern": "^(CANCELLED|COMPLETED)",
+			//       "type": "string"
+			//     },
+			//     "Reason": {
+			//       "description": "Reason is a required input for stopping the experiment",
+			//       "type": "string"
+			//     },
+			//     "Status": {
+			//       "description": "Provide START or STOP action to apply on an experiment",
+			//       "type": "string"
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Description: "Start Experiment. Default is False",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"analysis_complete_time": {
+						// Property: AnalysisCompleteTime
+						Description: "Provide the analysis Completion time for an experiment",
+						Type:        types.StringType,
+						Optional:    true,
+					},
+					"desired_state": {
+						// Property: DesiredState
+						Description: "Provide CANCELLED or COMPLETED desired state when stopping an experiment",
+						Type:        types.StringType,
+						Optional:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^(CANCELLED|COMPLETED)"), ""),
+						},
+					},
+					"reason": {
+						// Property: Reason
+						Description: "Reason is a required input for stopping the experiment",
+						Type:        types.StringType,
+						Optional:    true,
+					},
+					"status": {
+						// Property: Status
+						Description: "Provide START or STOP action to apply on an experiment",
+						Type:        types.StringType,
+						Optional:    true,
+					},
+				},
+			),
+			Optional: true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.RequiredAttributes(
+					validate.OneOfRequired(
+						validate.Required(
+							"status",
+							"analysis_complete_time",
+						),
+						validate.Required(
+							"status",
+							"reason",
+							"desired_state",
+						),
+					),
+				),
 			},
 		},
 		"sampling_rate": {
@@ -296,7 +395,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "minimum": 0,
 			//   "type": "integer"
 			// }
-			Type:     types.NumberType,
+			Type:     types.Int64Type,
 			Optional: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.IntBetween(0, 100000),
@@ -373,19 +472,19 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//         "type": "string"
 			//       },
 			//       "Feature": {
-			//         "pattern": "",
+			//         "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)",
 			//         "type": "string"
 			//       },
 			//       "TreatmentName": {
 			//         "maxLength": 127,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       },
 			//       "Variation": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       }
 			//     },
@@ -412,6 +511,9 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						// Property: Feature
 						Type:     types.StringType,
 						Required: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:.*)"), ""),
+						},
 					},
 					"treatment_name": {
 						// Property: TreatmentName
@@ -419,6 +521,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 127),
+							validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 						},
 					},
 					"variation": {
@@ -427,6 +530,7 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 255),
+							validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 						},
 					},
 				},
@@ -461,10 +565,12 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithSyntheticIDAttribute(true)
 	opts = opts.WithAttributeNameMap(map[string]string{
+		"analysis_complete_time": "AnalysisCompleteTime",
 		"arn":                    "Arn",
 		"control_treatment_name": "ControlTreatmentName",
 		"description":            "Description",
 		"desired_change":         "DesiredChange",
+		"desired_state":          "DesiredState",
 		"entity_id_key":          "EntityIdKey",
 		"event_pattern":          "EventPattern",
 		"feature":                "Feature",
@@ -475,8 +581,11 @@ func experimentResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"online_ab_config":       "OnlineAbConfig",
 		"project":                "Project",
 		"randomization_salt":     "RandomizationSalt",
+		"reason":                 "Reason",
+		"running_status":         "RunningStatus",
 		"sampling_rate":          "SamplingRate",
 		"split_weight":           "SplitWeight",
+		"status":                 "Status",
 		"tags":                   "Tags",
 		"treatment":              "Treatment",
 		"treatment_name":         "TreatmentName",

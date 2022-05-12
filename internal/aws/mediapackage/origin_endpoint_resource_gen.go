@@ -116,6 +116,31 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//               "description": "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 			//               "type": "string"
 			//             },
+			//             "EncryptionContractConfiguration": {
+			//               "additionalProperties": false,
+			//               "description": "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+			//               "properties": {
+			//                 "PresetSpeke20Audio": {
+			//                   "description": "A collection of audio encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-AUDIO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 },
+			//                 "PresetSpeke20Video": {
+			//                   "description": "A collection of video encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-VIDEO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "required": [
+			//                 "PresetSpeke20Audio",
+			//                 "PresetSpeke20Video"
+			//               ],
+			//               "type": "object"
+			//             },
 			//             "ResourceId": {
 			//               "description": "The resource ID to include in key requests.",
 			//               "type": "string"
@@ -289,7 +314,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"key_rotation_interval_seconds": {
 									// Property: KeyRotationIntervalSeconds
 									Description: "Time (in seconds) between each encryption key rotation.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"speke_key_provider": {
@@ -302,6 +327,37 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												Description: "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 												Type:        types.StringType,
 												Optional:    true,
+											},
+											"encryption_contract_configuration": {
+												// Property: EncryptionContractConfiguration
+												Description: "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"preset_speke_20_audio": {
+															// Property: PresetSpeke20Audio
+															Description: "A collection of audio encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-AUDIO-1",
+																}),
+															},
+														},
+														"preset_speke_20_video": {
+															// Property: PresetSpeke20Video
+															Description: "A collection of video encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-VIDEO-1",
+																}),
+															},
+														},
+													},
+												),
+												Optional: true,
 											},
 											"resource_id": {
 												// Property: ResourceId
@@ -420,13 +476,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"playlist_window_seconds": {
 									// Property: PlaylistWindowSeconds
 									Description: "Time window (in seconds) contained in each parent manifest.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"program_date_time_interval_seconds": {
 									// Property: ProgramDateTimeIntervalSeconds
 									Description: "The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag inserted into manifests. Additionally, when an interval is specified ID3Timed Metadata messages will be generated every 5 seconds using the ingest time of the content. If the interval is not specified, or set to 0, then no EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no ID3Timed Metadata messages will be generated. Note that irrespective of this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input, it will be passed through to HLS output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"url": {
@@ -443,7 +499,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each segment. Actual segments will be rounded to the nearest multiple of the source segment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"segment_prefix": {
@@ -460,13 +516,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"max_video_bits_per_second": {
 									// Property: MaxVideoBitsPerSecond
 									Description: "The maximum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"min_video_bits_per_second": {
 									// Property: MinVideoBitsPerSecond
 									Description: "The minimum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"stream_order": {
@@ -540,6 +596,31 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//               "description": "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 			//               "type": "string"
 			//             },
+			//             "EncryptionContractConfiguration": {
+			//               "additionalProperties": false,
+			//               "description": "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+			//               "properties": {
+			//                 "PresetSpeke20Audio": {
+			//                   "description": "A collection of audio encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-AUDIO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 },
+			//                 "PresetSpeke20Video": {
+			//                   "description": "A collection of video encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-VIDEO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "required": [
+			//                 "PresetSpeke20Audio",
+			//                 "PresetSpeke20Video"
+			//               ],
+			//               "type": "object"
+			//             },
 			//             "ResourceId": {
 			//               "description": "The resource ID to include in key requests.",
 			//               "type": "string"
@@ -608,7 +689,8 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       "description": "The Dynamic Adaptive Streaming over HTTP (DASH) profile type.  When set to \"HBBTV_1_5\", HbbTV 1.5 compliant output is enabled.",
 			//       "enum": [
 			//         "NONE",
-			//         "HBBTV_1_5"
+			//         "HBBTV_1_5",
+			//         "HYBRIDCAST"
 			//       ],
 			//       "type": "string"
 			//     },
@@ -712,7 +794,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"key_rotation_interval_seconds": {
 									// Property: KeyRotationIntervalSeconds
 									Description: "Time (in seconds) between each encryption key rotation.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"speke_key_provider": {
@@ -725,6 +807,37 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												Description: "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 												Type:        types.StringType,
 												Optional:    true,
+											},
+											"encryption_contract_configuration": {
+												// Property: EncryptionContractConfiguration
+												Description: "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"preset_speke_20_audio": {
+															// Property: PresetSpeke20Audio
+															Description: "A collection of audio encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-AUDIO-1",
+																}),
+															},
+														},
+														"preset_speke_20_video": {
+															// Property: PresetSpeke20Video
+															Description: "A collection of video encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-VIDEO-1",
+																}),
+															},
+														},
+													},
+												),
+												Optional: true,
 											},
 											"resource_id": {
 												// Property: ResourceId
@@ -773,19 +886,19 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"manifest_window_seconds": {
 						// Property: ManifestWindowSeconds
 						Description: "Time window (in seconds) contained in each manifest.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"min_buffer_time_seconds": {
 						// Property: MinBufferTimeSeconds
 						Description: "Minimum duration (in seconds) that a player will buffer media before starting the presentation.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"min_update_period_seconds": {
 						// Property: MinUpdatePeriodSeconds
 						Description: "Minimum duration (in seconds) between potential changes to the Dynamic Adaptive Streaming over HTTP (DASH) Media Presentation Description (MPD).",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"period_triggers": {
@@ -808,13 +921,14 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 							validate.StringInSlice([]string{
 								"NONE",
 								"HBBTV_1_5",
+								"HYBRIDCAST",
 							}),
 						},
 					},
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each segment. Actual segments will be rounded to the nearest multiple of the source segment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"segment_template_format": {
@@ -838,13 +952,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"max_video_bits_per_second": {
 									// Property: MaxVideoBitsPerSecond
 									Description: "The maximum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"min_video_bits_per_second": {
 									// Property: MinVideoBitsPerSecond
 									Description: "The minimum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"stream_order": {
@@ -867,7 +981,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"suggested_presentation_delay_seconds": {
 						// Property: SuggestedPresentationDelaySeconds
 						Description: "Duration (in seconds) to delay live content before presentation.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"utc_timing": {
@@ -979,6 +1093,31 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "CertificateArn": {
 			//               "description": "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 			//               "type": "string"
+			//             },
+			//             "EncryptionContractConfiguration": {
+			//               "additionalProperties": false,
+			//               "description": "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+			//               "properties": {
+			//                 "PresetSpeke20Audio": {
+			//                   "description": "A collection of audio encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-AUDIO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 },
+			//                 "PresetSpeke20Video": {
+			//                   "description": "A collection of video encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-VIDEO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "required": [
+			//                 "PresetSpeke20Audio",
+			//                 "PresetSpeke20Video"
+			//               ],
+			//               "type": "object"
 			//             },
 			//             "ResourceId": {
 			//               "description": "The resource ID to include in key requests.",
@@ -1145,7 +1284,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"key_rotation_interval_seconds": {
 									// Property: KeyRotationIntervalSeconds
 									Description: "Interval (in seconds) between each encryption key rotation.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"repeat_ext_x_key": {
@@ -1164,6 +1303,37 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												Description: "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 												Type:        types.StringType,
 												Optional:    true,
+											},
+											"encryption_contract_configuration": {
+												// Property: EncryptionContractConfiguration
+												Description: "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"preset_speke_20_audio": {
+															// Property: PresetSpeke20Audio
+															Description: "A collection of audio encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-AUDIO-1",
+																}),
+															},
+														},
+														"preset_speke_20_video": {
+															// Property: PresetSpeke20Video
+															Description: "A collection of video encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-VIDEO-1",
+																}),
+															},
+														},
+													},
+												),
+												Optional: true,
 											},
 											"resource_id": {
 												// Property: ResourceId
@@ -1219,19 +1389,19 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"playlist_window_seconds": {
 						// Property: PlaylistWindowSeconds
 						Description: "Time window (in seconds) contained in each parent manifest.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"program_date_time_interval_seconds": {
 						// Property: ProgramDateTimeIntervalSeconds
 						Description: "The interval (in seconds) between each EXT-X-PROGRAM-DATE-TIME tag inserted into manifests. Additionally, when an interval is specified ID3Timed Metadata messages will be generated every 5 seconds using the ingest time of the content. If the interval is not specified, or set to 0, then no EXT-X-PROGRAM-DATE-TIME tags will be inserted into manifests and no ID3Timed Metadata messages will be generated. Note that irrespective of this parameter, if any ID3 Timed Metadata is found in HTTP Live Streaming (HLS) input, it will be passed through to HLS output.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "Duration (in seconds) of each fragment. Actual fragments will be rounded to the nearest multiple of the source fragment duration.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"stream_selection": {
@@ -1242,13 +1412,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"max_video_bits_per_second": {
 									// Property: MaxVideoBitsPerSecond
 									Description: "The maximum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"min_video_bits_per_second": {
 									// Property: MinVideoBitsPerSecond
 									Description: "The minimum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"stream_order": {
@@ -1327,6 +1497,31 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "CertificateArn": {
 			//               "description": "An Amazon Resource Name (ARN) of a Certificate Manager certificate that MediaPackage will use for enforcing secure end-to-end data transfer with the key provider service.",
 			//               "type": "string"
+			//             },
+			//             "EncryptionContractConfiguration": {
+			//               "additionalProperties": false,
+			//               "description": "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+			//               "properties": {
+			//                 "PresetSpeke20Audio": {
+			//                   "description": "A collection of audio encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-AUDIO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 },
+			//                 "PresetSpeke20Video": {
+			//                   "description": "A collection of video encryption presets.",
+			//                   "enum": [
+			//                     "PRESET-VIDEO-1"
+			//                   ],
+			//                   "type": "string"
+			//                 }
+			//               },
+			//               "required": [
+			//                 "PresetSpeke20Audio",
+			//                 "PresetSpeke20Video"
+			//               ],
+			//               "type": "object"
 			//             },
 			//             "ResourceId": {
 			//               "description": "The resource ID to include in key requests.",
@@ -1416,6 +1611,37 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 												Type:        types.StringType,
 												Optional:    true,
 											},
+											"encryption_contract_configuration": {
+												// Property: EncryptionContractConfiguration
+												Description: "The configuration to use for encrypting one or more content tracks separately for endpoints that use SPEKE 2.0.",
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"preset_speke_20_audio": {
+															// Property: PresetSpeke20Audio
+															Description: "A collection of audio encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-AUDIO-1",
+																}),
+															},
+														},
+														"preset_speke_20_video": {
+															// Property: PresetSpeke20Video
+															Description: "A collection of video encryption presets.",
+															Type:        types.StringType,
+															Required:    true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringInSlice([]string{
+																	"PRESET-VIDEO-1",
+																}),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
 											"resource_id": {
 												// Property: ResourceId
 												Description: "The resource ID to include in key requests.",
@@ -1451,13 +1677,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					"manifest_window_seconds": {
 						// Property: ManifestWindowSeconds
 						Description: "The time window (in seconds) contained in each manifest.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"segment_duration_seconds": {
 						// Property: SegmentDurationSeconds
 						Description: "The duration (in seconds) of each segment.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 					"stream_selection": {
@@ -1468,13 +1694,13 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"max_video_bits_per_second": {
 									// Property: MaxVideoBitsPerSecond
 									Description: "The maximum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"min_video_bits_per_second": {
 									// Property: MinVideoBitsPerSecond
 									Description: "The minimum video bitrate (bps) to include in output.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 								},
 								"stream_order": {
@@ -1527,7 +1753,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "integer"
 			// }
 			Description: "Maximum duration (seconds) of content to retain for startover playback. If not specified, startover playback will be disabled for the OriginEndpoint.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"tags": {
@@ -1583,7 +1809,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "type": "integer"
 			// }
 			Description: "Amount of delay (seconds) to enforce on the playback of live content. If not specified, there will be no time delay in effect for the OriginEndpoint.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"url": {
@@ -1641,6 +1867,7 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 		"dash_package":                         "DashPackage",
 		"description":                          "Description",
 		"encryption":                           "Encryption",
+		"encryption_contract_configuration":    "EncryptionContractConfiguration",
 		"encryption_method":                    "EncryptionMethod",
 		"hls_manifests":                        "HlsManifests",
 		"hls_package":                          "HlsPackage",
@@ -1660,6 +1887,8 @@ func originEndpointResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 		"period_triggers":                      "PeriodTriggers",
 		"playlist_type":                        "PlaylistType",
 		"playlist_window_seconds":              "PlaylistWindowSeconds",
+		"preset_speke_20_audio":                "PresetSpeke20Audio",
+		"preset_speke_20_video":                "PresetSpeke20Video",
 		"profile":                              "Profile",
 		"program_date_time_interval_seconds":   "ProgramDateTimeIntervalSeconds",
 		"repeat_ext_x_key":                     "RepeatExtXKey",

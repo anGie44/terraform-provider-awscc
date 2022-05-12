@@ -4,6 +4,7 @@ package sagemaker
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,7 +28,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "description": "The Amazon Resource Name (ARN) of the AppImageConfig.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:app-image-config/.*",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of the AppImageConfig.",
@@ -44,7 +45,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "description": "The Name of the AppImageConfig.",
 			//   "maxLength": 63,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}",
 			//   "type": "string"
 			// }
 			Description: "The Name of the AppImageConfig.",
@@ -52,6 +53,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 63),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -84,7 +86,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//           "description": "The path within the image to mount the user's EFS home directory. The directory should be empty. If not specified, defaults to /home/sagemaker-user.",
 			//           "maxLength": 1024,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "^/.*",
 			//           "type": "string"
 			//         }
 			//       },
@@ -134,7 +136,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"default_gid": {
 									// Property: DefaultGid
 									Description: "The default POSIX group ID (GID). If not specified, defaults to 100.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(0, 65535),
@@ -143,7 +145,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 								"default_uid": {
 									// Property: DefaultUid
 									Description: "The default POSIX user ID (UID). If not specified, defaults to 1000.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(0, 65535),
@@ -156,6 +158,7 @@ func appImageConfigResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 1024),
+										validate.StringMatch(regexp.MustCompile("^/.*"), ""),
 									},
 								},
 							},

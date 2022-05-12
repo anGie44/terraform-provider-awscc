@@ -74,12 +74,12 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 							map[string]tfsdk.Attribute{
 								"read_capacity_units": {
 									// Property: ReadCapacityUnits
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"write_capacity_units": {
 									// Property: WriteCapacityUnits
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 							},
@@ -103,7 +103,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//         "additionalProperties": false,
 			//         "properties": {
 			//           "ColumnName": {
-			//             "pattern": "",
+			//             "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//             "type": "string"
 			//           },
 			//           "ColumnType": {
@@ -173,7 +173,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Default TTL (Time To Live) in seconds, where zero is disabled. If the value is greater than zero, TTL is enabled for the entire table and an expiration timestamp is added to each column.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"encryption_specification": {
@@ -226,7 +226,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Name for Cassandra keyspace",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//   "type": "string"
 			// }
 			Description: "Name for Cassandra keyspace",
@@ -243,7 +243,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "ColumnName": {
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//         "type": "string"
 			//       },
 			//       "ColumnType": {
@@ -299,7 +299,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "ColumnName": {
-			//         "pattern": "",
+			//         "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//         "type": "string"
 			//       },
 			//       "ColumnType": {
@@ -338,7 +338,7 @@ func tableDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Name for Cassandra table",
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{1,47}$",
 			//   "type": "string"
 			// }
 			Description: "Name for Cassandra table",

@@ -69,13 +69,13 @@ func resiliencyPolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 					"rpo_in_secs": {
 						// Property: RpoInSecs
 						Description: "RPO in seconds.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"rto_in_secs": {
 						// Property: RtoInSecs
 						Description: "RTO in seconds.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -112,7 +112,7 @@ func resiliencyPolicyDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "Name of Resiliency Policy.",
-			//   "pattern": "",
+			//   "pattern": "^[A-Za-z0-9][A-Za-z0-9_\\-]{1,59}$",
 			//   "type": "string"
 			// }
 			Description: "Name of Resiliency Policy.",

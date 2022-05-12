@@ -17,22 +17,31 @@ AWS Cost Anomaly Detection leverages advanced Machine Learning technologies to i
 
 ### Required
 
-- **monitor_name** (String) The name of the monitor.
-- **monitor_type** (String)
+- `monitor_name` (String) The name of the monitor.
+- `monitor_type` (String)
 
 ### Optional
 
-- **monitor_dimension** (String) The dimensions to evaluate
-- **monitor_specification** (String)
+- `monitor_dimension` (String) The dimensions to evaluate
+- `monitor_specification` (String)
+- `resource_tags` (Attributes List) Tags to assign to monitor. (see [below for nested schema](#nestedatt--resource_tags))
 
 ### Read-Only
 
-- **creation_date** (String) The date when the monitor was created.
-- **dimensional_value_count** (Number) The value for evaluated dimensions.
-- **id** (String) Uniquely identifies the resource.
-- **last_evaluated_date** (String) The date when the monitor last evaluated for anomalies.
-- **last_updated_date** (String) The date when the monitor was last updated.
-- **monitor_arn** (String) Monitor ARN
+- `creation_date` (String) The date when the monitor was created.
+- `dimensional_value_count` (Number) The value for evaluated dimensions.
+- `id` (String) Uniquely identifies the resource.
+- `last_evaluated_date` (String) The date when the monitor last evaluated for anomalies.
+- `last_updated_date` (String) The date when the monitor was last updated.
+- `monitor_arn` (String) Monitor ARN
+
+<a id="nestedatt--resource_tags"></a>
+### Nested Schema for `resource_tags`
+
+Optional:
+
+- `key` (String) The key name for the tag.
+- `value` (String) The value for the tag.
 
 ## Import
 

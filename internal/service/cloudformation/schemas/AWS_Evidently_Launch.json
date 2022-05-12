@@ -5,17 +5,17 @@
   "properties": {
     "Arn": {
       "type": "string",
-      "pattern": ""
+      "pattern": "arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*/launch/[-a-zA-Z0-9._]*"
     },
     "Name": {
       "type": "string",
-      "pattern": "",
+      "pattern": "[-a-zA-Z0-9._]*",
       "minLength": 1,
       "maxLength": 127
     },
     "Project": {
       "type": "string",
-      "pattern": "",
+      "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
       "minLength": 0,
       "maxLength": 2048
     },
@@ -28,7 +28,7 @@
       "type": "string",
       "minLength": 0,
       "maxLength": 127,
-      "pattern": ""
+      "pattern": ".*"
     },
     "ScheduledSplitsConfig": {
       "type": "array",
@@ -68,15 +68,40 @@
       "items": {
         "$ref": "#/definitions/Tag"
       }
+    },
+    "ExecutionStatus": {
+      "description": "Start or Stop Launch Launch. Default is not started.",
+      "$ref": "#/definitions/ExecutionStatusObject"
     }
   },
   "definitions": {
+    "ExecutionStatusObject": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "Status": {
+          "description": "Provide START or STOP action to apply on a launch",
+          "type": "string"
+        },
+        "DesiredState": {
+          "description": "Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.",
+          "type": "string"
+        },
+        "Reason": {
+          "description": "Provide a reason for stopping the launch. Defaults to empty if not provided.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "Status"
+      ]
+    },
     "LaunchGroupObject": {
       "type": "object",
       "properties": {
         "GroupName": {
           "type": "string",
-          "pattern": "",
+          "pattern": "[-a-zA-Z0-9._]*",
           "minLength": 1,
           "maxLength": 127
         },
@@ -104,7 +129,7 @@
       "properties": {
         "GroupName": {
           "type": "string",
-          "pattern": "",
+          "pattern": "[-a-zA-Z0-9._]*",
           "minLength": 1,
           "maxLength": 127
         },
@@ -146,7 +171,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 255,
-          "pattern": ""
+          "pattern": "^[\\S]+$"
         },
         "EntityIdKey": {
           "description": "The JSON path to reference the entity id in the event.",
@@ -164,7 +189,7 @@
           "type": "string",
           "minLength": 1,
           "maxLength": 256,
-          "pattern": ""
+          "pattern": ".*"
         }
       },
       "required": [
@@ -221,7 +246,9 @@
     "create": {
       "permissions": [
         "evidently:CreateLaunch",
-        "evidently:TagResource"
+        "evidently:TagResource",
+        "evidently:GetLaunch",
+        "evidently:StartLaunch"
       ]
     },
     "read": {
@@ -235,13 +262,17 @@
         "evidently:UpdateLaunch",
         "evidently:ListTagsForResource",
         "evidently:TagResource",
-        "evidently:UntagResource"
+        "evidently:UntagResource",
+        "evidently:GetLaunch",
+        "evidently:StartLaunch",
+        "evidently:StopLaunch"
       ]
     },
     "delete": {
       "permissions": [
         "evidently:DeleteLaunch",
-        "evidently:UntagResource"
+        "evidently:UntagResource",
+        "evidently:GetLaunch"
       ]
     }
   },

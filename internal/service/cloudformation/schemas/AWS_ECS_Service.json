@@ -337,16 +337,10 @@
     "createOnlyProperties": [
         "/properties/Cluster",
         "/properties/DeploymentController",
-        "/properties/EnableECSManagedTags",
         "/properties/LaunchType",
-        "/properties/LoadBalancers",
-        "/properties/PlacementConstraints",
-        "/properties/PlacementStrategies",
-        "/properties/PropagateTags",
         "/properties/Role",
         "/properties/SchedulingStrategy",
-        "/properties/ServiceName",
-        "/properties/ServiceRegistries"
+        "/properties/ServiceName"
     ],
     "additionalProperties": false
 }

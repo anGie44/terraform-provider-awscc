@@ -44,7 +44,7 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "description": "The KMS Key",
 			//       "maxLength": 256,
 			//       "minLength": 0,
-			//       "pattern": "",
+			//       "pattern": "arn:aws(-[\\w]+)*:kms:[a-z\\-]+-[0-9]{1}:[0-9]{12}:key\\/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}",
 			//       "type": "string"
 			//     }
 			//   },
@@ -116,13 +116,13 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 					"healthy_threshold": {
 						// Property: HealthyThreshold
 						Description: "Health check Healthy Threshold",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"interval": {
 						// Property: Interval
 						Description: "Health check Interval",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"path": {
@@ -140,13 +140,13 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 					"timeout": {
 						// Property: Timeout
 						Description: "Health check Timeout",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 					"unhealthy_threshold": {
 						// Property: UnhealthyThreshold
 						Description: "Health check Unhealthy Threshold",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 					},
 				},
@@ -164,21 +164,21 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "description": "CPU",
 			//       "maxLength": 6,
 			//       "minLength": 4,
-			//       "pattern": "",
+			//       "pattern": "1024|2048|(1|2) vCPU",
 			//       "type": "string"
 			//     },
 			//     "InstanceRoleArn": {
 			//       "description": "Instance Role Arn",
 			//       "maxLength": 102,
 			//       "minLength": 29,
-			//       "pattern": "",
+			//       "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:role/[\\w+=,.@-]{1,64}",
 			//       "type": "string"
 			//     },
 			//     "Memory": {
 			//       "description": "Memory",
 			//       "maxLength": 4,
 			//       "minLength": 4,
-			//       "pattern": "",
+			//       "pattern": "2048|3072|4096|(2|3|4) GB",
 			//       "type": "string"
 			//     }
 			//   },
@@ -203,6 +203,115 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 						// Property: Memory
 						Description: "Memory",
 						Type:        types.StringType,
+						Computed:    true,
+					},
+				},
+			),
+			Computed: true,
+		},
+		"network_configuration": {
+			// Property: NetworkConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Network configuration",
+			//   "properties": {
+			//     "EgressConfiguration": {
+			//       "additionalProperties": false,
+			//       "description": "Network egress configuration",
+			//       "properties": {
+			//         "EgressType": {
+			//           "description": "Network egress type.",
+			//           "enum": [
+			//             "DEFAULT",
+			//             "VPC"
+			//           ],
+			//           "type": "string"
+			//         },
+			//         "VpcConnectorArn": {
+			//           "description": "The Amazon Resource Name (ARN) of the App Runner VpcConnector.",
+			//           "maxLength": 1011,
+			//           "minLength": 44,
+			//           "pattern": "",
+			//           "type": "string"
+			//         }
+			//       },
+			//       "required": [
+			//         "EgressType"
+			//       ],
+			//       "type": "object"
+			//     }
+			//   },
+			//   "required": [
+			//     "EgressConfiguration"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "Network configuration",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"egress_configuration": {
+						// Property: EgressConfiguration
+						Description: "Network egress configuration",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"egress_type": {
+									// Property: EgressType
+									Description: "Network egress type.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"vpc_connector_arn": {
+									// Property: VpcConnectorArn
+									Description: "The Amazon Resource Name (ARN) of the App Runner VpcConnector.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+							},
+						),
+						Computed: true,
+					},
+				},
+			),
+			Computed: true,
+		},
+		"observability_configuration": {
+			// Property: ObservabilityConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Service observability configuration",
+			//   "properties": {
+			//     "ObservabilityConfigurationArn": {
+			//       "description": "The Amazon Resource Name (ARN) of the App Runner ObservabilityConfiguration.",
+			//       "maxLength": 1011,
+			//       "minLength": 1,
+			//       "pattern": "",
+			//       "type": "string"
+			//     },
+			//     "ObservabilityEnabled": {
+			//       "description": "Observability enabled",
+			//       "type": "boolean"
+			//     }
+			//   },
+			//   "required": [
+			//     "ObservabilityEnabled"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "Service observability configuration",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"observability_configuration_arn": {
+						// Property: ObservabilityConfigurationArn
+						Description: "The Amazon Resource Name (ARN) of the App Runner ObservabilityConfiguration.",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"observability_enabled": {
+						// Property: ObservabilityEnabled
+						Description: "Observability enabled",
+						Type:        types.BoolType,
 						Computed:    true,
 					},
 				},
@@ -243,7 +352,7 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The AppRunner Service Name.",
 			//   "maxLength": 40,
 			//   "minLength": 4,
-			//   "pattern": "",
+			//   "pattern": "[A-Za-z0-9][A-Za-z0-9-_]{3,39}",
 			//   "type": "string"
 			// }
 			Description: "The AppRunner Service Name.",
@@ -276,7 +385,7 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "description": "Access Role Arn",
 			//           "maxLength": 102,
 			//           "minLength": 29,
-			//           "pattern": "",
+			//           "pattern": "arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):iam::[0-9]{12}:role/[\\w+=,.@-]{1,64}",
 			//           "type": "string"
 			//         },
 			//         "ConnectionArn": {
@@ -317,7 +426,10 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                   "description": "Runtime",
 			//                   "enum": [
 			//                     "PYTHON_3",
-			//                     "NODEJS_12"
+			//                     "NODEJS_12",
+			//                     "NODEJS_14",
+			//                     "CORRETTO_8",
+			//                     "CORRETTO_11"
 			//                   ],
 			//                   "type": "string"
 			//                 },
@@ -431,7 +543,7 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//           "description": "Image Identifier",
 			//           "maxLength": 1024,
 			//           "minLength": 1,
-			//           "pattern": "",
+			//           "pattern": "([0-9]{12}.dkr.ecr.[a-z\\-]+-[0-9]{1}.amazonaws.com\\/.*)|(^public\\.ecr\\.aws\\/.+\\/.+)",
 			//           "type": "string"
 			//         },
 			//         "ImageRepositoryType": {
@@ -715,50 +827,57 @@ func serviceDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	opts = opts.WithCloudFormationTypeName("AWS::AppRunner::Service").WithTerraformTypeName("awscc_apprunner_service")
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithAttributeNameMap(map[string]string{
-		"access_role_arn":                "AccessRoleArn",
-		"authentication_configuration":   "AuthenticationConfiguration",
-		"auto_deployments_enabled":       "AutoDeploymentsEnabled",
-		"auto_scaling_configuration_arn": "AutoScalingConfigurationArn",
-		"build_command":                  "BuildCommand",
-		"code_configuration":             "CodeConfiguration",
-		"code_configuration_values":      "CodeConfigurationValues",
-		"code_repository":                "CodeRepository",
-		"configuration_source":           "ConfigurationSource",
-		"connection_arn":                 "ConnectionArn",
-		"cpu":                            "Cpu",
-		"encryption_configuration":       "EncryptionConfiguration",
-		"health_check_configuration":     "HealthCheckConfiguration",
-		"healthy_threshold":              "HealthyThreshold",
-		"image_configuration":            "ImageConfiguration",
-		"image_identifier":               "ImageIdentifier",
-		"image_repository":               "ImageRepository",
-		"image_repository_type":          "ImageRepositoryType",
-		"instance_configuration":         "InstanceConfiguration",
-		"instance_role_arn":              "InstanceRoleArn",
-		"interval":                       "Interval",
-		"key":                            "Key",
-		"kms_key":                        "KmsKey",
-		"memory":                         "Memory",
-		"name":                           "Name",
-		"path":                           "Path",
-		"port":                           "Port",
-		"protocol":                       "Protocol",
-		"repository_url":                 "RepositoryUrl",
-		"runtime":                        "Runtime",
-		"runtime_environment_variables":  "RuntimeEnvironmentVariables",
-		"service_arn":                    "ServiceArn",
-		"service_id":                     "ServiceId",
-		"service_name":                   "ServiceName",
-		"service_url":                    "ServiceUrl",
-		"source_code_version":            "SourceCodeVersion",
-		"source_configuration":           "SourceConfiguration",
-		"start_command":                  "StartCommand",
-		"status":                         "Status",
-		"tags":                           "Tags",
-		"timeout":                        "Timeout",
-		"type":                           "Type",
-		"unhealthy_threshold":            "UnhealthyThreshold",
-		"value":                          "Value",
+		"access_role_arn":                 "AccessRoleArn",
+		"authentication_configuration":    "AuthenticationConfiguration",
+		"auto_deployments_enabled":        "AutoDeploymentsEnabled",
+		"auto_scaling_configuration_arn":  "AutoScalingConfigurationArn",
+		"build_command":                   "BuildCommand",
+		"code_configuration":              "CodeConfiguration",
+		"code_configuration_values":       "CodeConfigurationValues",
+		"code_repository":                 "CodeRepository",
+		"configuration_source":            "ConfigurationSource",
+		"connection_arn":                  "ConnectionArn",
+		"cpu":                             "Cpu",
+		"egress_configuration":            "EgressConfiguration",
+		"egress_type":                     "EgressType",
+		"encryption_configuration":        "EncryptionConfiguration",
+		"health_check_configuration":      "HealthCheckConfiguration",
+		"healthy_threshold":               "HealthyThreshold",
+		"image_configuration":             "ImageConfiguration",
+		"image_identifier":                "ImageIdentifier",
+		"image_repository":                "ImageRepository",
+		"image_repository_type":           "ImageRepositoryType",
+		"instance_configuration":          "InstanceConfiguration",
+		"instance_role_arn":               "InstanceRoleArn",
+		"interval":                        "Interval",
+		"key":                             "Key",
+		"kms_key":                         "KmsKey",
+		"memory":                          "Memory",
+		"name":                            "Name",
+		"network_configuration":           "NetworkConfiguration",
+		"observability_configuration":     "ObservabilityConfiguration",
+		"observability_configuration_arn": "ObservabilityConfigurationArn",
+		"observability_enabled":           "ObservabilityEnabled",
+		"path":                            "Path",
+		"port":                            "Port",
+		"protocol":                        "Protocol",
+		"repository_url":                  "RepositoryUrl",
+		"runtime":                         "Runtime",
+		"runtime_environment_variables":   "RuntimeEnvironmentVariables",
+		"service_arn":                     "ServiceArn",
+		"service_id":                      "ServiceId",
+		"service_name":                    "ServiceName",
+		"service_url":                     "ServiceUrl",
+		"source_code_version":             "SourceCodeVersion",
+		"source_configuration":            "SourceConfiguration",
+		"start_command":                   "StartCommand",
+		"status":                          "Status",
+		"tags":                            "Tags",
+		"timeout":                         "Timeout",
+		"type":                            "Type",
+		"unhealthy_threshold":             "UnhealthyThreshold",
+		"value":                           "Value",
+		"vpc_connector_arn":               "VpcConnectorArn",
 	})
 
 	singularDataSourceType, err := NewSingularDataSourceType(ctx, opts...)

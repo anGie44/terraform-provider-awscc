@@ -96,6 +96,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//           "type": "object"
 			//         },
 			//         "EventSources": {
+			//           "insertionOrder": false,
 			//           "items": {
 			//             "additionalProperties": false,
 			//             "properties": {
@@ -115,6 +116,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//           "type": "array"
 			//         },
 			//         "ExecArgs": {
+			//           "insertionOrder": true,
 			//           "items": {
 			//             "type": "string"
 			//           },
@@ -134,6 +136,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//               "additionalProperties": false,
 			//               "properties": {
 			//                 "Devices": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "additionalProperties": false,
 			//                     "properties": {
@@ -162,6 +165,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//                   "type": "boolean"
 			//                 },
 			//                 "Volumes": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "additionalProperties": false,
 			//                     "properties": {
@@ -224,6 +228,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//       "type": "string"
 			//     },
 			//     "ComponentPlatforms": {
+			//       "insertionOrder": false,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -248,7 +253,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 			//       "type": "string"
 			//     },
 			//     "LambdaArn": {
-			//       "pattern": "",
+			//       "pattern": "^arn:aws(-(cn|us-gov))?:lambda:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
 			//       "type": "string"
 			//     }
 			//   },
@@ -349,7 +354,7 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 														},
 														"memory_size_in_kb": {
 															// Property: MemorySizeInKB
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Computed: true,
 														},
 														"mount_ro_sysfs": {
@@ -401,17 +406,17 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 								},
 								"max_idle_time_in_seconds": {
 									// Property: MaxIdleTimeInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"max_instances_count": {
 									// Property: MaxInstancesCount
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"max_queue_size": {
 									// Property: MaxQueueSize
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"pinned": {
@@ -421,12 +426,12 @@ func componentVersionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, 
 								},
 								"status_timeout_in_seconds": {
 									// Property: StatusTimeoutInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"timeout_in_seconds": {
 									// Property: TimeoutInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 							},

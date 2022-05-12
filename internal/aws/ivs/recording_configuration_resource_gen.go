@@ -4,6 +4,7 @@ package ivs
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,7 +28,7 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 			//   "description": "Recording Configuration ARN is automatically generated on creation and assigned as the unique identifier.",
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^arn:aws[-a-z]*:ivs:[a-z0-9-]+:[0-9]+:recording-configuration/[a-zA-Z0-9-]+$",
 			//   "type": "string"
 			// }
 			Description: "Recording Configuration ARN is automatically generated on creation and assigned as the unique identifier.",
@@ -51,7 +52,7 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 			//         "BucketName": {
 			//           "maxLength": 63,
 			//           "minLength": 3,
-			//           "pattern": "",
+			//           "pattern": "^[a-z0-9-.]+$",
 			//           "type": "string"
 			//         }
 			//       },
@@ -80,6 +81,7 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(3, 63),
+										validate.StringMatch(regexp.MustCompile("^[a-z0-9-.]+$"), ""),
 									},
 									PlanModifiers: []tfsdk.AttributePlanModifier{
 										tfsdk.RequiresReplace(),
@@ -106,7 +108,7 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 			//   "description": "Recording Configuration Name.",
 			//   "maxLength": 128,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9-_]*$",
 			//   "type": "string"
 			// }
 			Description: "Recording Configuration Name.",
@@ -115,6 +117,7 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 128),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9-_]*$"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -197,6 +200,74 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 				validate.ArrayLenAtMost(50),
 			},
 		},
+		"thumbnail_configuration": {
+			// Property: ThumbnailConfiguration
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Recording Thumbnail Configuration.",
+			//   "properties": {
+			//     "RecordingMode": {
+			//       "description": "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled.",
+			//       "enum": [
+			//         "INTERVAL",
+			//         "DISABLED"
+			//       ],
+			//       "type": "string"
+			//     },
+			//     "TargetIntervalSeconds": {
+			//       "description": "Thumbnail recording Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.",
+			//       "maximum": 60,
+			//       "minimum": 5,
+			//       "type": "integer"
+			//     }
+			//   },
+			//   "required": [
+			//     "RecordingMode"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "Recording Thumbnail Configuration.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"recording_mode": {
+						// Property: RecordingMode
+						Description: "Thumbnail Recording Mode, which determines whether thumbnails are recorded at an interval or are disabled.",
+						Type:        types.StringType,
+						Required:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringInSlice([]string{
+								"INTERVAL",
+								"DISABLED",
+							}),
+						},
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							tfsdk.RequiresReplace(),
+						},
+					},
+					"target_interval_seconds": {
+						// Property: TargetIntervalSeconds
+						Description: "Thumbnail recording Target Interval Seconds defines the interval at which thumbnails are recorded. This field is required if RecordingMode is INTERVAL.",
+						Type:        types.Int64Type,
+						Optional:    true,
+						Computed:    true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.IntBetween(5, 60),
+						},
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							tfsdk.UseStateForUnknown(),
+							tfsdk.RequiresReplace(),
+						},
+					},
+				},
+			),
+			Optional: true,
+			Computed: true,
+			PlanModifiers: []tfsdk.AttributePlanModifier{
+				tfsdk.UseStateForUnknown(),
+				tfsdk.RequiresReplace(),
+			},
+		},
 	}
 
 	attributes["id"] = tfsdk.Attribute{
@@ -225,9 +296,12 @@ func recordingConfigurationResourceType(ctx context.Context) (tfsdk.ResourceType
 		"destination_configuration": "DestinationConfiguration",
 		"key":                       "Key",
 		"name":                      "Name",
+		"recording_mode":            "RecordingMode",
 		"s3":                        "S3",
 		"state":                     "State",
 		"tags":                      "Tags",
+		"target_interval_seconds":   "TargetIntervalSeconds",
+		"thumbnail_configuration":   "ThumbnailConfiguration",
 		"value":                     "Value",
 	})
 

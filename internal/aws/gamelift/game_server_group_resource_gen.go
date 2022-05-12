@@ -4,6 +4,7 @@ package gamelift
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,7 +28,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "description": "A generated unique ID for the EC2 Auto Scaling group that is associated with this game server group.",
 			//   "maxLength": 256,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "[ -퟿-�𐀀-􏿿\r\n\t]*",
 			//   "type": "string"
 			// }
 			Description: "A generated unique ID for the EC2 Auto Scaling group that is associated with this game server group.",
@@ -74,7 +75,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 					"estimated_instance_warmup": {
 						// Property: EstimatedInstanceWarmup
 						Description: "Length of time, in seconds, it takes for a new instance to start new game server processes and register with GameLift FleetIQ.",
-						Type:        types.NumberType,
+						Type:        types.Float64Type,
 						Optional:    true,
 					},
 					"target_tracking_configuration": {
@@ -85,7 +86,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 								"target_value": {
 									// Property: TargetValue
 									Description: "Desired value to use with a game server group target-based scaling policy.",
-									Type:        types.NumberType,
+									Type:        types.Float64Type,
 									Required:    true,
 								},
 							},
@@ -150,7 +151,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "description": "A generated unique ID for the game server group.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^arn:.*:gameservergroup\\/[a-zA-Z0-9-\\.]*",
 			//   "type": "string"
 			// }
 			Description: "A generated unique ID for the game server group.",
@@ -167,7 +168,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "description": "An identifier for the new game server group.",
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9-\\.]+",
 			//   "type": "string"
 			// }
 			Description: "An identifier for the new game server group.",
@@ -175,6 +176,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 128),
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9-\\.]+"), ""),
 			},
 		},
 		"game_server_protection_policy": {
@@ -309,7 +311,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "type": "number"
 			// }
 			Description: "The maximum number of instances allowed in the EC2 Auto Scaling group.",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.FloatAtLeast(1.000000),
@@ -324,7 +326,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "type": "number"
 			// }
 			Description: "The minimum number of instances allowed in the EC2 Auto Scaling group.",
-			Type:        types.NumberType,
+			Type:        types.Float64Type,
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.FloatAtLeast(0.000000),
@@ -337,7 +339,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "description": "The Amazon Resource Name (ARN) for an IAM role that allows Amazon GameLift to access your EC2 Auto Scaling groups.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^arn:.*:role\\/[\\w+=,.@-]+",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) for an IAM role that allows Amazon GameLift to access your EC2 Auto Scaling groups.",
@@ -345,6 +347,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("^arn:.*:role\\/[\\w+=,.@-]+"), ""),
 			},
 		},
 		"tags": {
@@ -406,7 +409,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			//   "items": {
 			//     "maxLength": 24,
 			//     "minLength": 15,
-			//     "pattern": "",
+			//     "pattern": "^subnet-[0-9a-z]+$",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 20,
@@ -419,6 +422,7 @@ func gameServerGroupResourceType(ctx context.Context) (tfsdk.ResourceType, error
 			Validators: []tfsdk.AttributeValidator{
 				validate.ArrayLenBetween(1, 20),
 				validate.ArrayForEach(validate.StringLenBetween(15, 24)),
+				validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^subnet-[0-9a-z]+$"), "")),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				Multiset(),

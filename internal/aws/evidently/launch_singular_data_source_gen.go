@@ -23,7 +23,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*/launch/[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -38,6 +38,56 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
+			Computed: true,
+		},
+		"execution_status": {
+			// Property: ExecutionStatus
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Start or Stop Launch Launch. Default is not started.",
+			//   "properties": {
+			//     "DesiredState": {
+			//       "description": "Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.",
+			//       "type": "string"
+			//     },
+			//     "Reason": {
+			//       "description": "Provide a reason for stopping the launch. Defaults to empty if not provided.",
+			//       "type": "string"
+			//     },
+			//     "Status": {
+			//       "description": "Provide START or STOP action to apply on a launch",
+			//       "type": "string"
+			//     }
+			//   },
+			//   "required": [
+			//     "Status"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "Start or Stop Launch Launch. Default is not started.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"desired_state": {
+						// Property: DesiredState
+						Description: "Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"reason": {
+						// Property: Reason
+						Description: "Provide a reason for stopping the launch. Defaults to empty if not provided.",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+					"status": {
+						// Property: Status
+						Description: "Provide START or STOP action to apply on a launch",
+						Type:        types.StringType,
+						Computed:    true,
+					},
+				},
+			),
 			Computed: true,
 		},
 		"groups": {
@@ -59,7 +109,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "GroupName": {
 			//         "maxLength": 127,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       },
 			//       "Variation": {
@@ -124,13 +174,13 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "MetricName": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^[\\S]+$",
 			//         "type": "string"
 			//       },
 			//       "UnitLabel": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": ".*",
 			//         "type": "string"
 			//       },
 			//       "ValueKey": {
@@ -192,7 +242,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -204,7 +254,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "maxLength": 2048,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -216,7 +266,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": ".*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -238,7 +288,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "GroupName": {
 			//               "maxLength": 127,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "[-a-zA-Z0-9._]*",
 			//               "type": "string"
 			//             },
 			//             "SplitWeight": {
@@ -282,7 +332,7 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								},
 								"split_weight": {
 									// Property: SplitWeight
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 							},
@@ -374,8 +424,10 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"arn":                     "Arn",
 		"description":             "Description",
+		"desired_state":           "DesiredState",
 		"entity_id_key":           "EntityIdKey",
 		"event_pattern":           "EventPattern",
+		"execution_status":        "ExecutionStatus",
 		"feature":                 "Feature",
 		"group_name":              "GroupName",
 		"group_weights":           "GroupWeights",
@@ -386,9 +438,11 @@ func launchDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"name":                    "Name",
 		"project":                 "Project",
 		"randomization_salt":      "RandomizationSalt",
+		"reason":                  "Reason",
 		"scheduled_splits_config": "ScheduledSplitsConfig",
 		"split_weight":            "SplitWeight",
 		"start_time":              "StartTime",
+		"status":                  "Status",
 		"tags":                    "Tags",
 		"unit_label":              "UnitLabel",
 		"value":                   "Value",

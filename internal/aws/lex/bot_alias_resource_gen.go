@@ -4,6 +4,7 @@ package lex
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -40,7 +41,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Unique ID of resource",
 			//   "maxLength": 10,
 			//   "minLength": 10,
-			//   "pattern": "",
+			//   "pattern": "^[0-9a-zA-Z]+$",
 			//   "type": "string"
 			// }
 			Description: "Unique ID of resource",
@@ -115,8 +116,8 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       }
 			//     },
 			//     "required": [
-			//       "Key",
-			//       "Value"
+			//       "LocaleId",
+			//       "BotAliasLocaleSetting"
 			//     ],
 			//     "type": "object"
 			//   },
@@ -176,13 +177,13 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 							},
 						),
-						Optional: true,
+						Required: true,
 					},
 					"locale_id": {
 						// Property: LocaleId
 						Description: "A string used to identify the locale",
 						Type:        types.StringType,
-						Optional:    true,
+						Required:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
 						},
@@ -202,7 +203,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "A unique identifier for a resource.",
 			//   "maxLength": 100,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^([0-9a-zA-Z][_-]?)+$",
 			//   "type": "string"
 			// }
 			Description: "A unique identifier for a resource.",
@@ -210,6 +211,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 100),
+				validate.StringMatch(regexp.MustCompile("^([0-9a-zA-Z][_-]?)+$"), ""),
 			},
 		},
 		"bot_alias_status": {
@@ -300,7 +302,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Unique ID of resource",
 			//   "maxLength": 10,
 			//   "minLength": 10,
-			//   "pattern": "",
+			//   "pattern": "^[0-9a-zA-Z]+$",
 			//   "type": "string"
 			// }
 			Description: "Unique ID of resource",
@@ -308,6 +310,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(10, 10),
+				validate.StringMatch(regexp.MustCompile("^[0-9a-zA-Z]+$"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -320,7 +323,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The version of a bot.",
 			//   "maxLength": 5,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^(DRAFT|[0-9]+)$",
 			//   "type": "string"
 			// }
 			Description: "The version of a bot.",
@@ -328,6 +331,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 5),
+				validate.StringMatch(regexp.MustCompile("^(DRAFT|[0-9]+)$"), ""),
 			},
 		},
 		"conversation_log_settings": {
@@ -356,7 +360,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "The Amazon Resource Name (ARN) of an AWS Key Management Service (KMS) key for encrypting audio log files stored in an S3 bucket.",
 			//                     "maxLength": 2048,
 			//                     "minLength": 20,
-			//                     "pattern": "",
+			//                     "pattern": "^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$",
 			//                     "type": "string"
 			//                   },
 			//                   "LogPrefix": {
@@ -369,7 +373,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "description": "The Amazon Resource Name (ARN) of an Amazon S3 bucket where audio log files are stored.",
 			//                     "maxLength": 2048,
 			//                     "minLength": 1,
-			//                     "pattern": "",
+			//                     "pattern": "^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
 			//                     "type": "string"
 			//                   }
 			//                 },
@@ -380,6 +384,9 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 "type": "object"
 			//               }
 			//             },
+			//             "required": [
+			//               "S3Bucket"
+			//             ],
 			//             "type": "object"
 			//           },
 			//           "Enabled": {
@@ -412,13 +419,13 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 "additionalProperties": false,
 			//                 "properties": {
 			//                   "CloudWatchLogGroupArn": {
-			//                     "description": "A string used to identify this tag",
+			//                     "description": "A string used to identify the groupArn for the Cloudwatch Log Group",
 			//                     "maxLength": 2048,
 			//                     "minLength": 1,
 			//                     "type": "string"
 			//                   },
 			//                   "LogPrefix": {
-			//                     "description": "A string containing the value for the tag",
+			//                     "description": "A string containing the value for the Log Prefix",
 			//                     "maxLength": 1024,
 			//                     "minLength": 0,
 			//                     "type": "string"
@@ -427,9 +434,13 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 "required": [
 			//                   "CloudWatchLogGroupArn",
 			//                   "LogPrefix"
-			//                 ]
+			//                 ],
+			//                 "type": "object"
 			//               }
 			//             },
+			//             "required": [
+			//               "CloudWatch"
+			//             ],
 			//             "type": "object"
 			//           },
 			//           "Enabled": {
@@ -437,6 +448,10 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "type": "boolean"
 			//           }
 			//         },
+			//         "required": [
+			//           "Destination",
+			//           "Enabled"
+			//         ],
 			//         "type": "object"
 			//       },
 			//       "maxItems": 1,
@@ -471,6 +486,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional:    true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(20, 2048),
+																validate.StringMatch(regexp.MustCompile("^arn:[\\w\\-]+:kms:[\\w\\-]+:[\\d]{12}:(?:key\\/[\\w\\-]+|alias\\/[a-zA-Z0-9:\\/_\\-]{1,256})$"), ""),
 															},
 														},
 														"log_prefix": {
@@ -489,11 +505,12 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Required:    true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(1, 2048),
+																validate.StringMatch(regexp.MustCompile("^arn:[\\w\\-]+:s3:::[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$"), ""),
 															},
 														},
 													},
 												),
-												Optional: true,
+												Required: true,
 											},
 										},
 									),
@@ -529,7 +546,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 													map[string]tfsdk.Attribute{
 														"cloudwatch_log_group_arn": {
 															// Property: CloudWatchLogGroupArn
-															Description: "A string used to identify this tag",
+															Description: "A string used to identify the groupArn for the Cloudwatch Log Group",
 															Type:        types.StringType,
 															Required:    true,
 															Validators: []tfsdk.AttributeValidator{
@@ -538,7 +555,7 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 														},
 														"log_prefix": {
 															// Property: LogPrefix
-															Description: "A string containing the value for the tag",
+															Description: "A string containing the value for the Log Prefix",
 															Type:        types.StringType,
 															Required:    true,
 															Validators: []tfsdk.AttributeValidator{
@@ -547,17 +564,17 @@ func botAliasResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 														},
 													},
 												),
-												Optional: true,
+												Required: true,
 											},
 										},
 									),
-									Optional: true,
+									Required: true,
 								},
 								"enabled": {
 									// Property: Enabled
 									Description: "",
 									Type:        types.BoolType,
-									Optional:    true,
+									Required:    true,
 								},
 							},
 							tfsdk.SetNestedAttributesOptions{},

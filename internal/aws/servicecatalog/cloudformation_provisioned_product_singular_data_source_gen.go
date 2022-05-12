@@ -212,7 +212,7 @@ func cloudFormationProvisionedProductDataSourceType(ctx context.Context) (tfsdk.
 			//   "properties": {
 			//     "StackSetAccounts": {
 			//       "items": {
-			//         "pattern": "",
+			//         "pattern": "^[0-9]{12}$",
 			//         "type": "string"
 			//       },
 			//       "type": "array",
@@ -246,7 +246,7 @@ func cloudFormationProvisionedProductDataSourceType(ctx context.Context) (tfsdk.
 			//     },
 			//     "StackSetRegions": {
 			//       "items": {
-			//         "pattern": "",
+			//         "pattern": "^[a-z]{2}-([a-z]+-)+[1-9]",
 			//         "type": "string"
 			//       },
 			//       "type": "array",
@@ -264,22 +264,22 @@ func cloudFormationProvisionedProductDataSourceType(ctx context.Context) (tfsdk.
 					},
 					"stack_set_failure_tolerance_count": {
 						// Property: StackSetFailureToleranceCount
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"stack_set_failure_tolerance_percentage": {
 						// Property: StackSetFailureTolerancePercentage
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"stack_set_max_concurrency_count": {
 						// Property: StackSetMaxConcurrencyCount
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"stack_set_max_concurrency_percentage": {
 						// Property: StackSetMaxConcurrencyPercentage
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Computed: true,
 					},
 					"stack_set_operation_type": {
@@ -317,13 +317,13 @@ func cloudFormationProvisionedProductDataSourceType(ctx context.Context) (tfsdk.
 			//       "Key": {
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       }
 			//     },

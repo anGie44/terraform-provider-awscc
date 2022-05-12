@@ -66,7 +66,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The default number of days until the data within the domain expires.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"domain_name": {
@@ -76,7 +76,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The unique name of the domain.",
 			//   "maxLength": 64,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9_-]+$",
 			//   "type": "string"
 			// }
 			Description: "The unique name of the domain.",

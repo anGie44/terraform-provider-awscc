@@ -34,6 +34,21 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			Type:        types.StringType,
 			Computed:    true,
 		},
+		"app_security_group_management": {
+			// Property: AppSecurityGroupManagement
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "The entity that creates and manages the required security groups for inter-app communication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType is VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn is provided.",
+			//   "enum": [
+			//     "Service",
+			//     "Customer"
+			//   ],
+			//   "type": "string"
+			// }
+			Description: "The entity that creates and manages the required security groups for inter-app communication in VPCOnly mode. Required when CreateDomain.AppNetworkAccessType is VPCOnly and DomainSettings.RStudioServerProDomainSettings.DomainExecutionRoleArn is provided.",
+			Type:        types.StringType,
+			Computed:    true,
+		},
 		"auth_mode": {
 			// Property: AuthMode
 			// CloudFormation resource type schema:
@@ -60,7 +75,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       "description": "The user profile Amazon Resource Name (ARN).",
 			//       "maxLength": 2048,
 			//       "minLength": 20,
-			//       "pattern": "",
+			//       "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
 			//       "type": "string"
 			//     },
 			//     "JupyterServerAppSettings": {
@@ -111,13 +126,13 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "SageMakerImageArn": {
 			//               "description": "The ARN of the SageMaker image that the image version belongs to.",
 			//               "maxLength": 256,
-			//               "pattern": "",
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$",
 			//               "type": "string"
 			//             },
 			//             "SageMakerImageVersionArn": {
 			//               "description": "The ARN of the image version created on the instance.",
 			//               "maxLength": 256,
-			//               "pattern": "",
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$",
 			//               "type": "string"
 			//             }
 			//           },
@@ -139,13 +154,13 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "AppImageConfigName": {
 			//                 "description": "The Name of the AppImageConfig.",
 			//                 "maxLength": 63,
-			//                 "pattern": "",
+			//                 "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}",
 			//                 "type": "string"
 			//               },
 			//               "ImageName": {
 			//                 "description": "The name of the CustomImage. Must be unique to your account.",
 			//                 "maxLength": 63,
-			//                 "pattern": "",
+			//                 "pattern": "^[a-zA-Z0-9]([-.]?[a-zA-Z0-9]){0,62}$",
 			//                 "type": "string"
 			//               },
 			//               "ImageVersionNumber": {
@@ -210,13 +225,13 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "SageMakerImageArn": {
 			//               "description": "The ARN of the SageMaker image that the image version belongs to.",
 			//               "maxLength": 256,
-			//               "pattern": "",
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$",
 			//               "type": "string"
 			//             },
 			//             "SageMakerImageVersionArn": {
 			//               "description": "The ARN of the image version created on the instance.",
 			//               "maxLength": 256,
-			//               "pattern": "",
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$",
 			//               "type": "string"
 			//             }
 			//           },
@@ -225,11 +240,34 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//       },
 			//       "type": "object"
 			//     },
+			//     "RStudioServerProAppSettings": {
+			//       "additionalProperties": false,
+			//       "description": "A collection of settings that configure user interaction with the RStudioServerPro app.",
+			//       "properties": {
+			//         "AccessStatus": {
+			//           "description": "Indicates whether the current user has access to the RStudioServerPro app.",
+			//           "enum": [
+			//             "ENABLED",
+			//             "DISABLED"
+			//           ],
+			//           "type": "string"
+			//         },
+			//         "UserGroup": {
+			//           "description": "The level of permissions that the user has within the RStudioServerPro app. This value defaults to User. The Admin value allows the user access to the RStudio Administrative Dashboard.",
+			//           "enum": [
+			//             "R_STUDIO_ADMIN",
+			//             "R_STUDIO_USER"
+			//           ],
+			//           "type": "string"
+			//         }
+			//       },
+			//       "type": "object"
+			//     },
 			//     "SecurityGroups": {
 			//       "description": "The security groups for the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.",
 			//       "items": {
 			//         "maxLength": 32,
-			//         "pattern": "",
+			//         "pattern": "[-0-9a-zA-Z]+",
 			//         "type": "string"
 			//       },
 			//       "maxItems": 5,
@@ -252,13 +290,13 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//         "S3KmsKeyId": {
 			//           "description": "When NotebookOutputOption is Allowed, the AWS Key Management Service (KMS) encryption key ID used to encrypt the notebook cell output in the Amazon S3 bucket.",
 			//           "maxLength": 2048,
-			//           "pattern": "",
+			//           "pattern": ".*",
 			//           "type": "string"
 			//         },
 			//         "S3OutputPath": {
 			//           "description": "When NotebookOutputOption is Allowed, the Amazon S3 bucket used to store the shared notebook snapshots.",
 			//           "maxLength": 1024,
-			//           "pattern": "",
+			//           "pattern": "^(https|s3)://([^/]+)/?(.*)$",
 			//           "type": "string"
 			//         }
 			//       },
@@ -336,7 +374,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 											"image_version_number": {
 												// Property: ImageVersionNumber
 												Description: "The version number of the CustomImage.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Computed:    true,
 											},
 										},
@@ -370,6 +408,27 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 										},
 									),
 									Computed: true,
+								},
+							},
+						),
+						Computed: true,
+					},
+					"r_studio_server_pro_app_settings": {
+						// Property: RStudioServerProAppSettings
+						Description: "A collection of settings that configure user interaction with the RStudioServerPro app.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"access_status": {
+									// Property: AccessStatus
+									Description: "Indicates whether the current user has access to the RStudioServerPro app.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"user_group": {
+									// Property: UserGroup
+									Description: "The level of permissions that the user has within the RStudioServerPro app. This value defaults to User. The Admin value allows the user access to the RStudio Administrative Dashboard.",
+									Type:        types.StringType,
+									Computed:    true,
 								},
 							},
 						),
@@ -418,7 +477,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "The Amazon Resource Name (ARN) of the created domain.",
 			//   "maxLength": 256,
-			//   "pattern": "",
+			//   "pattern": "arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]*:[0-9]{12}:domain/.*",
 			//   "type": "string"
 			// }
 			Description: "The Amazon Resource Name (ARN) of the created domain.",
@@ -431,7 +490,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "The domain name.",
 			//   "maxLength": 63,
-			//   "pattern": "",
+			//   "pattern": "^d-(-*[a-z0-9])+",
 			//   "type": "string"
 			// }
 			Description: "The domain name.",
@@ -444,12 +503,183 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "A name for the domain.",
 			//   "maxLength": 63,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9](-*[a-zA-Z0-9]){0,62}",
 			//   "type": "string"
 			// }
 			Description: "A name for the domain.",
 			Type:        types.StringType,
 			Computed:    true,
+		},
+		"domain_settings": {
+			// Property: DomainSettings
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "A collection of Domain settings.",
+			//   "properties": {
+			//     "RStudioServerProDomainSettings": {
+			//       "additionalProperties": false,
+			//       "description": "A collection of settings that update the current configuration for the RStudioServerPro Domain-level app.",
+			//       "properties": {
+			//         "DefaultResourceSpec": {
+			//           "additionalProperties": false,
+			//           "properties": {
+			//             "InstanceType": {
+			//               "description": "The instance type that the image version runs on.",
+			//               "enum": [
+			//                 "system",
+			//                 "ml.t3.micro",
+			//                 "ml.t3.small",
+			//                 "ml.t3.medium",
+			//                 "ml.t3.large",
+			//                 "ml.t3.xlarge",
+			//                 "ml.t3.2xlarge",
+			//                 "ml.m5.large",
+			//                 "ml.m5.xlarge",
+			//                 "ml.m5.2xlarge",
+			//                 "ml.m5.4xlarge",
+			//                 "ml.m5.8xlarge",
+			//                 "ml.m5.12xlarge",
+			//                 "ml.m5.16xlarge",
+			//                 "ml.m5.24xlarge",
+			//                 "ml.c5.large",
+			//                 "ml.c5.xlarge",
+			//                 "ml.c5.2xlarge",
+			//                 "ml.c5.4xlarge",
+			//                 "ml.c5.9xlarge",
+			//                 "ml.c5.12xlarge",
+			//                 "ml.c5.18xlarge",
+			//                 "ml.c5.24xlarge",
+			//                 "ml.p3.2xlarge",
+			//                 "ml.p3.8xlarge",
+			//                 "ml.p3.16xlarge",
+			//                 "ml.g4dn.xlarge",
+			//                 "ml.g4dn.2xlarge",
+			//                 "ml.g4dn.4xlarge",
+			//                 "ml.g4dn.8xlarge",
+			//                 "ml.g4dn.12xlarge",
+			//                 "ml.g4dn.16xlarge"
+			//               ],
+			//               "type": "string"
+			//             },
+			//             "SageMakerImageArn": {
+			//               "description": "The ARN of the SageMaker image that the image version belongs to.",
+			//               "maxLength": 256,
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image/[a-z0-9]([-.]?[a-z0-9])*$",
+			//               "type": "string"
+			//             },
+			//             "SageMakerImageVersionArn": {
+			//               "description": "The ARN of the image version created on the instance.",
+			//               "maxLength": 256,
+			//               "pattern": "^arn:aws(-[\\w]+)*:sagemaker:.+:[0-9]{12}:image-version/[a-z0-9]([-.]?[a-z0-9])*/[0-9]+$",
+			//               "type": "string"
+			//             }
+			//           },
+			//           "type": "object"
+			//         },
+			//         "DomainExecutionRoleArn": {
+			//           "description": "The ARN of the execution role for the RStudioServerPro Domain-level app.",
+			//           "maxLength": 2048,
+			//           "minLength": 20,
+			//           "pattern": "^arn:aws[a-z\\-]*:iam::\\d{12}:role/?[a-zA-Z_0-9+=,.@\\-_/]+$",
+			//           "type": "string"
+			//         },
+			//         "RStudioConnectUrl": {
+			//           "description": "A URL pointing to an RStudio Connect server.",
+			//           "pattern": "^(https:|http:|www\\.)\\S*",
+			//           "type": "string"
+			//         },
+			//         "RStudioPackageManagerUrl": {
+			//           "description": "A URL pointing to an RStudio Package Manager server.",
+			//           "pattern": "^(https:|http:|www\\.)\\S*",
+			//           "type": "string"
+			//         }
+			//       },
+			//       "required": [
+			//         "DomainExecutionRoleArn"
+			//       ],
+			//       "type": "object"
+			//     },
+			//     "SecurityGroupIds": {
+			//       "description": "The security groups for the Amazon Virtual Private Cloud that the Domain uses for communication between Domain-level apps and user apps.",
+			//       "items": {
+			//         "maxLength": 32,
+			//         "pattern": "[-0-9a-zA-Z]+",
+			//         "type": "string"
+			//       },
+			//       "maxItems": 3,
+			//       "minItems": 1,
+			//       "type": "array",
+			//       "uniqueItems": false
+			//     }
+			//   },
+			//   "type": "object"
+			// }
+			Description: "A collection of Domain settings.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"r_studio_server_pro_domain_settings": {
+						// Property: RStudioServerProDomainSettings
+						Description: "A collection of settings that update the current configuration for the RStudioServerPro Domain-level app.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"default_resource_spec": {
+									// Property: DefaultResourceSpec
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"instance_type": {
+												// Property: InstanceType
+												Description: "The instance type that the image version runs on.",
+												Type:        types.StringType,
+												Computed:    true,
+											},
+											"sage_maker_image_arn": {
+												// Property: SageMakerImageArn
+												Description: "The ARN of the SageMaker image that the image version belongs to.",
+												Type:        types.StringType,
+												Computed:    true,
+											},
+											"sage_maker_image_version_arn": {
+												// Property: SageMakerImageVersionArn
+												Description: "The ARN of the image version created on the instance.",
+												Type:        types.StringType,
+												Computed:    true,
+											},
+										},
+									),
+									Computed: true,
+								},
+								"domain_execution_role_arn": {
+									// Property: DomainExecutionRoleArn
+									Description: "The ARN of the execution role for the RStudioServerPro Domain-level app.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"r_studio_connect_url": {
+									// Property: RStudioConnectUrl
+									Description: "A URL pointing to an RStudio Connect server.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"r_studio_package_manager_url": {
+									// Property: RStudioPackageManagerUrl
+									Description: "A URL pointing to an RStudio Package Manager server.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+							},
+						),
+						Computed: true,
+					},
+					"security_group_ids": {
+						// Property: SecurityGroupIds
+						Description: "The security groups for the Amazon Virtual Private Cloud that the Domain uses for communication between Domain-level apps and user apps.",
+						Type:        types.ListType{ElemType: types.StringType},
+						Computed:    true,
+					},
+				},
+			),
+			Computed: true,
 		},
 		"home_efs_file_system_id": {
 			// Property: HomeEfsFileSystemId
@@ -469,10 +699,23 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "SageMaker uses AWS KMS to encrypt the EFS volume attached to the domain with an AWS managed customer master key (CMK) by default.",
 			//   "maxLength": 2048,
-			//   "pattern": "",
+			//   "pattern": ".*",
 			//   "type": "string"
 			// }
 			Description: "SageMaker uses AWS KMS to encrypt the EFS volume attached to the domain with an AWS managed customer master key (CMK) by default.",
+			Type:        types.StringType,
+			Computed:    true,
+		},
+		"security_group_id_for_domain_boundary": {
+			// Property: SecurityGroupIdForDomainBoundary
+			// CloudFormation resource type schema:
+			// {
+			//   "description": "The ID of the security group that authorizes traffic between the RSessionGateway apps and the RStudioServerPro app.",
+			//   "maxLength": 32,
+			//   "pattern": "[-0-9a-zA-Z]+",
+			//   "type": "string"
+			// }
+			Description: "The ID of the security group that authorizes traffic between the RSessionGateway apps and the RStudioServerPro app.",
 			Type:        types.StringType,
 			Computed:    true,
 		},
@@ -495,7 +738,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The VPC subnets that Studio uses for communication.",
 			//   "items": {
 			//     "maxLength": 32,
-			//     "pattern": "",
+			//     "pattern": "[-0-9a-zA-Z]+",
 			//     "type": "string"
 			//   },
 			//   "maxItems": 16,
@@ -573,7 +816,7 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			// {
 			//   "description": "The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.",
 			//   "maxLength": 32,
-			//   "pattern": "",
+			//   "pattern": "[-0-9a-zA-Z]+",
 			//   "type": "string"
 			// }
 			Description: "The ID of the Amazon Virtual Private Cloud (VPC) that Studio uses for communication.",
@@ -599,37 +842,48 @@ func domainDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 	opts = opts.WithCloudFormationTypeName("AWS::SageMaker::Domain").WithTerraformTypeName("awscc_sagemaker_domain")
 	opts = opts.WithTerraformSchema(schema)
 	opts = opts.WithAttributeNameMap(map[string]string{
-		"app_image_config_name":        "AppImageConfigName",
-		"app_network_access_type":      "AppNetworkAccessType",
-		"auth_mode":                    "AuthMode",
-		"custom_images":                "CustomImages",
-		"default_resource_spec":        "DefaultResourceSpec",
-		"default_user_settings":        "DefaultUserSettings",
-		"domain_arn":                   "DomainArn",
-		"domain_id":                    "DomainId",
-		"domain_name":                  "DomainName",
-		"execution_role":               "ExecutionRole",
-		"home_efs_file_system_id":      "HomeEfsFileSystemId",
-		"image_name":                   "ImageName",
-		"image_version_number":         "ImageVersionNumber",
-		"instance_type":                "InstanceType",
-		"jupyter_server_app_settings":  "JupyterServerAppSettings",
-		"kernel_gateway_app_settings":  "KernelGatewayAppSettings",
-		"key":                          "Key",
-		"kms_key_id":                   "KmsKeyId",
-		"notebook_output_option":       "NotebookOutputOption",
-		"s3_kms_key_id":                "S3KmsKeyId",
-		"s3_output_path":               "S3OutputPath",
-		"sage_maker_image_arn":         "SageMakerImageArn",
-		"sage_maker_image_version_arn": "SageMakerImageVersionArn",
-		"security_groups":              "SecurityGroups",
-		"sharing_settings":             "SharingSettings",
+		"access_status":                                  "AccessStatus",
+		"app_image_config_name":                          "AppImageConfigName",
+		"app_network_access_type":                        "AppNetworkAccessType",
+		"app_security_group_management":                  "AppSecurityGroupManagement",
+		"auth_mode":                                      "AuthMode",
+		"custom_images":                                  "CustomImages",
+		"default_resource_spec":                          "DefaultResourceSpec",
+		"default_user_settings":                          "DefaultUserSettings",
+		"domain_arn":                                     "DomainArn",
+		"domain_execution_role_arn":                      "DomainExecutionRoleArn",
+		"domain_id":                                      "DomainId",
+		"domain_name":                                    "DomainName",
+		"domain_settings":                                "DomainSettings",
+		"execution_role":                                 "ExecutionRole",
+		"home_efs_file_system_id":                        "HomeEfsFileSystemId",
+		"image_name":                                     "ImageName",
+		"image_version_number":                           "ImageVersionNumber",
+		"instance_type":                                  "InstanceType",
+		"jupyter_server_app_settings":                    "JupyterServerAppSettings",
+		"kernel_gateway_app_settings":                    "KernelGatewayAppSettings",
+		"key":                                            "Key",
+		"kms_key_id":                                     "KmsKeyId",
+		"notebook_output_option":                         "NotebookOutputOption",
+		"r_studio_connect_url":                           "RStudioConnectUrl",
+		"r_studio_package_manager_url":                   "RStudioPackageManagerUrl",
+		"r_studio_server_pro_app_settings":               "RStudioServerProAppSettings",
+		"r_studio_server_pro_domain_settings":            "RStudioServerProDomainSettings",
+		"s3_kms_key_id":                                  "S3KmsKeyId",
+		"s3_output_path":                                 "S3OutputPath",
+		"sage_maker_image_arn":                           "SageMakerImageArn",
+		"sage_maker_image_version_arn":                   "SageMakerImageVersionArn",
+		"security_group_id_for_domain_boundary":          "SecurityGroupIdForDomainBoundary",
+		"security_group_ids":                             "SecurityGroupIds",
+		"security_groups":                                "SecurityGroups",
+		"sharing_settings":                               "SharingSettings",
 		"single_sign_on_managed_application_instance_id": "SingleSignOnManagedApplicationInstanceId",
-		"subnet_ids": "SubnetIds",
-		"tags":       "Tags",
-		"url":        "Url",
-		"value":      "Value",
-		"vpc_id":     "VpcId",
+		"subnet_ids":                                     "SubnetIds",
+		"tags":                                           "Tags",
+		"url":                                            "Url",
+		"user_group":                                     "UserGroup",
+		"value":                                          "Value",
+		"vpc_id":                                         "VpcId",
 	})
 
 	singularDataSourceType, err := NewSingularDataSourceType(ctx, opts...)

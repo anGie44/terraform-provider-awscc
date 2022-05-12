@@ -4,6 +4,7 @@ package servicecatalog
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -267,7 +268,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 			//   "properties": {
 			//     "StackSetAccounts": {
 			//       "items": {
-			//         "pattern": "",
+			//         "pattern": "^[0-9]{12}$",
 			//         "type": "string"
 			//       },
 			//       "type": "array",
@@ -301,7 +302,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 			//     },
 			//     "StackSetRegions": {
 			//       "items": {
-			//         "pattern": "",
+			//         "pattern": "^[a-z]{2}-([a-z]+-)+[1-9]",
 			//         "type": "string"
 			//       },
 			//       "type": "array",
@@ -318,11 +319,12 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.UniqueItems(),
+							validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[0-9]{12}$"), "")),
 						},
 					},
 					"stack_set_failure_tolerance_count": {
 						// Property: StackSetFailureToleranceCount
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(0),
@@ -330,7 +332,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 					},
 					"stack_set_failure_tolerance_percentage": {
 						// Property: StackSetFailureTolerancePercentage
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(0, 100),
@@ -338,7 +340,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 					},
 					"stack_set_max_concurrency_count": {
 						// Property: StackSetMaxConcurrencyCount
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntAtLeast(1),
@@ -346,7 +348,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 					},
 					"stack_set_max_concurrency_percentage": {
 						// Property: StackSetMaxConcurrencyPercentage
-						Type:     types.NumberType,
+						Type:     types.Int64Type,
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.IntBetween(1, 100),
@@ -370,6 +372,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.UniqueItems(),
+							validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[a-z]{2}-([a-z]+-)+[1-9]"), "")),
 						},
 					},
 				},
@@ -400,13 +403,13 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 			//       "Key": {
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -426,6 +429,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"), ""),
 						},
 					},
 					"value": {
@@ -434,6 +438,7 @@ func cloudFormationProvisionedProductResourceType(ctx context.Context) (tfsdk.Re
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 256),
+							validate.StringMatch(regexp.MustCompile("^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"), ""),
 						},
 					},
 				},

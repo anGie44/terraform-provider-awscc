@@ -17,32 +17,33 @@ Resource Type definition for AWS::Evidently::Launch.
 
 ### Required
 
-- **groups** (Attributes List) (see [below for nested schema](#nestedatt--groups))
-- **name** (String)
-- **project** (String)
-- **scheduled_splits_config** (Attributes List) (see [below for nested schema](#nestedatt--scheduled_splits_config))
+- `groups` (Attributes List) (see [below for nested schema](#nestedatt--groups))
+- `name` (String)
+- `project` (String)
+- `scheduled_splits_config` (Attributes List) (see [below for nested schema](#nestedatt--scheduled_splits_config))
 
 ### Optional
 
-- **description** (String)
-- **metric_monitors** (Attributes List) (see [below for nested schema](#nestedatt--metric_monitors))
-- **randomization_salt** (String)
-- **tags** (Attributes Set) An array of key-value pairs to apply to this resource. (see [below for nested schema](#nestedatt--tags))
+- `description` (String)
+- `execution_status` (Attributes) Start or Stop Launch Launch. Default is not started. (see [below for nested schema](#nestedatt--execution_status))
+- `metric_monitors` (Attributes List) (see [below for nested schema](#nestedatt--metric_monitors))
+- `randomization_salt` (String)
+- `tags` (Attributes Set) An array of key-value pairs to apply to this resource. (see [below for nested schema](#nestedatt--tags))
 
 ### Read-Only
 
-- **arn** (String)
-- **id** (String) Uniquely identifies the resource.
+- `arn` (String)
+- `id` (String) Uniquely identifies the resource.
 
 <a id="nestedatt--groups"></a>
 ### Nested Schema for `groups`
 
 Required:
 
-- **description** (String)
-- **feature** (String)
-- **group_name** (String)
-- **variation** (String)
+- `description` (String)
+- `feature` (String)
+- `group_name` (String)
+- `variation` (String)
 
 
 <a id="nestedatt--scheduled_splits_config"></a>
@@ -50,17 +51,27 @@ Required:
 
 Required:
 
-- **group_weights** (Attributes Set) (see [below for nested schema](#nestedatt--scheduled_splits_config--group_weights))
-- **start_time** (String)
+- `group_weights` (Attributes Set) (see [below for nested schema](#nestedatt--scheduled_splits_config--group_weights))
+- `start_time` (String)
 
 <a id="nestedatt--scheduled_splits_config--group_weights"></a>
 ### Nested Schema for `scheduled_splits_config.group_weights`
 
 Required:
 
-- **group_name** (String)
-- **split_weight** (Number)
+- `group_name` (String)
+- `split_weight` (Number)
 
+
+
+<a id="nestedatt--execution_status"></a>
+### Nested Schema for `execution_status`
+
+Optional:
+
+- `desired_state` (String) Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.
+- `reason` (String) Provide a reason for stopping the launch. Defaults to empty if not provided.
+- `status` (String) Provide START or STOP action to apply on a launch
 
 
 <a id="nestedatt--metric_monitors"></a>
@@ -68,11 +79,11 @@ Required:
 
 Optional:
 
-- **entity_id_key** (String) The JSON path to reference the entity id in the event.
-- **event_pattern** (String) Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.
-- **metric_name** (String)
-- **unit_label** (String)
-- **value_key** (String) The JSON path to reference the numerical metric value in the event.
+- `entity_id_key` (String) The JSON path to reference the entity id in the event.
+- `event_pattern` (String) Event patterns have the same structure as the events they match. Rules use event patterns to select events. An event pattern either matches an event or it doesn't.
+- `metric_name` (String)
+- `unit_label` (String)
+- `value_key` (String) The JSON path to reference the numerical metric value in the event.
 
 
 <a id="nestedatt--tags"></a>
@@ -80,8 +91,8 @@ Optional:
 
 Optional:
 
-- **key** (String) The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
-- **value** (String) The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+- `key` (String) The key name of the tag. You can specify a value that is 1 to 128 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
+- `value` (String) The value for the tag. You can specify a value that is 0 to 256 Unicode characters in length and cannot be prefixed with aws:. You can use any of the following characters: the set of Unicode letters, digits, whitespace, _, ., /, =, +, and -.
 
 ## Import
 

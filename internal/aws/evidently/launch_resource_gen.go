@@ -4,6 +4,7 @@ package evidently
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -24,7 +25,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// Property: Arn
 			// CloudFormation resource type schema:
 			// {
-			//   "pattern": "",
+			//   "pattern": "arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*/launch/[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -47,6 +48,56 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 				validate.StringLenBetween(0, 160),
 			},
 		},
+		"execution_status": {
+			// Property: ExecutionStatus
+			// CloudFormation resource type schema:
+			// {
+			//   "additionalProperties": false,
+			//   "description": "Start or Stop Launch Launch. Default is not started.",
+			//   "properties": {
+			//     "DesiredState": {
+			//       "description": "Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.",
+			//       "type": "string"
+			//     },
+			//     "Reason": {
+			//       "description": "Provide a reason for stopping the launch. Defaults to empty if not provided.",
+			//       "type": "string"
+			//     },
+			//     "Status": {
+			//       "description": "Provide START or STOP action to apply on a launch",
+			//       "type": "string"
+			//     }
+			//   },
+			//   "required": [
+			//     "Status"
+			//   ],
+			//   "type": "object"
+			// }
+			Description: "Start or Stop Launch Launch. Default is not started.",
+			Attributes: tfsdk.SingleNestedAttributes(
+				map[string]tfsdk.Attribute{
+					"desired_state": {
+						// Property: DesiredState
+						Description: "Provide CANCELLED or COMPLETED as the launch desired state. Defaults to Completed if not provided.",
+						Type:        types.StringType,
+						Optional:    true,
+					},
+					"reason": {
+						// Property: Reason
+						Description: "Provide a reason for stopping the launch. Defaults to empty if not provided.",
+						Type:        types.StringType,
+						Optional:    true,
+					},
+					"status": {
+						// Property: Status
+						Description: "Provide START or STOP action to apply on a launch",
+						Type:        types.StringType,
+						Required:    true,
+					},
+				},
+			),
+			Optional: true,
+		},
 		"groups": {
 			// Property: Groups
 			// CloudFormation resource type schema:
@@ -66,7 +117,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "GroupName": {
 			//         "maxLength": 127,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "[-a-zA-Z0-9._]*",
 			//         "type": "string"
 			//       },
 			//       "Variation": {
@@ -106,6 +157,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 127),
+							validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 						},
 					},
 					"variation": {
@@ -141,13 +193,13 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "MetricName": {
 			//         "maxLength": 255,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^[\\S]+$",
 			//         "type": "string"
 			//       },
 			//       "UnitLabel": {
 			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": ".*",
 			//         "type": "string"
 			//       },
 			//       "ValueKey": {
@@ -188,6 +240,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 255),
+							validate.StringMatch(regexp.MustCompile("^[\\S]+$"), ""),
 						},
 					},
 					"unit_label": {
@@ -196,6 +249,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 256),
+							validate.StringMatch(regexp.MustCompile(".*"), ""),
 						},
 					},
 					"value_key": {
@@ -219,13 +273,14 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[-a-zA-Z0-9._]*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 127),
+				validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -237,13 +292,14 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 2048,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 2048),
+				validate.StringMatch(regexp.MustCompile("([-a-zA-Z0-9._]*)|(arn:[^:]*:[^:]*:[^:]*:[^:]*:project/[-a-zA-Z0-9._]*)"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -255,13 +311,14 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 127,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": ".*",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Optional: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(0, 127),
+				validate.StringMatch(regexp.MustCompile(".*"), ""),
 			},
 		},
 		"scheduled_splits_config": {
@@ -280,7 +337,7 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "GroupName": {
 			//               "maxLength": 127,
 			//               "minLength": 1,
-			//               "pattern": "",
+			//               "pattern": "[-a-zA-Z0-9._]*",
 			//               "type": "string"
 			//             },
 			//             "SplitWeight": {
@@ -323,11 +380,12 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 127),
+										validate.StringMatch(regexp.MustCompile("[-a-zA-Z0-9._]*"), ""),
 									},
 								},
 								"split_weight": {
 									// Property: SplitWeight
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 								},
 							},
@@ -433,8 +491,10 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"arn":                     "Arn",
 		"description":             "Description",
+		"desired_state":           "DesiredState",
 		"entity_id_key":           "EntityIdKey",
 		"event_pattern":           "EventPattern",
+		"execution_status":        "ExecutionStatus",
 		"feature":                 "Feature",
 		"group_name":              "GroupName",
 		"group_weights":           "GroupWeights",
@@ -445,9 +505,11 @@ func launchResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"name":                    "Name",
 		"project":                 "Project",
 		"randomization_salt":      "RandomizationSalt",
+		"reason":                  "Reason",
 		"scheduled_splits_config": "ScheduledSplitsConfig",
 		"split_weight":            "SplitWeight",
 		"start_time":              "StartTime",
+		"status":                  "Status",
 		"tags":                    "Tags",
 		"unit_label":              "UnitLabel",
 		"value":                   "Value",

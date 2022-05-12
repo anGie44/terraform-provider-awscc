@@ -17,31 +17,32 @@ Resource Type definition for Metric Stream
 
 ### Required
 
-- **firehose_arn** (String) The ARN of the Kinesis Firehose where to stream the data.
-- **output_format** (String) The output format of the data streamed to the Kinesis Firehose.
-- **role_arn** (String) The ARN of the role that provides access to the Kinesis Firehose.
+- `firehose_arn` (String) The ARN of the Kinesis Firehose where to stream the data.
+- `output_format` (String) The output format of the data streamed to the Kinesis Firehose.
+- `role_arn` (String) The ARN of the role that provides access to the Kinesis Firehose.
 
 ### Optional
 
-- **exclude_filters** (Attributes List) Define which metrics will be not streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null. (see [below for nested schema](#nestedatt--exclude_filters))
-- **include_filters** (Attributes List) Define which metrics will be streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null. (see [below for nested schema](#nestedatt--include_filters))
-- **name** (String) Name of the metric stream.
-- **tags** (Attributes List) A set of tags to assign to the delivery stream. (see [below for nested schema](#nestedatt--tags))
+- `exclude_filters` (Attributes List) Define which metrics will be not streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null. (see [below for nested schema](#nestedatt--exclude_filters))
+- `include_filters` (Attributes List) Define which metrics will be streamed. Metrics matched by multiple instances of MetricStreamFilter are joined with an OR operation by default. If both IncludeFilters and ExcludeFilters are omitted, all metrics in the account will be streamed. IncludeFilters and ExcludeFilters are mutually exclusive. Default to null. (see [below for nested schema](#nestedatt--include_filters))
+- `name` (String) Name of the metric stream.
+- `statistics_configurations` (Attributes List) By default, a metric stream always sends the MAX, MIN, SUM, and SAMPLECOUNT statistics for each metric that is streamed. You can use this parameter to have the metric stream also send additional statistics in the stream. This array can have up to 100 members. (see [below for nested schema](#nestedatt--statistics_configurations))
+- `tags` (Attributes List) A set of tags to assign to the delivery stream. (see [below for nested schema](#nestedatt--tags))
 
 ### Read-Only
 
-- **arn** (String) Amazon Resource Name of the metric stream.
-- **creation_date** (String) The date of creation of the metric stream.
-- **id** (String) Uniquely identifies the resource.
-- **last_update_date** (String) The date of the last update of the metric stream.
-- **state** (String) Displays the state of the Metric Stream.
+- `arn` (String) Amazon Resource Name of the metric stream.
+- `creation_date` (String) The date of creation of the metric stream.
+- `id` (String) Uniquely identifies the resource.
+- `last_update_date` (String) The date of the last update of the metric stream.
+- `state` (String) Displays the state of the Metric Stream.
 
 <a id="nestedatt--exclude_filters"></a>
 ### Nested Schema for `exclude_filters`
 
 Optional:
 
-- **namespace** (String) Only metrics with Namespace matching this value will be streamed.
+- `namespace` (String) Only metrics with Namespace matching this value will be streamed.
 
 
 <a id="nestedatt--include_filters"></a>
@@ -49,7 +50,25 @@ Optional:
 
 Optional:
 
-- **namespace** (String) Only metrics with Namespace matching this value will be streamed.
+- `namespace` (String) Only metrics with Namespace matching this value will be streamed.
+
+
+<a id="nestedatt--statistics_configurations"></a>
+### Nested Schema for `statistics_configurations`
+
+Optional:
+
+- `additional_statistics` (List of String) The additional statistics to stream for the metrics listed in IncludeMetrics.
+- `include_metrics` (Attributes List) An array that defines the metrics that are to have additional statistics streamed. (see [below for nested schema](#nestedatt--statistics_configurations--include_metrics))
+
+<a id="nestedatt--statistics_configurations--include_metrics"></a>
+### Nested Schema for `statistics_configurations.include_metrics`
+
+Optional:
+
+- `metric_name` (String) The name of the metric.
+- `namespace` (String) The namespace of the metric.
+
 
 
 <a id="nestedatt--tags"></a>
@@ -57,8 +76,8 @@ Optional:
 
 Optional:
 
-- **key** (String) A unique identifier for the tag.
-- **value** (String) An optional string, which you can use to describe or define the tag.
+- `key` (String) A unique identifier for the tag.
+- `value` (String) An optional string, which you can use to describe or define the tag.
 
 ## Import
 

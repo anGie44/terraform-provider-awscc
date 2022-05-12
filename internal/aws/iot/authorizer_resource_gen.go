@@ -4,6 +4,7 @@ package iot
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -47,7 +48,7 @@ func authorizerResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[\\w=,@-]+",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -55,11 +56,21 @@ func authorizerResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 128),
+				validate.StringMatch(regexp.MustCompile("[\\w=,@-]+"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
 				tfsdk.RequiresReplace(),
 			},
+		},
+		"enable_caching_for_http": {
+			// Property: EnableCachingForHttp
+			// CloudFormation resource type schema:
+			// {
+			//   "type": "boolean"
+			// }
+			Type:     types.BoolType,
+			Optional: true,
 		},
 		"signing_disabled": {
 			// Property: SigningDisabled
@@ -146,6 +157,7 @@ func authorizerResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// Property: TokenSigningPublicKeys
 			// CloudFormation resource type schema:
 			// {
+			//   "additionalProperties": false,
 			//   "patternProperties": {
 			//     "": {
 			//       "maxLength": 5120,
@@ -184,6 +196,7 @@ func authorizerResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"arn":                       "Arn",
 		"authorizer_function_arn":   "AuthorizerFunctionArn",
 		"authorizer_name":           "AuthorizerName",
+		"enable_caching_for_http":   "EnableCachingForHttp",
 		"key":                       "Key",
 		"signing_disabled":          "SigningDisabled",
 		"status":                    "Status",

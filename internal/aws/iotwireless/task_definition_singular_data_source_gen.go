@@ -46,7 +46,7 @@ func taskDefinitionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The ID of the new wireless gateway task definition",
-			//   "pattern": "",
+			//   "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
 			//   "type": "string"
 			// }
 			Description: "The ID of the new wireless gateway task definition",
@@ -338,7 +338,7 @@ func taskDefinitionDataSourceType(ctx context.Context) (tfsdk.DataSourceType, er
 								},
 								"sig_key_crc": {
 									// Property: SigKeyCrc
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Computed: true,
 								},
 								"update_signature": {

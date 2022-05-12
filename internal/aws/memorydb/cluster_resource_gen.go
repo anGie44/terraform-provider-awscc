@@ -4,6 +4,7 @@ package memorydb
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,12 +26,15 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The name of the Access Control List to associate with the cluster.",
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z][a-zA-Z0-9\\-]*",
 			//   "type": "string"
 			// }
 			Description: "The name of the Access Control List to associate with the cluster.",
 			Type:        types.StringType,
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z][a-zA-Z0-9\\-]*"), ""),
+			},
 		},
 		"arn": {
 			// Property: ARN
@@ -90,7 +94,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"port": {
 						// Property: Port
 						Description: "The port number that the engine is listening on. ",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Computed:    true,
 						PlanModifiers: []tfsdk.AttributePlanModifier{
 							tfsdk.UseStateForUnknown(),
@@ -105,12 +109,15 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The name of the cluster. This value must be unique as it also serves as the cluster identifier.",
-			//   "pattern": "",
+			//   "pattern": "[a-z][a-z0-9\\-]*",
 			//   "type": "string"
 			// }
 			Description: "The name of the cluster. This value must be unique as it also serves as the cluster identifier.",
 			Type:        types.StringType,
 			Required:    true,
+			Validators: []tfsdk.AttributeValidator{
+				validate.StringMatch(regexp.MustCompile("[a-z][a-z0-9\\-]*"), ""),
+			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
 			},
@@ -194,7 +201,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of replicas to apply to each shard. The limit is 5.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"num_shards": {
@@ -205,7 +212,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of shards the cluster will contain.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"parameter_group_name": {
@@ -241,7 +248,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The port number on which each member of the cluster accepts connections.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 			Computed:    true,
 			PlanModifiers: []tfsdk.AttributePlanModifier{
@@ -314,7 +321,7 @@ func clusterResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of days for which MemoryDB retains automatic snapshots before deleting them. For example, if you set SnapshotRetentionLimit to 5, a snapshot that was taken today is retained for 5 days before being deleted.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"snapshot_window": {

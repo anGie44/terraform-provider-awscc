@@ -37,7 +37,7 @@ func streamDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "The name of the Kinesis stream.",
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9_.-]+$",
 			//   "type": "string"
 			// }
 			Description: "The name of the Kinesis stream.",
@@ -53,7 +53,7 @@ func streamDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of hours for the data records that are stored in shards to remain accessible.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"shard_count": {
@@ -65,7 +65,7 @@ func streamDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "The number of shards that the stream uses. Required when StreamMode = PROVISIONED is passed.",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Computed:    true,
 		},
 		"stream_encryption": {

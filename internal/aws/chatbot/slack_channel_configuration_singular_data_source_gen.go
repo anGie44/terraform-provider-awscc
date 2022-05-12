@@ -38,7 +38,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			//   "description": "The name of the configuration",
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[A-Za-z0-9-_]+$",
 			//   "type": "string"
 			// }
 			Description: "The name of the configuration",
@@ -50,6 +50,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "The list of IAM policy ARNs that are applied as channel guardrails. The AWS managed 'AdministratorAccess' policy is applied as a default if this is not set.",
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "pattern": "",
 			//     "type": "string"
@@ -78,7 +79,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			// {
 			//   "default": "NONE",
 			//   "description": "Specifies the logging level for this configuration:ERROR,INFO or NONE. This property affects the log entries pushed to Amazon CloudWatch logs",
-			//   "pattern": "",
+			//   "pattern": "^(ERROR|INFO|NONE)$",
 			//   "type": "string"
 			// }
 			Description: "Specifies the logging level for this configuration:ERROR,INFO or NONE. This property affects the log entries pushed to Amazon CloudWatch logs",
@@ -92,7 +93,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			//   "description": "The id of the Slack channel",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[A-Za-z0-9]+$",
 			//   "type": "string"
 			// }
 			Description: "The id of the Slack channel",
@@ -106,6 +107,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			//   "description": "The id of the Slack workspace",
 			//   "maxLength": 256,
 			//   "minLength": 1,
+			//   "pattern": "^[0-9A-Z]{1,255}$",
 			//   "type": "string"
 			// }
 			Description: "The id of the Slack workspace",
@@ -117,6 +119,7 @@ func slackChannelConfigurationDataSourceType(ctx context.Context) (tfsdk.DataSou
 			// CloudFormation resource type schema:
 			// {
 			//   "description": "ARNs of SNS topics which delivers notifications to AWS Chatbot, for example CloudWatch alarm notifications.",
+			//   "insertionOrder": false,
 			//   "items": {
 			//     "pattern": "",
 			//     "type": "string"

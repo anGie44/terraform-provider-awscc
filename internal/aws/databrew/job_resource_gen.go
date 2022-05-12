@@ -4,6 +4,7 @@ package databrew
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -53,6 +54,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "Bucket": {
 			//                 "type": "string"
 			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
+			//                 "type": "string"
+			//               },
 			//               "Key": {
 			//                 "type": "string"
 			//               }
@@ -79,6 +85,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "description": "S3 Output location",
 			//             "properties": {
 			//               "Bucket": {
+			//                 "type": "string"
+			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
 			//                 "type": "string"
 			//               },
 			//               "Key": {
@@ -150,6 +161,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Type:     types.StringType,
 												Required: true,
 											},
+											"bucket_owner": {
+												// Property: BucketOwner
+												Type:     types.StringType,
+												Optional: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(12, 12),
+												},
+											},
 											"key": {
 												// Property: Key
 												Type:     types.StringType,
@@ -181,6 +200,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												// Property: Bucket
 												Type:     types.StringType,
 												Required: true,
+											},
+											"bucket_owner": {
+												// Property: BucketOwner
+												Type:     types.StringType,
+												Optional: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(12, 12),
+												},
 											},
 											"key": {
 												// Property: Key
@@ -229,6 +256,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "description": "S3 Output location",
 			//             "properties": {
 			//               "Bucket": {
+			//                 "type": "string"
+			//               },
+			//               "BucketOwner": {
+			//                 "maxLength": 12,
+			//                 "minLength": 12,
 			//                 "type": "string"
 			//               },
 			//               "Key": {
@@ -289,6 +321,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												// Property: Bucket
 												Type:     types.StringType,
 												Required: true,
+											},
+											"bucket_owner": {
+												// Property: BucketOwner
+												Type:     types.StringType,
+												Optional: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenBetween(12, 12),
+												},
 											},
 											"key": {
 												// Property: Key
@@ -419,7 +459,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 					"size": {
 						// Property: Size
 						Description: "Sample configuration size for profile jobs.",
-						Type:        types.NumberType,
+						Type:        types.Int64Type,
 						Optional:    true,
 					},
 				},
@@ -455,7 +495,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Max capacity",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"max_retries": {
@@ -466,7 +506,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Max retries",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"name": {
@@ -498,6 +538,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "Bucket": {
 			//       "type": "string"
 			//     },
+			//     "BucketOwner": {
+			//       "maxLength": 12,
+			//       "minLength": 12,
+			//       "type": "string"
+			//     },
 			//     "Key": {
 			//       "type": "string"
 			//     }
@@ -514,6 +559,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						// Property: Bucket
 						Type:     types.StringType,
 						Required: true,
+					},
+					"bucket_owner": {
+						// Property: BucketOwner
+						Type:     types.StringType,
+						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringLenBetween(12, 12),
+						},
 					},
 					"key": {
 						// Property: Key
@@ -585,6 +638,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "Bucket": {
 			//             "type": "string"
 			//           },
+			//           "BucketOwner": {
+			//             "maxLength": 12,
+			//             "minLength": 12,
+			//             "type": "string"
+			//           },
 			//           "Key": {
 			//             "type": "string"
 			//           }
@@ -593,6 +651,11 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "Bucket"
 			//         ],
 			//         "type": "object"
+			//       },
+			//       "MaxOutputFiles": {
+			//         "maximum": 999,
+			//         "minimum": 1,
+			//         "type": "integer"
 			//       },
 			//       "Overwrite": {
 			//         "type": "boolean"
@@ -686,6 +749,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Type:     types.StringType,
 									Required: true,
 								},
+								"bucket_owner": {
+									// Property: BucketOwner
+									Type:     types.StringType,
+									Optional: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenBetween(12, 12),
+									},
+								},
 								"key": {
 									// Property: Key
 									Type:     types.StringType,
@@ -694,6 +765,14 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 							},
 						),
 						Required: true,
+					},
+					"max_output_files": {
+						// Property: MaxOutputFiles
+						Type:     types.Int64Type,
+						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.IntBetween(1, 999),
+						},
 					},
 					"overwrite": {
 						// Property: Overwrite
@@ -754,7 +833,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 "items": {
 			//                   "maxLength": 128,
 			//                   "minLength": 1,
-			//                   "pattern": "",
+			//                   "pattern": "^[A-Z\\_]+$",
 			//                   "type": "string"
 			//                 },
 			//                 "minItems": 1,
@@ -777,7 +856,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                     "Statistic": {
 			//                       "maxLength": 128,
 			//                       "minLength": 1,
-			//                       "pattern": "",
+			//                       "pattern": "^[A-Z\\_]+$",
 			//                       "type": "string"
 			//                     }
 			//                   },
@@ -810,7 +889,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "items": {
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^[A-Z\\_]+$",
 			//             "type": "string"
 			//           },
 			//           "minItems": 1,
@@ -833,7 +912,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "Statistic": {
 			//                 "maxLength": 128,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "^[A-Z\\_]+$",
 			//                 "type": "string"
 			//               }
 			//             },
@@ -860,7 +939,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "items": {
 			//                 "maxLength": 128,
 			//                 "minLength": 1,
-			//                 "pattern": "",
+			//                 "pattern": "^[A-Z\\_]+$",
 			//                 "type": "string"
 			//               },
 			//               "minItems": 1,
@@ -877,7 +956,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "items": {
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^[A-Z_][A-Z\\\\d_]*$",
 			//             "type": "string"
 			//           },
 			//           "minItems": 1,
@@ -959,6 +1038,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtLeast(1),
 													validate.ArrayForEach(validate.StringLenBetween(1, 128)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[A-Z\\_]+$"), "")),
 												},
 											},
 											"overrides": {
@@ -977,6 +1057,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Required: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(1, 128),
+																validate.StringMatch(regexp.MustCompile("^[A-Z\\_]+$"), ""),
 															},
 														},
 													},
@@ -1010,6 +1091,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Validators: []tfsdk.AttributeValidator{
 										validate.ArrayLenAtLeast(1),
 										validate.ArrayForEach(validate.StringLenBetween(1, 128)),
+										validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[A-Z\\_]+$"), "")),
 									},
 								},
 								"overrides": {
@@ -1028,6 +1110,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(1, 128),
+													validate.StringMatch(regexp.MustCompile("^[A-Z\\_]+$"), ""),
 												},
 											},
 										},
@@ -1057,6 +1140,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Validators: []tfsdk.AttributeValidator{
 													validate.ArrayLenAtLeast(1),
 													validate.ArrayForEach(validate.StringLenBetween(1, 128)),
+													validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[A-Z\\_]+$"), "")),
 												},
 											},
 										},
@@ -1070,6 +1154,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Validators: []tfsdk.AttributeValidator{
 										validate.ArrayLenAtLeast(1),
 										validate.ArrayForEach(validate.StringLenBetween(1, 128)),
+										validate.ArrayForEach(validate.StringMatch(regexp.MustCompile("^[A-Z_][A-Z\\\\d_]*$"), "")),
 									},
 								},
 							},
@@ -1239,7 +1324,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "type": "integer"
 			// }
 			Description: "Timeout",
-			Type:        types.NumberType,
+			Type:        types.Int64Type,
 			Optional:    true,
 		},
 		"type": {
@@ -1352,6 +1437,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 	opts = opts.WithAttributeNameMap(map[string]string{
 		"allowed_statistics":               "AllowedStatistics",
 		"bucket":                           "Bucket",
+		"bucket_owner":                     "BucketOwner",
 		"catalog_id":                       "CatalogId",
 		"column_statistics_configurations": "ColumnStatisticsConfigurations",
 		"compression_format":               "CompressionFormat",
@@ -1377,6 +1463,7 @@ func jobResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"location":                         "Location",
 		"log_subscription":                 "LogSubscription",
 		"max_capacity":                     "MaxCapacity",
+		"max_output_files":                 "MaxOutputFiles",
 		"max_retries":                      "MaxRetries",
 		"mode":                             "Mode",
 		"name":                             "Name",

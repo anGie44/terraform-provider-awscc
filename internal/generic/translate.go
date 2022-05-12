@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 	"math/big"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // Translates a Terraform Value to Cloud Control DesiredState.
@@ -177,7 +177,7 @@ func (t toTerraform) valueFromRaw(ctx context.Context, schema *tfsdk.Schema, pat
 		attrType, err := schema.AttributeTypeAtPath(path)
 
 		if err != nil {
-			return tftypes.Value{}, fmt.Errorf("error getting attribute type at %s: %w", path, err)
+			return tftypes.Value{}, fmt.Errorf("getting attribute type at %s: %w", path, err)
 		}
 
 		typ = attrType.TerraformType(ctx)
@@ -200,6 +200,9 @@ func (t toTerraform) valueFromRaw(ctx context.Context, schema *tfsdk.Schema, pat
 	// Complex types.
 	//
 	case []interface{}:
+		if len(v) == 0 {
+			return tftypes.NewValue(typ, nil), nil
+		}
 		var vals []tftypes.Value
 		for idx, v := range v {
 			if typ.Is(tftypes.Set{}) {
@@ -235,7 +238,9 @@ func (t toTerraform) valueFromRaw(ctx context.Context, schema *tfsdk.Schema, pat
 			if isObject {
 				attributeName, ok := t.cfToTfNameMap[key]
 				if !ok {
-					log.Printf("[INFO] attribute name mapping not found. key: %s", key)
+					tflog.Info(ctx, "attribute name mapping not found", map[string]interface{}{
+						"key": key,
+					})
 					continue
 				}
 				path = path.WithAttributeName(attributeName)
@@ -245,7 +250,11 @@ func (t toTerraform) valueFromRaw(ctx context.Context, schema *tfsdk.Schema, pat
 			val, err := t.valueFromRaw(ctx, schema, path, v)
 			if err != nil {
 				if isObject {
-					log.Printf("[INFO] not found in Terraform schema. key: %s, path: %s, error: %s", key, path, err.Error())
+					tflog.Info(ctx, "not found in Terraform schema", map[string]interface{}{
+						"key":   key,
+						"path":  path,
+						"error": err.Error(),
+					})
 					path = path.WithoutLastStep()
 					continue
 				}

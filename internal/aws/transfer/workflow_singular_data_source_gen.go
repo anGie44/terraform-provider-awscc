@@ -26,7 +26,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "Specifies the unique Amazon Resource Name (ARN) for the workflow.",
 			//   "maxLength": 1600,
 			//   "minLength": 20,
-			//   "pattern": "",
+			//   "pattern": "arn:.*",
 			//   "type": "string"
 			// }
 			Description: "Specifies the unique Amazon Resource Name (ARN) for the workflow.",
@@ -40,7 +40,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "A textual description for the workflow.",
 			//   "maxLength": 256,
 			//   "minLength": 0,
-			//   "pattern": "",
+			//   "pattern": "^[\\w\\- ]*$",
 			//   "type": "string"
 			// }
 			Description: "A textual description for the workflow.",
@@ -73,14 +73,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                     "description": "Specifies the S3 bucket that contains the file being copied.",
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
 			//                     "type": "string"
 			//                   },
 			//                   "Key": {
 			//                     "description": "The name assigned to the file when it was created in S3. You use the object key to retrieve the object.",
 			//                     "maxLength": 1024,
 			//                     "minLength": 0,
-			//                     "pattern": "",
+			//                     "pattern": ".*",
 			//                     "type": "string"
 			//                   }
 			//                 },
@@ -93,7 +93,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
 			//             "type": "string"
 			//           },
 			//           "OverwriteExisting": {
@@ -102,6 +102,13 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "TRUE",
 			//               "FALSE"
 			//             ],
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -115,14 +122,21 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           },
 			//           "Target": {
 			//             "description": "The ARN for the lambda function that is being called.",
 			//             "maxLength": 170,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "arn:[a-z-]+:lambda:.*$",
 			//             "type": "string"
 			//           },
 			//           "TimeoutSeconds": {
@@ -142,7 +156,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -156,7 +177,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           },
 			//           "Tags": {
@@ -258,6 +286,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 							},
 						),
 						Computed: true,
@@ -273,6 +307,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 								"target": {
 									// Property: Target
 									Description: "The ARN for the lambda function that is being called.",
@@ -282,7 +322,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								"timeout_seconds": {
 									// Property: TimeoutSeconds
 									Description: "Timeout, in seconds, for the step.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 							},
@@ -300,6 +340,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 							},
 						),
 						Computed: true,
@@ -312,6 +358,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								"name": {
 									// Property: Name
 									Description: "The name of the step, used as an identifier.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
 									Type:        types.StringType,
 									Computed:    true,
 								},
@@ -377,14 +429,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//                     "description": "Specifies the S3 bucket that contains the file being copied.",
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "^[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]$",
 			//                     "type": "string"
 			//                   },
 			//                   "Key": {
 			//                     "description": "The name assigned to the file when it was created in S3. You use the object key to retrieve the object.",
 			//                     "maxLength": 1024,
 			//                     "minLength": 0,
-			//                     "pattern": "",
+			//                     "pattern": ".*",
 			//                     "type": "string"
 			//                   }
 			//                 },
@@ -397,7 +449,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
 			//             "type": "string"
 			//           },
 			//           "OverwriteExisting": {
@@ -406,6 +458,13 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//               "TRUE",
 			//               "FALSE"
 			//             ],
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -419,14 +478,21 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           },
 			//           "Target": {
 			//             "description": "The ARN for the lambda function that is being called.",
 			//             "maxLength": 170,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "arn:[a-z-]+:lambda:.*$",
 			//             "type": "string"
 			//           },
 			//           "TimeoutSeconds": {
@@ -446,7 +512,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -460,7 +533,14 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//             "description": "The name of the step, used as an identifier.",
 			//             "maxLength": 30,
 			//             "minLength": 0,
-			//             "pattern": "",
+			//             "pattern": "^[\\w-]*$",
+			//             "type": "string"
+			//           },
+			//           "SourceFileLocation": {
+			//             "description": "Specifies which file to use as input to the workflow step.",
+			//             "maxLength": 256,
+			//             "minLength": 0,
+			//             "pattern": "^\\$\\{(\\w+.)+\\w+\\}$",
 			//             "type": "string"
 			//           },
 			//           "Tags": {
@@ -562,6 +642,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 							},
 						),
 						Computed: true,
@@ -577,6 +663,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 								"target": {
 									// Property: Target
 									Description: "The ARN for the lambda function that is being called.",
@@ -586,7 +678,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								"timeout_seconds": {
 									// Property: TimeoutSeconds
 									Description: "Timeout, in seconds, for the step.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Computed:    true,
 								},
 							},
@@ -604,6 +696,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 									Type:        types.StringType,
 									Computed:    true,
 								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
 							},
 						),
 						Computed: true,
@@ -616,6 +714,12 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 								"name": {
 									// Property: Name
 									Description: "The name of the step, used as an identifier.",
+									Type:        types.StringType,
+									Computed:    true,
+								},
+								"source_file_location": {
+									// Property: SourceFileLocation
+									Description: "Specifies which file to use as input to the workflow step.",
 									Type:        types.StringType,
 									Computed:    true,
 								},
@@ -715,7 +819,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 			//   "description": "A unique identifier for the workflow.",
 			//   "maxLength": 19,
 			//   "minLength": 19,
-			//   "pattern": "",
+			//   "pattern": "^w-([a-z0-9]{17})$",
 			//   "type": "string"
 			// }
 			Description: "A unique identifier for the workflow.",
@@ -753,6 +857,7 @@ func workflowDataSourceType(ctx context.Context) (tfsdk.DataSourceType, error) {
 		"on_exception_steps":        "OnExceptionSteps",
 		"overwrite_existing":        "OverwriteExisting",
 		"s3_file_location":          "S3FileLocation",
+		"source_file_location":      "SourceFileLocation",
 		"steps":                     "Steps",
 		"tag_step_details":          "TagStepDetails",
 		"tags":                      "Tags",

@@ -4,6 +4,7 @@ package greengrassv2
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -112,6 +113,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//           "type": "object"
 			//         },
 			//         "EventSources": {
+			//           "insertionOrder": false,
 			//           "items": {
 			//             "additionalProperties": false,
 			//             "properties": {
@@ -131,6 +133,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//           "type": "array"
 			//         },
 			//         "ExecArgs": {
+			//           "insertionOrder": true,
 			//           "items": {
 			//             "type": "string"
 			//           },
@@ -150,6 +153,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//               "additionalProperties": false,
 			//               "properties": {
 			//                 "Devices": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "additionalProperties": false,
 			//                     "properties": {
@@ -178,6 +182,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//                   "type": "boolean"
 			//                 },
 			//                 "Volumes": {
+			//                   "insertionOrder": false,
 			//                   "items": {
 			//                     "additionalProperties": false,
 			//                     "properties": {
@@ -240,6 +245,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//       "type": "string"
 			//     },
 			//     "ComponentPlatforms": {
+			//       "insertionOrder": false,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -264,7 +270,7 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 			//       "type": "string"
 			//     },
 			//     "LambdaArn": {
-			//       "pattern": "",
+			//       "pattern": "^arn:aws(-(cn|us-gov))?:lambda:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$",
 			//       "type": "string"
 			//     }
 			//   },
@@ -332,6 +338,9 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 										tfsdk.ListNestedAttributesOptions{},
 									),
 									Optional: true,
+									PlanModifiers: []tfsdk.AttributePlanModifier{
+										Multiset(),
+									},
 								},
 								"exec_args": {
 									// Property: ExecArgs
@@ -386,10 +395,13 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 																tfsdk.ListNestedAttributesOptions{},
 															),
 															Optional: true,
+															PlanModifiers: []tfsdk.AttributePlanModifier{
+																Multiset(),
+															},
 														},
 														"memory_size_in_kb": {
 															// Property: MemorySizeInKB
-															Type:     types.NumberType,
+															Type:     types.Int64Type,
 															Optional: true,
 														},
 														"mount_ro_sysfs": {
@@ -431,6 +443,9 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 																tfsdk.ListNestedAttributesOptions{},
 															),
 															Optional: true,
+															PlanModifiers: []tfsdk.AttributePlanModifier{
+																Multiset(),
+															},
 														},
 													},
 												),
@@ -453,17 +468,17 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 								},
 								"max_idle_time_in_seconds": {
 									// Property: MaxIdleTimeInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"max_instances_count": {
 									// Property: MaxInstancesCount
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"max_queue_size": {
 									// Property: MaxQueueSize
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"pinned": {
@@ -473,12 +488,12 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 								},
 								"status_timeout_in_seconds": {
 									// Property: StatusTimeoutInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"timeout_in_seconds": {
 									// Property: TimeoutInSeconds
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 							},
@@ -509,6 +524,9 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
+						PlanModifiers: []tfsdk.AttributePlanModifier{
+							Multiset(),
+						},
 					},
 					"component_version": {
 						// Property: ComponentVersion
@@ -519,6 +537,9 @@ func componentVersionResourceType(ctx context.Context) (tfsdk.ResourceType, erro
 						// Property: LambdaArn
 						Type:     types.StringType,
 						Optional: true,
+						Validators: []tfsdk.AttributeValidator{
+							validate.StringMatch(regexp.MustCompile("^arn:aws(-(cn|us-gov))?:lambda:(([a-z]+-)+[0-9])?:([0-9]{12})?:[^.]+$"), ""),
+						},
 					},
 				},
 			),

@@ -4,6 +4,7 @@ package appflow
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -26,7 +27,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "description": "Description of the flow.",
 			//   "maxLength": 2048,
-			//   "pattern": "",
+			//   "pattern": "[\\w!@#\\-.?,\\s]*",
 			//   "type": "string"
 			// }
 			Description: "Description of the flow.",
@@ -34,6 +35,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Optional:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenAtMost(2048),
+				validate.StringMatch(regexp.MustCompile("[\\w!@#\\-.?,\\s]*"), ""),
 			},
 		},
 		"destination_flow_config_list": {
@@ -48,7 +50,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//       "ConnectorProfileName": {
 			//         "description": "Name of destination connector profile",
 			//         "maxLength": 256,
-			//         "pattern": "",
+			//         "pattern": "[\\w/!@#+=.-]+",
 			//         "type": "string"
 			//       },
 			//       "ConnectorType": {
@@ -89,7 +91,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "BucketName": {
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "\\S+",
 			//                     "type": "string"
 			//                   },
 			//                   "BucketPrefix": {
@@ -104,7 +106,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               },
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               }
 			//             },
@@ -118,10 +120,43 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "properties": {
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               }
 			//             },
+			//             "type": "object"
+			//           },
+			//           "Marketo": {
+			//             "additionalProperties": false,
+			//             "properties": {
+			//               "ErrorHandlingConfig": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "BucketName": {
+			//                     "maxLength": 63,
+			//                     "minLength": 3,
+			//                     "pattern": "\\S+",
+			//                     "type": "string"
+			//                   },
+			//                   "BucketPrefix": {
+			//                     "maxLength": 512,
+			//                     "type": "string"
+			//                   },
+			//                   "FailOnFirstError": {
+			//                     "type": "boolean"
+			//                   }
+			//                 },
+			//                 "type": "object"
+			//               },
+			//               "Object": {
+			//                 "maxLength": 512,
+			//                 "pattern": "\\S+",
+			//                 "type": "string"
+			//               }
+			//             },
+			//             "required": [
+			//               "Object"
+			//             ],
 			//             "type": "object"
 			//           },
 			//           "Redshift": {
@@ -137,7 +172,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "BucketName": {
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "\\S+",
 			//                     "type": "string"
 			//                   },
 			//                   "BucketPrefix": {
@@ -153,12 +188,12 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "IntermediateBucketName": {
 			//                 "maxLength": 63,
 			//                 "minLength": 3,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               },
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               }
 			//             },
@@ -174,7 +209,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "BucketName": {
 			//                 "maxLength": 63,
 			//                 "minLength": 3,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               },
 			//               "BucketPrefix": {
@@ -237,6 +272,70 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             ],
 			//             "type": "object"
 			//           },
+			//           "SAPOData": {
+			//             "additionalProperties": false,
+			//             "properties": {
+			//               "ErrorHandlingConfig": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "BucketName": {
+			//                     "maxLength": 63,
+			//                     "minLength": 3,
+			//                     "pattern": "\\S+",
+			//                     "type": "string"
+			//                   },
+			//                   "BucketPrefix": {
+			//                     "maxLength": 512,
+			//                     "type": "string"
+			//                   },
+			//                   "FailOnFirstError": {
+			//                     "type": "boolean"
+			//                   }
+			//                 },
+			//                 "type": "object"
+			//               },
+			//               "IdFieldNames": {
+			//                 "description": "List of fields used as ID when performing a write operation.",
+			//                 "items": {
+			//                   "type": "string"
+			//                 },
+			//                 "type": "array"
+			//               },
+			//               "ObjectPath": {
+			//                 "maxLength": 512,
+			//                 "pattern": "\\S+",
+			//                 "type": "string"
+			//               },
+			//               "SuccessResponseHandlingConfig": {
+			//                 "additionalProperties": false,
+			//                 "properties": {
+			//                   "BucketName": {
+			//                     "maxLength": 63,
+			//                     "minLength": 3,
+			//                     "pattern": "\\S+",
+			//                     "type": "string"
+			//                   },
+			//                   "BucketPrefix": {
+			//                     "maxLength": 512,
+			//                     "type": "string"
+			//                   }
+			//                 },
+			//                 "type": "object"
+			//               },
+			//               "WriteOperationType": {
+			//                 "enum": [
+			//                   "INSERT",
+			//                   "UPSERT",
+			//                   "UPDATE"
+			//                 ],
+			//                 "type": "string"
+			//               }
+			//             },
+			//             "required": [
+			//               "ObjectPath"
+			//             ],
+			//             "type": "object"
+			//           },
 			//           "Salesforce": {
 			//             "additionalProperties": false,
 			//             "properties": {
@@ -246,7 +345,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "BucketName": {
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "\\S+",
 			//                     "type": "string"
 			//                   },
 			//                   "BucketPrefix": {
@@ -268,7 +367,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               },
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               },
 			//               "WriteOperationType": {
@@ -298,7 +397,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "BucketName": {
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "\\S+",
 			//                     "type": "string"
 			//                   },
 			//                   "BucketPrefix": {
@@ -314,12 +413,12 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "IntermediateBucketName": {
 			//                 "maxLength": 63,
 			//                 "minLength": 3,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               },
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               }
 			//             },
@@ -335,7 +434,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "BucketName": {
 			//                 "maxLength": 63,
 			//                 "minLength": 16,
-			//                 "pattern": "",
+			//                 "pattern": "^(upsolver-appflow)\\S*",
 			//                 "type": "string"
 			//               },
 			//               "BucketPrefix": {
@@ -411,7 +510,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                   "BucketName": {
 			//                     "maxLength": 63,
 			//                     "minLength": 3,
-			//                     "pattern": "",
+			//                     "pattern": "\\S+",
 			//                     "type": "string"
 			//                   },
 			//                   "BucketPrefix": {
@@ -433,7 +532,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               },
 			//               "Object": {
 			//                 "maxLength": 512,
-			//                 "pattern": "",
+			//                 "pattern": "\\S+",
 			//                 "type": "string"
 			//               },
 			//               "WriteOperationType": {
@@ -472,6 +571,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenAtMost(256),
+							validate.StringMatch(regexp.MustCompile("[\\w/!@#+=.-]+"), ""),
 						},
 					},
 					"connector_type": {
@@ -523,6 +623,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 															},
 														},
 														"bucket_prefix": {
@@ -548,6 +649,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -564,6 +666,54 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Optional: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
+								"marketo": {
+									// Property: Marketo
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"error_handling_config": {
+												// Property: ErrorHandlingConfig
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"bucket_name": {
+															// Property: BucketName
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
+															},
+														},
+														"bucket_prefix": {
+															// Property: BucketPrefix
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenAtMost(512),
+															},
+														},
+														"fail_on_first_error": {
+															// Property: FailOnFirstError
+															Type:     types.BoolType,
+															Optional: true,
+														},
+													},
+												),
+												Optional: true,
+											},
+											"object": {
+												// Property: Object
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -592,6 +742,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 															},
 														},
 														"bucket_prefix": {
@@ -617,6 +768,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(3, 63),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"object": {
@@ -625,6 +777,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -641,6 +794,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(3, 63),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"bucket_prefix": {
@@ -728,6 +882,96 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									),
 									Optional: true,
 								},
+								"sapo_data": {
+									// Property: SAPOData
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"error_handling_config": {
+												// Property: ErrorHandlingConfig
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"bucket_name": {
+															// Property: BucketName
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
+															},
+														},
+														"bucket_prefix": {
+															// Property: BucketPrefix
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenAtMost(512),
+															},
+														},
+														"fail_on_first_error": {
+															// Property: FailOnFirstError
+															Type:     types.BoolType,
+															Optional: true,
+														},
+													},
+												),
+												Optional: true,
+											},
+											"id_field_names": {
+												// Property: IdFieldNames
+												Description: "List of fields used as ID when performing a write operation.",
+												Type:        types.ListType{ElemType: types.StringType},
+												Optional:    true,
+											},
+											"object_path": {
+												// Property: ObjectPath
+												Type:     types.StringType,
+												Required: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
+												},
+											},
+											"success_response_handling_config": {
+												// Property: SuccessResponseHandlingConfig
+												Attributes: tfsdk.SingleNestedAttributes(
+													map[string]tfsdk.Attribute{
+														"bucket_name": {
+															// Property: BucketName
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
+															},
+														},
+														"bucket_prefix": {
+															// Property: BucketPrefix
+															Type:     types.StringType,
+															Optional: true,
+															Validators: []tfsdk.AttributeValidator{
+																validate.StringLenAtMost(512),
+															},
+														},
+													},
+												),
+												Optional: true,
+											},
+											"write_operation_type": {
+												// Property: WriteOperationType
+												Type:     types.StringType,
+												Optional: true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringInSlice([]string{
+														"INSERT",
+														"UPSERT",
+														"UPDATE",
+													}),
+												},
+											},
+										},
+									),
+									Optional: true,
+								},
 								"salesforce": {
 									// Property: Salesforce
 									Attributes: tfsdk.SingleNestedAttributes(
@@ -742,6 +986,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 															},
 														},
 														"bucket_prefix": {
@@ -773,6 +1018,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"write_operation_type": {
@@ -813,6 +1059,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 															},
 														},
 														"bucket_prefix": {
@@ -838,6 +1085,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(3, 63),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"object": {
@@ -846,6 +1094,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -862,6 +1111,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(16, 63),
+													validate.StringMatch(regexp.MustCompile("^(upsolver-appflow)\\S*"), ""),
 												},
 											},
 											"bucket_prefix": {
@@ -963,6 +1213,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 															Optional: true,
 															Validators: []tfsdk.AttributeValidator{
 																validate.StringLenBetween(3, 63),
+																validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 															},
 														},
 														"bucket_prefix": {
@@ -994,6 +1245,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"write_operation_type": {
@@ -1027,7 +1279,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			// {
 			//   "description": "ARN identifier of the flow.",
 			//   "maxLength": 512,
-			//   "pattern": "",
+			//   "pattern": "arn:aws:appflow:.*:[0-9]+:.*",
 			//   "type": "string"
 			// }
 			Description: "ARN identifier of the flow.",
@@ -1044,7 +1296,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "Name of the flow.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "[a-zA-Z0-9][\\w!@#.-]+",
 			//   "type": "string"
 			// }
 			Description: "Name of the flow.",
@@ -1052,6 +1304,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Required:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 256),
+				validate.StringMatch(regexp.MustCompile("[a-zA-Z0-9][\\w!@#.-]+"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -1064,7 +1317,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
 			//   "maxLength": 2048,
 			//   "minLength": 20,
-			//   "pattern": "",
+			//   "pattern": "arn:aws:kms:.*:[0-9]+:.*",
 			//   "type": "string"
 			// }
 			Description: "The ARN of the AWS Key Management Service (AWS KMS) key that's used to encrypt your function's environment variables. If it's not provided, AWS Lambda uses a default service key.",
@@ -1073,6 +1326,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(20, 2048),
+				validate.StringMatch(regexp.MustCompile("arn:aws:kms:.*:[0-9]+:.*"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -1089,7 +1343,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "ConnectorProfileName": {
 			//       "description": "Name of source connector profile",
 			//       "maxLength": 256,
-			//       "pattern": "",
+			//       "pattern": "[\\w/!@#+=.-]+",
 			//       "type": "string"
 			//     },
 			//     "ConnectorType": {
@@ -1137,7 +1391,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1151,7 +1405,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1165,7 +1419,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1179,7 +1433,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1193,7 +1447,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1207,7 +1461,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1222,7 +1476,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "BucketName": {
 			//               "maxLength": 63,
 			//               "minLength": 3,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             },
 			//             "BucketPrefix": {
@@ -1253,7 +1507,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "ObjectPath": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1273,7 +1527,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             },
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1287,7 +1541,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1301,7 +1555,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1315,7 +1569,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1329,7 +1583,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1343,7 +1597,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "DocumentType": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "[\\s\\w_-]+",
 			//               "type": "string"
 			//             },
 			//             "IncludeAllVersions": {
@@ -1357,7 +1611,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             },
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1371,7 +1625,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "properties": {
 			//             "Object": {
 			//               "maxLength": 512,
-			//               "pattern": "",
+			//               "pattern": "\\S+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -1400,6 +1654,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Optional:    true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenAtMost(256),
+							validate.StringMatch(regexp.MustCompile("[\\w/!@#+=.-]+"), ""),
 						},
 					},
 					"connector_type": {
@@ -1465,6 +1720,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1481,6 +1737,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1497,6 +1754,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1513,6 +1771,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1529,6 +1788,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1545,6 +1805,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1561,6 +1822,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenBetween(3, 63),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 											"bucket_prefix": {
@@ -1604,6 +1866,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1630,6 +1893,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1646,6 +1910,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1662,6 +1927,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1678,6 +1944,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1694,6 +1961,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1710,6 +1978,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Optional: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("[\\s\\w_-]+"), ""),
 												},
 											},
 											"include_all_versions": {
@@ -1733,6 +2002,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -1749,6 +2019,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Required: true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.StringLenAtMost(512),
+													validate.StringMatch(regexp.MustCompile("\\S+"), ""),
 												},
 											},
 										},
@@ -2173,7 +2444,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             },
 			//             "Value": {
 			//               "maxLength": 2048,
-			//               "pattern": "",
+			//               "pattern": ".+",
 			//               "type": "string"
 			//             }
 			//           },
@@ -2194,6 +2465,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           "Map_all",
 			//           "Mask",
 			//           "Merge",
+			//           "Passthrough",
 			//           "Truncate",
 			//           "Validate"
 			//         ],
@@ -2629,6 +2901,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenAtMost(2048),
+										validate.StringMatch(regexp.MustCompile(".+"), ""),
 									},
 								},
 							},
@@ -2649,6 +2922,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								"Map_all",
 								"Mask",
 								"Merge",
+								"Passthrough",
 								"Truncate",
 								"Validate",
 							}),
@@ -2739,7 +3013,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"schedule_end_time": {
 									// Property: ScheduleEndTime
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 								},
 								"schedule_expression": {
@@ -2752,7 +3026,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"schedule_offset": {
 									// Property: ScheduleOffset
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.FloatBetween(0.000000, 36000.000000),
@@ -2760,7 +3034,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"schedule_start_time": {
 									// Property: ScheduleStartTime
-									Type:     types.NumberType,
+									Type:     types.Float64Type,
 									Optional: true,
 								},
 								"time_zone": {
@@ -2875,6 +3149,7 @@ func flowResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"source_connector_properties":      "SourceConnectorProperties",
 		"source_fields":                    "SourceFields",
 		"source_flow_config":               "SourceFlowConfig",
+		"success_response_handling_config": "SuccessResponseHandlingConfig",
 		"tags":                             "Tags",
 		"task_properties":                  "TaskProperties",
 		"task_type":                        "TaskType",

@@ -4,6 +4,7 @@ package networkfirewall
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -26,13 +27,14 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// {
 			//   "maxLength": 512,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^.*$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Optional: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 512),
+				validate.StringMatch(regexp.MustCompile("^.*$"), ""),
 			},
 		},
 		"firewall_policy": {
@@ -42,12 +44,12 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "additionalProperties": false,
 			//   "properties": {
 			//     "StatefulDefaultActions": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "type": "string"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     },
 			//     "StatefulEngineOptions": {
 			//       "additionalProperties": false,
@@ -63,7 +65,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       "type": "object"
 			//     },
 			//     "StatefulRuleGroupReferences": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -76,7 +78,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "description": "A resource ARN.",
 			//             "maxLength": 256,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(arn:aws.*)$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -86,10 +88,10 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "object"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     },
 			//     "StatelessCustomActions": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -100,14 +102,14 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//                 "additionalProperties": false,
 			//                 "properties": {
 			//                   "Dimensions": {
-			//                     "insertionOrder": false,
+			//                     "insertionOrder": true,
 			//                     "items": {
 			//                       "additionalProperties": false,
 			//                       "properties": {
 			//                         "Value": {
 			//                           "maxLength": 128,
 			//                           "minLength": 1,
-			//                           "pattern": "",
+			//                           "pattern": "^[a-zA-Z0-9-_ ]+$",
 			//                           "type": "string"
 			//                         }
 			//                       },
@@ -117,7 +119,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//                       "type": "object"
 			//                     },
 			//                     "type": "array",
-			//                     "uniqueItems": true
+			//                     "uniqueItems": false
 			//                   }
 			//                 },
 			//                 "required": [
@@ -131,7 +133,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//           "ActionName": {
 			//             "maxLength": 128,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^[a-zA-Z0-9]+$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -142,26 +144,26 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "object"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     },
 			//     "StatelessDefaultActions": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "type": "string"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     },
 			//     "StatelessFragmentDefaultActions": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "type": "string"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     },
 			//     "StatelessRuleGroupReferences": {
-			//       "insertionOrder": false,
+			//       "insertionOrder": true,
 			//       "items": {
 			//         "additionalProperties": false,
 			//         "properties": {
@@ -174,7 +176,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//             "description": "A resource ARN.",
 			//             "maxLength": 256,
 			//             "minLength": 1,
-			//             "pattern": "",
+			//             "pattern": "^(arn:aws.*)$",
 			//             "type": "string"
 			//           }
 			//         },
@@ -185,7 +187,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//         "type": "object"
 			//       },
 			//       "type": "array",
-			//       "uniqueItems": true
+			//       "uniqueItems": false
 			//     }
 			//   },
 			//   "required": [
@@ -198,7 +200,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 				map[string]tfsdk.Attribute{
 					"stateful_default_actions": {
 						// Property: StatefulDefaultActions
-						Type:     types.SetType{ElemType: types.StringType},
+						Type:     types.ListType{ElemType: types.StringType},
 						Optional: true,
 					},
 					"stateful_engine_options": {
@@ -222,11 +224,11 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 					},
 					"stateful_rule_group_references": {
 						// Property: StatefulRuleGroupReferences
-						Attributes: tfsdk.SetNestedAttributes(
+						Attributes: tfsdk.ListNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"priority": {
 									// Property: Priority
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 65535),
@@ -239,16 +241,17 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 256),
+										validate.StringMatch(regexp.MustCompile("^(arn:aws.*)$"), ""),
 									},
 								},
 							},
-							tfsdk.SetNestedAttributesOptions{},
+							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
 					},
 					"stateless_custom_actions": {
 						// Property: StatelessCustomActions
-						Attributes: tfsdk.SetNestedAttributes(
+						Attributes: tfsdk.ListNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"action_definition": {
 									// Property: ActionDefinition
@@ -260,7 +263,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 													map[string]tfsdk.Attribute{
 														"dimensions": {
 															// Property: Dimensions
-															Attributes: tfsdk.SetNestedAttributes(
+															Attributes: tfsdk.ListNestedAttributes(
 																map[string]tfsdk.Attribute{
 																	"value": {
 																		// Property: Value
@@ -268,10 +271,11 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 																		Required: true,
 																		Validators: []tfsdk.AttributeValidator{
 																			validate.StringLenBetween(1, 128),
+																			validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9-_ ]+$"), ""),
 																		},
 																	},
 																},
-																tfsdk.SetNestedAttributesOptions{},
+																tfsdk.ListNestedAttributesOptions{},
 															),
 															Required: true,
 														},
@@ -289,30 +293,31 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 128),
+										validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9]+$"), ""),
 									},
 								},
 							},
-							tfsdk.SetNestedAttributesOptions{},
+							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
 					},
 					"stateless_default_actions": {
 						// Property: StatelessDefaultActions
-						Type:     types.SetType{ElemType: types.StringType},
+						Type:     types.ListType{ElemType: types.StringType},
 						Required: true,
 					},
 					"stateless_fragment_default_actions": {
 						// Property: StatelessFragmentDefaultActions
-						Type:     types.SetType{ElemType: types.StringType},
+						Type:     types.ListType{ElemType: types.StringType},
 						Required: true,
 					},
 					"stateless_rule_group_references": {
 						// Property: StatelessRuleGroupReferences
-						Attributes: tfsdk.SetNestedAttributes(
+						Attributes: tfsdk.ListNestedAttributes(
 							map[string]tfsdk.Attribute{
 								"priority": {
 									// Property: Priority
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Required: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntBetween(1, 65535),
@@ -325,10 +330,11 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 									Required:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.StringLenBetween(1, 256),
+										validate.StringMatch(regexp.MustCompile("^(arn:aws.*)$"), ""),
 									},
 								},
 							},
-							tfsdk.SetNestedAttributesOptions{},
+							tfsdk.ListNestedAttributesOptions{},
 						),
 						Optional: true,
 					},
@@ -343,7 +349,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//   "description": "A resource ARN.",
 			//   "maxLength": 256,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^(arn:aws.*)$",
 			//   "type": "string"
 			// }
 			Description: "A resource ARN.",
@@ -359,7 +365,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// {
 			//   "maxLength": 36,
 			//   "minLength": 36,
-			//   "pattern": "",
+			//   "pattern": "^([0-9a-f]{8})-([0-9a-f]{4}-){3}([0-9a-f]{12})$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
@@ -374,13 +380,14 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			// {
 			//   "maxLength": 128,
 			//   "minLength": 1,
-			//   "pattern": "",
+			//   "pattern": "^[a-zA-Z0-9-]+$",
 			//   "type": "string"
 			// }
 			Type:     types.StringType,
 			Required: true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(1, 128),
+				validate.StringMatch(regexp.MustCompile("^[a-zA-Z0-9-]+$"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.RequiresReplace(),
@@ -397,13 +404,13 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 			//       "Key": {
 			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
+			//         "pattern": "^.*$",
 			//         "type": "string"
 			//       },
 			//       "Value": {
 			//         "maxLength": 255,
 			//         "minLength": 0,
-			//         "pattern": "",
+			//         "pattern": "^.*$",
 			//         "type": "string"
 			//       }
 			//     },
@@ -424,6 +431,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(1, 128),
+							validate.StringMatch(regexp.MustCompile("^.*$"), ""),
 						},
 					},
 					"value": {
@@ -432,6 +440,7 @@ func firewallPolicyResourceType(ctx context.Context) (tfsdk.ResourceType, error)
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
 							validate.StringLenBetween(0, 255),
+							validate.StringMatch(regexp.MustCompile("^.*$"), ""),
 						},
 					},
 				},

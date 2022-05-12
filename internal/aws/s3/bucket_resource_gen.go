@@ -4,6 +4,7 @@ package s3
 
 import (
 	"context"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -430,7 +431,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "description": "A name for the bucket. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
 			//   "maxLength": 63,
 			//   "minLength": 3,
-			//   "pattern": "",
+			//   "pattern": "^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$",
 			//   "type": "string"
 			// }
 			Description: "A name for the bucket. If you don't specify a name, AWS CloudFormation generates a unique physical ID and uses that ID for the bucket name.",
@@ -439,6 +440,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Computed:    true,
 			Validators: []tfsdk.AttributeValidator{
 				validate.StringLenBetween(3, 63),
+				validate.StringMatch(regexp.MustCompile("^[a-z0-9][a-z0-9//.//-]*[a-z0-9]$"), ""),
 			},
 			PlanModifiers: []tfsdk.AttributePlanModifier{
 				tfsdk.UseStateForUnknown(),
@@ -589,7 +591,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								"max_age": {
 									// Property: MaxAge
 									Description: "The time in seconds that your browser is to cache the preflight response for the specified resource.",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Optional:    true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.IntAtLeast(0),
@@ -798,7 +800,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								"days": {
 									// Property: Days
 									Description: "The number of consecutive days of no access after which an object will be eligible to be transitioned to the corresponding tier. The minimum number of days specified for Archive Access tier must be at least 90 days and Deep Archive Access tier must be at least 180 days. The maximum can be up to 2 years (730 days).",
-									Type:        types.NumberType,
+									Type:        types.Int64Type,
 									Required:    true,
 								},
 							},
@@ -1069,7 +1071,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//           },
 			//           "ExpirationDate": {
 			//             "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
-			//             "pattern": "",
+			//             "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$",
 			//             "type": "string"
 			//           },
 			//           "ExpirationInDays": {
@@ -1082,6 +1084,24 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "maxLength": 255,
 			//             "type": "string"
 			//           },
+			//           "NoncurrentVersionExpiration": {
+			//             "additionalProperties": false,
+			//             "description": "Container for the expiration rule that describes when noncurrent objects are expired. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 expire noncurrent object versions at a specific period in the object's lifetime",
+			//             "properties": {
+			//               "NewerNoncurrentVersions": {
+			//                 "description": "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+			//                 "type": "integer"
+			//               },
+			//               "NoncurrentDays": {
+			//                 "description": "Specified the number of days an object is noncurrent before Amazon S3 can perform the associated action",
+			//                 "type": "integer"
+			//               }
+			//             },
+			//             "required": [
+			//               "NoncurrentDays"
+			//             ],
+			//             "type": "object"
+			//           },
 			//           "NoncurrentVersionExpirationInDays": {
 			//             "type": "integer"
 			//           },
@@ -1089,6 +1109,10 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "additionalProperties": false,
 			//             "description": "Container for the transition rule that describes when noncurrent objects transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at a specific period in the object's lifetime.",
 			//             "properties": {
+			//               "NewerNoncurrentVersions": {
+			//                 "description": "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+			//                 "type": "integer"
+			//               },
 			//               "StorageClass": {
 			//                 "description": "The class of storage used to store the object.",
 			//                 "enum": [
@@ -1119,6 +1143,10 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               "additionalProperties": false,
 			//               "description": "Container for the transition rule that describes when noncurrent objects transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at a specific period in the object's lifetime.",
 			//               "properties": {
+			//                 "NewerNoncurrentVersions": {
+			//                   "description": "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+			//                   "type": "integer"
+			//                 },
 			//                 "StorageClass": {
 			//                   "description": "The class of storage used to store the object.",
 			//                   "enum": [
@@ -1145,6 +1173,16 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             },
 			//             "type": "array",
 			//             "uniqueItems": true
+			//           },
+			//           "ObjectSizeGreaterThan": {
+			//             "maxLength": 20,
+			//             "pattern": "[0-9]+",
+			//             "type": "string"
+			//           },
+			//           "ObjectSizeLessThan": {
+			//             "maxLength": 20,
+			//             "pattern": "[0-9]+",
+			//             "type": "string"
 			//           },
 			//           "Prefix": {
 			//             "type": "string"
@@ -1196,7 +1234,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//               },
 			//               "TransitionDate": {
 			//                 "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
-			//                 "pattern": "",
+			//                 "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$",
 			//                 "type": "string"
 			//               },
 			//               "TransitionInDays": {
@@ -1228,7 +1266,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//                 },
 			//                 "TransitionDate": {
 			//                   "description": "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
-			//                   "pattern": "",
+			//                   "pattern": "^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$",
 			//                   "type": "string"
 			//                 },
 			//                 "TransitionInDays": {
@@ -1274,7 +1312,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"days_after_initiation": {
 												// Property: DaysAfterInitiation
 												Description: "Specifies the number of days after which Amazon S3 aborts an incomplete multipart upload.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 												Validators: []tfsdk.AttributeValidator{
 													validate.IntAtLeast(0),
@@ -1289,10 +1327,13 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Description: "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
 									Type:        types.StringType,
 									Optional:    true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringMatch(regexp.MustCompile("^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"), ""),
+									},
 								},
 								"expiration_in_days": {
 									// Property: ExpirationInDays
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"expired_object_delete_marker": {
@@ -1308,9 +1349,30 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 										validate.StringLenAtMost(255),
 									},
 								},
+								"noncurrent_version_expiration": {
+									// Property: NoncurrentVersionExpiration
+									Description: "Container for the expiration rule that describes when noncurrent objects are expired. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 expire noncurrent object versions at a specific period in the object's lifetime",
+									Attributes: tfsdk.SingleNestedAttributes(
+										map[string]tfsdk.Attribute{
+											"newer_noncurrent_versions": {
+												// Property: NewerNoncurrentVersions
+												Description: "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+												Type:        types.Int64Type,
+												Optional:    true,
+											},
+											"noncurrent_days": {
+												// Property: NoncurrentDays
+												Description: "Specified the number of days an object is noncurrent before Amazon S3 can perform the associated action",
+												Type:        types.Int64Type,
+												Required:    true,
+											},
+										},
+									),
+									Optional: true,
+								},
 								"noncurrent_version_expiration_in_days": {
 									// Property: NoncurrentVersionExpirationInDays
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"noncurrent_version_transition": {
@@ -1318,6 +1380,12 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Description: "Container for the transition rule that describes when noncurrent objects transition to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class. If your bucket is versioning-enabled (or versioning is suspended), you can set this action to request that Amazon S3 transition noncurrent object versions to the STANDARD_IA, ONEZONE_IA, INTELLIGENT_TIERING, GLACIER_IR, GLACIER, or DEEP_ARCHIVE storage class at a specific period in the object's lifetime.",
 									Attributes: tfsdk.SingleNestedAttributes(
 										map[string]tfsdk.Attribute{
+											"newer_noncurrent_versions": {
+												// Property: NewerNoncurrentVersions
+												Description: "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+												Type:        types.Int64Type,
+												Optional:    true,
+											},
 											"storage_class": {
 												// Property: StorageClass
 												Description: "The class of storage used to store the object.",
@@ -1338,7 +1406,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"transition_in_days": {
 												// Property: TransitionInDays
 												Description: "Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 											},
 										},
@@ -1349,6 +1417,12 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									// Property: NoncurrentVersionTransitions
 									Attributes: tfsdk.ListNestedAttributes(
 										map[string]tfsdk.Attribute{
+											"newer_noncurrent_versions": {
+												// Property: NewerNoncurrentVersions
+												Description: "Specified the number of newer noncurrent and current versions that must exists before performing the associated action",
+												Type:        types.Int64Type,
+												Optional:    true,
+											},
 											"storage_class": {
 												// Property: StorageClass
 												Description: "The class of storage used to store the object.",
@@ -1369,7 +1443,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											"transition_in_days": {
 												// Property: TransitionInDays
 												Description: "Specifies the number of days an object is noncurrent before Amazon S3 can perform the associated action.",
-												Type:        types.NumberType,
+												Type:        types.Int64Type,
 												Required:    true,
 											},
 										},
@@ -1378,6 +1452,24 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 									Optional: true,
 									Validators: []tfsdk.AttributeValidator{
 										validate.UniqueItems(),
+									},
+								},
+								"object_size_greater_than": {
+									// Property: ObjectSizeGreaterThan
+									Type:     types.StringType,
+									Optional: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenAtMost(20),
+										validate.StringMatch(regexp.MustCompile("[0-9]+"), ""),
+									},
+								},
+								"object_size_less_than": {
+									// Property: ObjectSizeLessThan
+									Type:     types.StringType,
+									Optional: true,
+									Validators: []tfsdk.AttributeValidator{
+										validate.StringLenAtMost(20),
+										validate.StringMatch(regexp.MustCompile("[0-9]+"), ""),
 									},
 								},
 								"prefix": {
@@ -1444,10 +1536,13 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Description: "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
 												Type:        types.StringType,
 												Optional:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringMatch(regexp.MustCompile("^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"), ""),
+												},
 											},
 											"transition_in_days": {
 												// Property: TransitionInDays
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -1479,10 +1574,13 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 												Description: "The date value in ISO 8601 format. The timezone is always UTC. (YYYY-MM-DDThh:mm:ssZ)",
 												Type:        types.StringType,
 												Optional:    true,
+												Validators: []tfsdk.AttributeValidator{
+													validate.StringMatch(regexp.MustCompile("^([0-2]\\d{3})-(0[0-9]|1[0-2])-([0-2]\\d|3[01])T([01]\\d|2[0-4]):([0-5]\\d):([0-6]\\d)((\\.\\d{3})?)Z$"), ""),
+												},
 											},
 											"transition_in_days": {
 												// Property: TransitionInDays
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -1644,6 +1742,21 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//   "additionalProperties": false,
 			//   "description": "Configuration that defines how Amazon S3 handles bucket notifications.",
 			//   "properties": {
+			//     "EventBridgeConfiguration": {
+			//       "additionalProperties": false,
+			//       "description": "Describes the Amazon EventBridge notification configuration for an Amazon S3 bucket.",
+			//       "properties": {
+			//         "EventBridgeEnabled": {
+			//           "default": "true",
+			//           "description": "Specifies whether to send notifications to Amazon EventBridge when events occur in an Amazon S3 bucket.",
+			//           "type": "boolean"
+			//         }
+			//       },
+			//       "required": [
+			//         "EventBridgeEnabled"
+			//       ],
+			//       "type": "object"
+			//     },
 			//     "LambdaConfigurations": {
 			//       "insertionOrder": true,
 			//       "items": {
@@ -1851,6 +1964,26 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			Description: "Configuration that defines how Amazon S3 handles bucket notifications.",
 			Attributes: tfsdk.SingleNestedAttributes(
 				map[string]tfsdk.Attribute{
+					"event_bridge_configuration": {
+						// Property: EventBridgeConfiguration
+						Description: "Describes the Amazon EventBridge notification configuration for an Amazon S3 bucket.",
+						Attributes: tfsdk.SingleNestedAttributes(
+							map[string]tfsdk.Attribute{
+								"event_bridge_enabled": {
+									// Property: EventBridgeEnabled
+									Description: "Specifies whether to send notifications to Amazon EventBridge when events occur in an Amazon S3 bucket.",
+									Type:        types.BoolType,
+									Optional:    true,
+									Computed:    true,
+									PlanModifiers: []tfsdk.AttributePlanModifier{
+										DefaultValue(types.String{Value: "true"}),
+										tfsdk.UseStateForUnknown(),
+									},
+								},
+							},
+						),
+						Optional: true,
+					},
 					"lambda_configurations": {
 						// Property: LambdaConfigurations
 						Attributes: tfsdk.ListNestedAttributes(
@@ -2116,7 +2249,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 										map[string]tfsdk.Attribute{
 											"days": {
 												// Property: Days
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 											"mode": {
@@ -2132,7 +2265,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 											},
 											"years": {
 												// Property: Years
-												Type:     types.NumberType,
+												Type:     types.Int64Type,
 												Optional: true,
 											},
 										},
@@ -2179,7 +2312,8 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//             "description": "Specifies an object ownership rule.",
 			//             "enum": [
 			//               "ObjectWriter",
-			//               "BucketOwnerPreferred"
+			//               "BucketOwnerPreferred",
+			//               "BucketOwnerEnforced"
 			//             ],
 			//             "type": "string"
 			//           }
@@ -2211,6 +2345,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 										validate.StringInSlice([]string{
 											"ObjectWriter",
 											"BucketOwnerPreferred",
+											"BucketOwnerEnforced",
 										}),
 									},
 								},
@@ -2670,7 +2805,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																map[string]tfsdk.Attribute{
 																	"minutes": {
 																		// Property: Minutes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Required: true,
 																	},
 																},
@@ -2713,7 +2848,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 																map[string]tfsdk.Attribute{
 																	"minutes": {
 																		// Property: Minutes
-																		Type:     types.NumberType,
+																		Type:     types.Int64Type,
 																		Required: true,
 																	},
 																},
@@ -2833,7 +2968,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 								},
 								"priority": {
 									// Property: Priority
-									Type:     types.NumberType,
+									Type:     types.Int64Type,
 									Optional: true,
 								},
 								"source_selection_criteria": {
@@ -2921,15 +3056,13 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 			//     "additionalProperties": false,
 			//     "properties": {
 			//       "Key": {
-			//         "maxLength": 127,
+			//         "maxLength": 128,
 			//         "minLength": 1,
-			//         "pattern": "",
 			//         "type": "string"
 			//       },
 			//       "Value": {
-			//         "maxLength": 255,
+			//         "maxLength": 256,
 			//         "minLength": 1,
-			//         "pattern": "",
 			//         "type": "string"
 			//       }
 			//     },
@@ -2949,7 +3082,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Type:     types.StringType,
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
-							validate.StringLenBetween(1, 127),
+							validate.StringLenBetween(1, 128),
 						},
 					},
 					"value": {
@@ -2957,7 +3090,7 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 						Type:     types.StringType,
 						Required: true,
 						Validators: []tfsdk.AttributeValidator{
-							validate.StringLenBetween(1, 255),
+							validate.StringLenBetween(1, 256),
 						},
 					},
 				},
@@ -3314,6 +3447,8 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"encryption_configuration":              "EncryptionConfiguration",
 		"error_document":                        "ErrorDocument",
 		"event":                                 "Event",
+		"event_bridge_configuration":            "EventBridgeConfiguration",
+		"event_bridge_enabled":                  "EventBridgeEnabled",
 		"event_threshold":                       "EventThreshold",
 		"expiration_date":                       "ExpirationDate",
 		"expiration_in_days":                    "ExpirationInDays",
@@ -3344,6 +3479,9 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"minutes":                               "Minutes",
 		"mode":                                  "Mode",
 		"name":                                  "Name",
+		"newer_noncurrent_versions":             "NewerNoncurrentVersions",
+		"noncurrent_days":                       "NoncurrentDays",
+		"noncurrent_version_expiration":         "NoncurrentVersionExpiration",
 		"noncurrent_version_expiration_in_days": "NoncurrentVersionExpirationInDays",
 		"noncurrent_version_transition":         "NoncurrentVersionTransition",
 		"noncurrent_version_transitions":        "NoncurrentVersionTransitions",
@@ -3351,6 +3489,8 @@ func bucketResourceType(ctx context.Context) (tfsdk.ResourceType, error) {
 		"object_lock_configuration":             "ObjectLockConfiguration",
 		"object_lock_enabled":                   "ObjectLockEnabled",
 		"object_ownership":                      "ObjectOwnership",
+		"object_size_greater_than":              "ObjectSizeGreaterThan",
+		"object_size_less_than":                 "ObjectSizeLessThan",
 		"optional_fields":                       "OptionalFields",
 		"output_schema_version":                 "OutputSchemaVersion",
 		"owner":                                 "Owner",

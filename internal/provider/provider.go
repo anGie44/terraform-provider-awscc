@@ -3,17 +3,17 @@ package provider
 import (
 	"context"
 	"fmt"
-	"log"
-	"os"
-	"strings"
 	"time"
 
+	"github.com/aws/aws-sdk-go-v2/feature/ec2/imds"
 	"github.com/aws/aws-sdk-go-v2/service/cloudcontrol"
 	"github.com/aws/smithy-go/logging"
 	awsbase "github.com/hashicorp/aws-sdk-go-base/v2"
+	hclog "github.com/hashicorp/go-hclog"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/hashicorp/terraform-provider-awscc/internal/registry"
 	cctypes "github.com/hashicorp/terraform-provider-awscc/internal/types"
 	"github.com/hashicorp/terraform-provider-awscc/internal/validate"
@@ -70,7 +70,7 @@ func (p *AwsCloudControlApiProvider) GetSchema(ctx context.Context) (tfsdk.Schem
 
 			"region": {
 				Type:        types.StringType,
-				Description: "This is the AWS region. It must be provided, but it can also be sourced from the `AWS_DEFAULT_REGION` environment variables, or via a shared config file.",
+				Description: "This is the AWS region. It must be provided, but it can also be sourced from the `AWS_DEFAULT_REGION` environment variables, via a shared config file, or from the EC2 Instance Metadata Service if used.",
 				Optional:    true,
 			},
 
@@ -207,26 +207,102 @@ func (p *AwsCloudControlApiProvider) GetSchema(ctx context.Context) (tfsdk.Schem
 				Optional:    true,
 				Description: "An `assume_role` block (documented below). Only one `assume_role` block may be in the configuration.",
 			},
+
+			"assume_role_with_web_identity": {
+				Attributes: tfsdk.SingleNestedAttributes(
+					map[string]tfsdk.Attribute{
+						"role_arn": {
+							Type:        types.StringType,
+							Description: "Amazon Resource Name (ARN) of the IAM Role to assume. Can also be set with the environment variable `AWS_ROLE_ARN`.",
+							Required:    true,
+							Validators: []tfsdk.AttributeValidator{
+								validate.ARN(),
+							},
+						},
+
+						"duration": {
+							Type: cctypes.DurationType,
+							Description: "Duration of the assume role session. You can provide a value from 15 minutes up to the maximum session duration setting for the role. " +
+								cctypes.DurationType.Description() +
+								fmt.Sprintf(" Default value is %s", defaultAssumeRoleDuration),
+							Optional: true,
+						},
+
+						"policy": {
+							Type:        types.StringType,
+							Description: "IAM policy in JSON format to use as a session policy. The effective permissions for the session will be the intersection between this polcy and the role's policies.",
+							Optional:    true,
+							Validators: []tfsdk.AttributeValidator{
+								validate.StringLenAtMost(2048),
+								validate.StringIsJsonObject(),
+							},
+						},
+
+						"policy_arns": {
+							Type:        types.ListType{ElemType: types.StringType},
+							Description: "Amazon Resource Names (ARNs) of IAM Policies to use as managed session policies. The effective permissions for the session will be the intersection between these polcy and the role's policies.",
+							Optional:    true,
+							Validators: []tfsdk.AttributeValidator{
+								validate.ArrayForEach(
+									validate.IAMPolicyARN(),
+								),
+							},
+						},
+
+						"session_name": {
+							Type:        types.StringType,
+							Description: "Session name to use when assuming the role. Can also be set with the environment variable `AWS_ROLE_SESSION_NAME`.",
+							Optional:    true,
+						},
+
+						"web_identity_token": {
+							Type:        types.StringType,
+							Description: "The value of a web identity token from an OpenID Connect (OIDC) or OAuth provider. One of `web_identity_token` or `web_identity_token_file` is required.",
+							Optional:    true,
+							Validators: []tfsdk.AttributeValidator{
+								validate.StringLenBetween(4, 20000),
+							},
+						},
+
+						"web_identity_token_file": {
+							Type:        types.StringType,
+							Description: "File containing a web identity token from an OpenID Connect (OIDC) or OAuth provider. Can also be set with the  environment variable`AWS_WEB_IDENTITY_TOKEN_FILE`. One of `web_identity_token_file` or `web_identity_token` is required.",
+							Optional:    true,
+						},
+					},
+				),
+				Optional:    true,
+				Description: "An `assume_role_with_web_identity` block (documented below). Only one `assume_role_with_web_identity` block may be in the configuration.",
+				Validators: []tfsdk.AttributeValidator{
+					validate.RequiredAttributes(
+						validate.OneOfRequired(
+							validate.Required("web_identity_token"),
+							validate.Required("web_identity_token_file"),
+						),
+					),
+				},
+			},
 		},
 	}, nil
 }
 
 type providerData struct {
-	AccessKey              types.String       `tfsdk:"access_key"`
-	HTTPProxy              types.String       `tfsdk:"http_proxy"`
-	Insecure               types.Bool         `tfsdk:"insecure"`
-	MaxRetries             types.Int64        `tfsdk:"max_retries"`
-	Profile                types.String       `tfsdk:"profile"`
-	Region                 types.String       `tfsdk:"region"`
-	RoleARN                types.String       `tfsdk:"role_arn"`
-	SecretKey              types.String       `tfsdk:"secret_key"`
-	SharedConfigFiles      types.List         `tfsdk:"shared_config_files"`
-	SharedCredentialsFiles types.List         `tfsdk:"shared_credentials_files"`
-	SkipMetadataApiCheck   types.Bool         `tfsdk:"skip_medatadata_api_check"`
-	Token                  types.String       `tfsdk:"token"`
-	AssumeRole             *assumeRoleData    `tfsdk:"assume_role"`
-	UserAgent              []userAgentProduct `tfsdk:"user_agent"`
-	terraformVersion       string
+	AccessKey                 types.String                   `tfsdk:"access_key"`
+	HTTPProxy                 types.String                   `tfsdk:"http_proxy"`
+	Insecure                  types.Bool                     `tfsdk:"insecure"`
+	MaxRetries                types.Int64                    `tfsdk:"max_retries"`
+	Profile                   types.String                   `tfsdk:"profile"`
+	Region                    types.String                   `tfsdk:"region"`
+	RoleARN                   types.String                   `tfsdk:"role_arn"`
+	SecretKey                 types.String                   `tfsdk:"secret_key"`
+	SharedConfigFiles         types.List                     `tfsdk:"shared_config_files"`
+	SharedCredentialsFiles    types.List                     `tfsdk:"shared_credentials_files"`
+	SkipMetadataApiCheck      types.Bool                     `tfsdk:"skip_medatadata_api_check"`
+	Token                     types.String                   `tfsdk:"token"`
+	AssumeRole                *assumeRoleData                `tfsdk:"assume_role"`
+	AssumeRoleWithWebIdentity *assumeRoleWithWebIdentityData `tfsdk:"assume_role_with_web_identity"`
+	UserAgent                 []userAgentProduct             `tfsdk:"user_agent"`
+	terraformVersion          string
 }
 
 type userAgentProduct struct {
@@ -248,11 +324,11 @@ type assumeRoleData struct {
 
 func (a assumeRoleData) Config() *awsbase.AssumeRole {
 	assumeRole := &awsbase.AssumeRole{
-		RoleARN:         a.RoleARN.Value,
-		DurationSeconds: int(a.Duration.Value.Seconds()),
-		ExternalID:      a.ExternalID.Value,
-		Policy:          a.Policy.Value,
-		SessionName:     a.SessionName.Value,
+		RoleARN:     a.RoleARN.Value,
+		Duration:    a.Duration.Value,
+		ExternalID:  a.ExternalID.Value,
+		Policy:      a.Policy.Value,
+		SessionName: a.SessionName.Value,
 	}
 	if !a.PolicyARNs.Null {
 		arns := make([]string, len(a.PolicyARNs.Elems))
@@ -274,6 +350,36 @@ func (a assumeRoleData) Config() *awsbase.AssumeRole {
 			tagKeys[i] = v.(types.String).Value
 		}
 		assumeRole.TransitiveTagKeys = tagKeys
+	}
+
+	return assumeRole
+}
+
+type assumeRoleWithWebIdentityData struct {
+	RoleARN              types.String     `tfsdk:"role_arn"`
+	Duration             cctypes.Duration `tfsdk:"duration"`
+	Policy               types.String     `tfsdk:"policy"`
+	PolicyARNs           types.List       `tfsdk:"policy_arns"`
+	SessionName          types.String     `tfsdk:"session_name"`
+	WebIdentityToken     types.String     `tfsdk:"web_identity_token"`
+	WebIdentityTokenFile types.String     `tfsdk:"web_identity_token_file"`
+}
+
+func (a assumeRoleWithWebIdentityData) Config() *awsbase.AssumeRoleWithWebIdentity {
+	assumeRole := &awsbase.AssumeRoleWithWebIdentity{
+		RoleARN:              a.RoleARN.Value,
+		Duration:             a.Duration.Value,
+		Policy:               a.Policy.Value,
+		SessionName:          a.SessionName.Value,
+		WebIdentityToken:     a.WebIdentityToken.Value,
+		WebIdentityTokenFile: a.WebIdentityTokenFile.Value,
+	}
+	if !a.PolicyARNs.Null {
+		arns := make([]string, len(a.PolicyARNs.Elems))
+		for i, v := range a.PolicyARNs.Elems {
+			arns[i] = v.(types.String).Value
+		}
+		assumeRole.PolicyARNs = arns
 	}
 
 	return assumeRole
@@ -370,18 +476,15 @@ func (p *AwsCloudControlApiProvider) RoleARN(_ context.Context) string {
 
 // newCloudControlClient configures and returns a fully initialized AWS Cloud Control API client with the configured region.
 func newCloudControlClient(ctx context.Context, pd *providerData) (*cloudcontrol.Client, string, error) {
-	logLevel := os.Getenv("TF_LOG")
 	config := awsbase.Config{
 		AccessKey:              pd.AccessKey.Value,
 		CallerDocumentationURL: "https://registry.terraform.io/providers/hashicorp/awscc",
 		CallerName:             "Terraform AWS Cloud Control Provider",
-		DebugLogging:           strings.EqualFold(logLevel, "DEBUG") || strings.EqualFold(logLevel, "TRACE"),
 		HTTPProxy:              pd.HTTPProxy.Value,
 		Insecure:               pd.Insecure.Value,
 		Profile:                pd.Profile.Value,
 		Region:                 pd.Region.Value,
 		SecretKey:              pd.SecretKey.Value,
-		SkipMetadataApiCheck:   pd.SkipMetadataApiCheck.Value,
 		Token:                  pd.Token.Value,
 		APNInfo: &awsbase.APNInfo{
 			PartnerName: "HashiCorp",
@@ -414,6 +517,17 @@ func newCloudControlClient(ctx context.Context, pd *providerData) (*cloudcontrol
 	if pd.AssumeRole != nil {
 		config.AssumeRole = pd.AssumeRole.Config()
 	}
+	if pd.AssumeRoleWithWebIdentity != nil {
+		config.AssumeRoleWithWebIdentity = pd.AssumeRoleWithWebIdentity.Config()
+	}
+
+	if pd.SkipMetadataApiCheck.Null {
+		config.EC2MetadataServiceEnableState = imds.ClientDefaultEnableState
+	} else if pd.SkipMetadataApiCheck.Value {
+		config.EC2MetadataServiceEnableState = imds.ClientDisabled
+	} else {
+		config.EC2MetadataServiceEnableState = imds.ClientEnabled
+	}
 
 	cfg, err := awsbase.GetAwsConfig(ctx, &config)
 
@@ -425,27 +539,35 @@ func newCloudControlClient(ctx context.Context, pd *providerData) (*cloudcontrol
 }
 
 type awsSdkLogger struct{}
-
-func (l awsSdkLogger) Logf(classification logging.Classification, format string, v ...interface{}) {
-	log.Printf("[%s] [aws-sdk-go-v2] %s", classification, fmt.Sprintf(format, v...))
+type awsSdkContextLogger struct {
+	ctx context.Context
 }
 
-// func (l awsSdkLogger) WithContext(ctx context.Context) logging.Logger {
-// 	return awsSdkContextLogger{ctx: ctx}
-// }
+func (l awsSdkLogger) Logf(classification logging.Classification, format string, v ...interface{}) {
+	switch classification {
+	case logging.Warn:
+		hclog.Default().Warn("[aws-sdk-go-v2] %s", fmt.Sprintf(format, v...))
+	default:
+		hclog.Default().Debug("[aws-sdk-go-v2] %s", fmt.Sprintf(format, v...))
+	}
+}
 
-// type awsSdkContextLogger struct {
-// 	ctx context.Context
-// }
+func (l awsSdkLogger) WithContext(ctx context.Context) logging.Logger {
+	return awsSdkContextLogger{ctx: ctx}
+}
 
-// func (l awsSdkContextLogger) Logf(classification logging.Classification, format string, v ...interface{}) {
-// 	switch classification {
-// 	case logging.Warn:
-// 		tflog.Warn(l.ctx, "[aws-sdk-go-v2]", "message", hclog.Fmt(format, v...))
-// 	default:
-// 		tflog.Debug(l.ctx, "[aws-sdk-go-v2]", "message", hclog.Fmt(format, v...))
-// 	}
-// }
+func (l awsSdkContextLogger) Logf(classification logging.Classification, format string, v ...interface{}) {
+	switch classification {
+	case logging.Warn:
+		tflog.Warn(l.ctx, "[aws-sdk-go-v2]", map[string]interface{}{
+			"message": hclog.Fmt(format, v...),
+		})
+	default:
+		tflog.Debug(l.ctx, "[aws-sdk-go-v2]", map[string]interface{}{
+			"message": hclog.Fmt(format, v...),
+		})
+	}
+}
 
 func userAgentProducts(products []userAgentProduct) []awsbase.UserAgentProduct {
 	results := make([]awsbase.UserAgentProduct, len(products))

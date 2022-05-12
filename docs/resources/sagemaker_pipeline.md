@@ -17,38 +17,47 @@ Resource Type definition for AWS::SageMaker::Pipeline
 
 ### Required
 
-- **pipeline_definition** (Attributes) (see [below for nested schema](#nestedatt--pipeline_definition))
-- **pipeline_name** (String) The name of the Pipeline.
-- **role_arn** (String) Role Arn
+- `pipeline_definition` (Attributes) (see [below for nested schema](#nestedatt--pipeline_definition))
+- `pipeline_name` (String) The name of the Pipeline.
+- `role_arn` (String) Role Arn
 
 ### Optional
 
-- **pipeline_description** (String) The description of the Pipeline.
-- **pipeline_display_name** (String) The display name of the Pipeline.
-- **tags** (Attributes List) (see [below for nested schema](#nestedatt--tags))
+- `parallelism_configuration` (Attributes) (see [below for nested schema](#nestedatt--parallelism_configuration))
+- `pipeline_description` (String) The description of the Pipeline.
+- `pipeline_display_name` (String) The display name of the Pipeline.
+- `tags` (Attributes List) (see [below for nested schema](#nestedatt--tags))
 
 ### Read-Only
 
-- **id** (String) Uniquely identifies the resource.
+- `id` (String) Uniquely identifies the resource.
 
 <a id="nestedatt--pipeline_definition"></a>
 ### Nested Schema for `pipeline_definition`
 
 Required:
 
-- **pipeline_definition_body** (String) A specification that defines the pipeline in JSON format.
-- **pipeline_definition_s3_location** (Attributes) (see [below for nested schema](#nestedatt--pipeline_definition--pipeline_definition_s3_location))
+- `pipeline_definition_body` (String) A specification that defines the pipeline in JSON format.
+- `pipeline_definition_s3_location` (Attributes) (see [below for nested schema](#nestedatt--pipeline_definition--pipeline_definition_s3_location))
 
 <a id="nestedatt--pipeline_definition--pipeline_definition_s3_location"></a>
 ### Nested Schema for `pipeline_definition.pipeline_definition_s3_location`
 
 Required:
 
-- **bucket** (String) The name of the S3 bucket where the PipelineDefinition file is stored.
-- **e_tag** (String) The Amazon S3 ETag (a file checksum) of the PipelineDefinition file. If you don't specify a value, SageMaker skips ETag validation of your PipelineDefinition file.
-- **key** (String) The file name of the PipelineDefinition file (Amazon S3 object name).
-- **version** (String) For versioning-enabled buckets, a specific version of the PipelineDefinition file.
+- `bucket` (String) The name of the S3 bucket where the PipelineDefinition file is stored.
+- `e_tag` (String) The Amazon S3 ETag (a file checksum) of the PipelineDefinition file. If you don't specify a value, SageMaker skips ETag validation of your PipelineDefinition file.
+- `key` (String) The file name of the PipelineDefinition file (Amazon S3 object name).
+- `version` (String) For versioning-enabled buckets, a specific version of the PipelineDefinition file.
 
+
+
+<a id="nestedatt--parallelism_configuration"></a>
+### Nested Schema for `parallelism_configuration`
+
+Optional:
+
+- `max_parallel_execution_steps` (Number) Maximum parallel execution steps
 
 
 <a id="nestedatt--tags"></a>
@@ -56,8 +65,8 @@ Required:
 
 Optional:
 
-- **key** (String)
-- **value** (String)
+- `key` (String)
+- `value` (String)
 
 ## Import
 
