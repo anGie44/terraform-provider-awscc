@@ -14,6 +14,8 @@ permissions:
 jobs:
   release-tag:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ github.event.inputs.release-version || steps.tag.outputs.new_release_tag }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -54,82 +56,89 @@ jobs:
               ref: "refs/tags/${{ steps.tag.outputs.new_release_tag }}",
               sha: context.sha
             })
-  go-version:
+  test-release:
     runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.go-version.outputs.version }}
+    needs: [release-tag]
     steps:
-      - uses: actions/checkout@v3
-      - id: go-version
-        run: echo "::set-output name=version::$(cat ./.go-version)"
-  release-notes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Generate Release Notes
-        run: sed -n -e "1{/# /d;}" -e "2{/^$/d;}" -e "/# \[$(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags | tr -d v)/q;p" CHANGELOG.md > release-notes.txt
-      - uses: actions/upload-artifact@v3
-        with:
-          name: release-notes
-          path: release-notes.txt
-          retention-days: 1
-  terraform-provider-release:
-    name: 'Terraform Provider Release'
-    needs: [release-tag, go-version, release-notes]
-    uses: hashicorp/ghaction-terraform-provider-release/.github/workflows/hashicorp.yml@v2
-    secrets:
-      hc-releases-github-token: '${{ secrets.HASHI_RELEASES_GITHUB_TOKEN }}'
-      hc-releases-host-staging: '${{ secrets.HC_RELEASES_HOST_STAGING }}'
-      hc-releases-host-prod: '${{ secrets.HC_RELEASES_HOST_PROD }}'
-      hc-releases-key-prod: '${{ secrets.HC_RELEASES_KEY_PROD }}'
-      hc-releases-key-staging: '${{ secrets.HC_RELEASES_KEY_STAGING }}'
-      hc-releases-terraform-registry-sync-token: '${{ secrets.TF_PROVIDER_RELEASE_TERRAFORM_REGISTRY_SYNC_TOKEN }}'
-      setup-signore-github-token: '${{ secrets.HASHI_SIGNORE_GITHUB_TOKEN }}'
-      signore-client-id: '${{ secrets.SIGNORE_CLIENT_ID }}'
-      signore-client-secret: '${{ secrets.SIGNORE_CLIENT_SECRET }}'
-    with:
-      release-notes: true
-      setup-go-version: '${{ needs.go-version.outputs.version }}'
-      # Product Version (e.g. v1.2.3 or github.ref_name)
-      product-version: '${{ github.ref_name }}'
-  changelog:
-    needs: [terraform-provider-release]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          ref: main
-      - name: Update Changelog Header
-        id: changelog
+      - name: Print release-tag output
         run: |
-          CHANGELOG_FILE_NAME="CHANGELOG.md"
-          CURR_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
-          TAG=${CURR_RELEASE_TAG:1}
-
-          # Add Release Date
-          RELEASE_DATE=`date +%B' '%e', '%Y`
-          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/hashicorp\/${{ github.event.repository.name }}\/releases\/tag\/$CURR_RELEASE_TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
-
-          # Prepend next release line
-          echo Previous release is: $CURR_RELEASE_TAG
-
-          NEXT_RELEASE_LINE=$(echo $CURR_RELEASE_TAG | awk -F. '{
-              $1 = substr($1,2)
-              $2 += 1
-              printf("%s.%01d.0\n\n", $1, $2);
-          }')
-
-          echo New minor version is: v$NEXT_RELEASE_LINE
-
-          echo -e "## $NEXT_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
-
-          echo ::set-output name=curr_release_tag::$CURR_RELEASE_TAG
-      - run: |
-          git config --local user.email changelogbot@hashicorp.com
-          git config --local user.name changelogbot
-          git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md after ${{ steps.changelog.outputs.curr_release_tag }}"
-          git push
+          echo "The release tag is ${{ needs.release-tag.outputs.tag }}"
+#  go-version:
+#    runs-on: ubuntu-latest
+#    outputs:
+#      version: ${{ steps.go-version.outputs.version }}
+#    steps:
+#      - uses: actions/checkout@v3
+#      - id: go-version
+#        run: echo "::set-output name=version::$(cat ./.go-version)"
+#  release-notes:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#      - name: Generate Release Notes
+#        run: sed -n -e "1{/# /d;}" -e "2{/^$/d;}" -e "/# \[$(git describe --abbrev=0 --exclude="$(git describe --abbrev=0 --match='v*.*.*' --tags)" --match='v*.*.*' --tags | tr -d v)/q;p" CHANGELOG.md > release-notes.txt
+#      - uses: actions/upload-artifact@v3
+#        with:
+#          name: release-notes
+#          path: release-notes.txt
+#          retention-days: 1
+#  terraform-provider-release:
+#    name: 'Terraform Provider Release'
+#    needs: [release-tag, go-version, release-notes]
+#    uses: hashicorp/ghaction-terraform-provider-release/.github/workflows/hashicorp.yml@v2
+#    secrets:
+#      hc-releases-github-token: '${{ secrets.HASHI_RELEASES_GITHUB_TOKEN }}'
+#      hc-releases-host-staging: '${{ secrets.HC_RELEASES_HOST_STAGING }}'
+#      hc-releases-host-prod: '${{ secrets.HC_RELEASES_HOST_PROD }}'
+#      hc-releases-key-prod: '${{ secrets.HC_RELEASES_KEY_PROD }}'
+#      hc-releases-key-staging: '${{ secrets.HC_RELEASES_KEY_STAGING }}'
+#      hc-releases-terraform-registry-sync-token: '${{ secrets.TF_PROVIDER_RELEASE_TERRAFORM_REGISTRY_SYNC_TOKEN }}'
+#      setup-signore-github-token: '${{ secrets.HASHI_SIGNORE_GITHUB_TOKEN }}'
+#      signore-client-id: '${{ secrets.SIGNORE_CLIENT_ID }}'
+#      signore-client-secret: '${{ secrets.SIGNORE_CLIENT_SECRET }}'
+#    with:
+#      release-notes: true
+#      setup-go-version: '${{ needs.go-version.outputs.version }}'
+#      # Product Version (e.g. v1.2.3 or github.ref_name)
+#      product-version: '${{ github.ref_name }}'
+#  changelog:
+#    needs: [terraform-provider-release]
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v3
+#        with:
+#          fetch-depth: 0
+#          ref: main
+#      - name: Update Changelog Header
+#        id: changelog
+#        run: |
+#          CHANGELOG_FILE_NAME="CHANGELOG.md"
+#          CURR_RELEASE_TAG=$(git describe --abbrev=0 --match='v*.*.*' --tags)
+#          TAG=${CURR_RELEASE_TAG:1}
+#
+#          # Add Release Date
+#          RELEASE_DATE=`date +%B' '%e', '%Y`
+#          sed -i -e "1 s/$TAG (Unreleased)/[$TAG](https:\/\/github.com\/hashicorp\/${{ github.event.repository.name }}\/releases\/tag\/$CURR_RELEASE_TAG) ($RELEASE_DATE)/" $CHANGELOG_FILE_NAME
+#
+#          # Prepend next release line
+#          echo Previous release is: $CURR_RELEASE_TAG
+#
+#          NEXT_RELEASE_LINE=$(echo $CURR_RELEASE_TAG | awk -F. '{
+#              $1 = substr($1,2)
+#              $2 += 1
+#              printf("%s.%01d.0\n\n", $1, $2);
+#          }')
+#
+#          echo New minor version is: v$NEXT_RELEASE_LINE
+#
+#          echo -e "## $NEXT_RELEASE_LINE (Unreleased)\n$(cat $CHANGELOG_FILE_NAME)" > $CHANGELOG_FILE_NAME
+#
+#          echo ::set-output name=curr_release_tag::$CURR_RELEASE_TAG
+#      - run: |
+#          git config --local user.email changelogbot@hashicorp.com
+#          git config --local user.name changelogbot
+#          git add CHANGELOG.md
+#          git commit -m "Update CHANGELOG.md after ${{ steps.changelog.outputs.curr_release_tag }}"
+#          git push
